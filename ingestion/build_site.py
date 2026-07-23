@@ -122,6 +122,12 @@ def charger(base):
         "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, s.date")]
     etats = {(slug_p, vid): etat for slug_p, vid, etat in cur.execute(
         "SELECT personne_slug, vote_cle_id, etat FROM couverture")}
+    # Nuances : explication sourcée d'un vote contre-intuitif, par (personne, vote clé).
+    nuances = {(slug_p, vid): (texte, url) for slug_p, vid, texte, url in cur.execute(
+        "SELECT p.slug, vc.id, n.texte, src.url FROM nuances n "
+        "JOIN personnes p ON p.id = n.personne_id "
+        "JOIN votes_cles vc ON vc.scrutin_id = n.scrutin_id "
+        "JOIN sources src ON src.id = n.source_id")}
 
     meta = {
         "genere_le": date.today().isoformat(),
@@ -129,7 +135,7 @@ def charger(base):
         "candidats_maj": "23/07/2026",
     }
     con.close()
-    return candidats, themes, votes_cles, etats, meta
+    return candidats, themes, votes_cles, etats, nuances, meta
 
 
 def concordances(candidats):
@@ -269,7 +275,7 @@ document.getElementById("recherche").addEventListener("input", function () {{
     return page("Candidats", "Candidats", contenu, 1, meta)
 
 
-def fiche_candidat(p, themes, votes_cles, etats, meta):
+def fiche_candidat(p, themes, votes_cles, etats, nuances, meta):
     declaration = (f"le {date_fr(p['date_declaration'])}" if p["date_declaration"]
                    else "(date non fournie par la source)")
     statut = "Candidature déclarée" if p["statut"] == "declaree" else "En lice pour une primaire"
@@ -303,10 +309,14 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
         lignes = ""
         for v in votes_t:
             etat_v = etats.get((p["slug"], v["id"]), "a_importer")
+            nuance = nuances.get((p["slug"], v["id"]))
+            nuance_html = (f'<p class="vote-nuance">Nuance : {e(nuance[0])} '
+                           f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</p>' if nuance else "")
             lignes += f"""<li class="vote-cle">
 <div class="vote-tete"><strong>{e(v['titre'])}</strong> {badge_etat(etat_v)}</div>
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
+{nuance_html}
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 </li>"""
         votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
@@ -355,7 +365,7 @@ La sélection suit la <a href="../methode/">grille de critères publiée</a>, id
     return page("Thèmes", "Thèmes", contenu, 1, meta)
 
 
-def page_theme(t, votes_t, candidats, etats, meta):
+def page_theme(t, votes_t, candidats, etats, nuances, meta):
     par_slug = {c["slug"]: c["nom"] for c in candidats}
     blocs = ""
     for v in votes_t:
@@ -370,12 +380,22 @@ def page_theme(t, votes_t, candidats, etats, meta):
             noms = ", ".join(
                 f'<a href="../../candidats/{s}/">{e(par_slug[s])}</a>' for s in groupes[etat_v])
             lignes_groupes += f"<li>{badge_etat(etat_v)} {noms}</li>"
+        # Nuances attribuées et sourcées pour ce vote.
+        lignes_nuances = ""
+        for c in candidats:
+            nuance = nuances.get((c["slug"], v["id"]))
+            if nuance:
+                lignes_nuances += (f'<li><strong>{e(par_slug[c["slug"]])}</strong> — {e(nuance[0])} '
+                                   f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</li>')
+        nuances_html = (f'<p class="titre-nuances">Nuances (explications de vote rapportées, sourcées) :</p>'
+                        f'<ul class="nuances">{lignes_nuances}</ul>') if lignes_nuances else ""
         blocs += f"""<article class="vote-cle vote-cle-page">
 <h2>{e(v['titre'])}</h2>
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 <ul class="groupes-etat">{lignes_groupes}</ul>
+{nuances_html}
 </article>"""
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les thèmes</a></nav>
@@ -507,7 +527,7 @@ toute correction est tracée.</p>"""
 # ── Génération ───────────────────────────────────────────────────────────────
 
 def generer(base):
-    candidats, themes, votes_cles, etats, meta = charger(base)
+    candidats, themes, votes_cles, etats, nuances, meta = charger(base)
     paires, comparables = concordances(candidats)
 
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
@@ -521,7 +541,7 @@ def generer(base):
         dossier = WEB / "candidats" / p["slug"]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            fiche_candidat(p, themes, votes_cles, etats, meta), encoding="utf-8")
+            fiche_candidat(p, themes, votes_cles, etats, nuances, meta), encoding="utf-8")
     (WEB / "themes" / "index.html").write_text(
         page_themes_index(themes, votes_cles, meta), encoding="utf-8")
     for t in themes:
@@ -529,7 +549,7 @@ def generer(base):
         dossier = WEB / "themes" / THEME_SLUGS[t["libelle"]]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            page_theme(t, votes_t, candidats, etats, meta), encoding="utf-8")
+            page_theme(t, votes_t, candidats, etats, nuances, meta), encoding="utf-8")
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(page_methode(meta), encoding="utf-8")
 

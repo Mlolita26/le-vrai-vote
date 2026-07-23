@@ -260,6 +260,16 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         verifier("IVG au Congrès : Retailleau (sénateur) a un état de position, pas « non concerné »",
                  etat_ivg.get("bruno-retailleau") in ("pour", "contre", "abstention", "non_votant", "absent"),
                  str(etat_ivg.get("bruno-retailleau")))
+        # Nuances : chacune sourcée et adossée à une position réellement en base.
+        verifier("8 nuances, toutes adossées à une position existante",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 8
+                 and cur.execute(
+                     "SELECT COUNT(*) FROM nuances n WHERE NOT EXISTS ("
+                     "SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
+                     "AND pv.scrutin_id = n.scrutin_id)").fetchone()[0] == 0)
+        verifier("chaque nuance pointe une source avec URL",
+                 cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
+                             "WHERE s.url = ''").fetchone()[0] == 0)
     else:
         print("  (votes clés non semés — contrôles éditoriaux sautés)")
 

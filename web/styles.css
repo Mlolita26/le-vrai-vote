@@ -163,6 +163,14 @@ h2 { margin-top: 2.2rem; font-size: 1.3rem; border-bottom: 2px solid var(--liser
 .groupes-etat li { margin: 0.35rem 0; }
 .divergence { border-left: 4px solid var(--accent); }
 
+/* Nuances : explication de vote rapportée et sourcée */
+.titre-nuances { font-size: 0.85rem; font-weight: 600; color: var(--encre-douce); margin: 0.7rem 0 0.2rem; }
+.nuances { list-style: none; padding: 0.5rem 0.8rem; margin: 0; font-size: 0.85rem;
+  color: var(--encre-douce); background: var(--fond); border-radius: 8px; }
+.nuances li { margin: 0.3rem 0; }
+.vote-nuance { font-size: 0.85rem; color: var(--encre-douce); background: var(--fond);
+  border-radius: 8px; padding: 0.4rem 0.6rem; margin: 0.3rem 0; }
+
 .pied {
   margin-top: 3rem;
   padding: 1.2rem 1rem 2rem;

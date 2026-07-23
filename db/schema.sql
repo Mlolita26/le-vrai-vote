@@ -146,6 +146,18 @@ CREATE TABLE IF NOT EXISTS candidatures (
     source_id   INTEGER NOT NULL REFERENCES sources(id)
 );
 
+-- Nuances (éditorial) : explication d'un vote contre-intuitif, toujours
+-- attribuée et sourcée (explication de vote en séance, communiqué, presse).
+-- Une nuance décrit la justification déclarée — elle ne juge pas.
+CREATE TABLE IF NOT EXISTS nuances (
+    id          INTEGER PRIMARY KEY,
+    personne_id INTEGER NOT NULL REFERENCES personnes(id),
+    scrutin_id  INTEGER NOT NULL REFERENCES scrutins(id),
+    texte       TEXT NOT NULL,
+    source_id   INTEGER NOT NULL REFERENCES sources(id),
+    UNIQUE (personne_id, scrutin_id)
+);
+
 CREATE TABLE IF NOT EXISTS affaires_judiciaires (
     id          INTEGER PRIMARY KEY,
     personne_id INTEGER NOT NULL REFERENCES personnes(id),
