@@ -41,6 +41,7 @@ SUIVIS = {
     "jean-luc-melenchon": ("MÉLENCHON", "Jean-Luc"),
     "edouard-philippe": ("PHILIPPE", "Édouard"),
     "bruno-retailleau": ("RETAILLEAU", "Bruno"),
+    "marine-le-pen": ("LE PEN", "Marine"),
 }
 TYPE_ORGANE_VERS_MANDAT = {"ASSEMBLEE": "depute", "SENAT": "senateur"}
 # Un typeOrgane ASSEMBLEE/SENAT peut aussi décrire une fonction au bureau

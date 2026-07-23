@@ -1,0 +1,95 @@
+/* Le Vrai Vote — v0. Mobile-first, information jamais portée par la seule couleur. */
+:root {
+  --encre: #1a2332;
+  --encre-douce: #4a5568;
+  --fond: #fafbfc;
+  --carte: #ffffff;
+  --lisere: #d8dee6;
+  --accent: #1d4ed8;
+  --attention-fond: #fef3c7;
+  --attention-encre: #78350f;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--encre);
+  background: var(--fond);
+  line-height: 1.55;
+}
+main, .entete { max-width: 52rem; margin: 0 auto; padding: 0 1rem; }
+a { color: var(--accent); }
+
+.bandeau-travail {
+  background: var(--attention-fond);
+  color: var(--attention-encre);
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.entete { padding-top: 2rem; }
+.entete h1 { margin: 0; font-size: 1.9rem; letter-spacing: -0.02em; }
+.sous-titre { margin: 0.2rem 0 0; font-weight: 600; color: var(--encre-douce); }
+.chapo { color: var(--encre-douce); max-width: 40rem; }
+
+h2 { margin-top: 2.5rem; font-size: 1.35rem; border-bottom: 2px solid var(--lisere); padding-bottom: 0.3rem; }
+h3 { font-size: 1.05rem; color: var(--encre-douce); margin-bottom: 0.4rem; }
+
+.note-methode { font-size: 0.9rem; color: var(--encre-douce); background: var(--carte); border: 1px solid var(--lisere); border-radius: 8px; padding: 0.6rem 0.8rem; }
+
+.liste-candidats { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; gap: 0.5rem; }
+@media (min-width: 640px) { .liste-candidats { grid-template-columns: 1fr 1fr; } }
+.liste-candidats li {
+  background: var(--carte);
+  border: 1px solid var(--lisere);
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.95rem;
+}
+.liste-candidats .nom { font-weight: 600; }
+.liste-candidats .detail { display: block; color: var(--encre-douce); font-size: 0.85rem; }
+.liste-candidats .source { font-size: 0.8rem; }
+
+.profil {
+  background: var(--carte);
+  border: 1px solid var(--lisere);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.profil h3 { margin: 0 0 0.2rem; color: var(--encre); font-size: 1.15rem; }
+.profil .naissance { color: var(--encre-douce); font-size: 0.85rem; margin: 0; }
+.profil h4 { margin: 0.9rem 0 0.3rem; font-size: 0.9rem; text-transform: none; color: var(--encre-douce); }
+.mandats { list-style: none; padding: 0; margin: 0; font-size: 0.9rem; }
+.mandats li { padding: 0.15rem 0; border-left: 3px solid var(--lisere); padding-left: 0.6rem; margin: 0.25rem 0; }
+.mandats .dates { color: var(--encre-douce); }
+
+.badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0; }
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1.5px solid;
+}
+/* Chaque badge porte son libellé en toutes lettres : la couleur n'est qu'un renfort. */
+.badge-pour       { color: #14532d; border-color: #14532d; background: #f0fdf4; }
+.badge-contre     { color: #7f1d1d; border-color: #7f1d1d; background: #fef2f2; }
+.badge-abstention { color: #713f12; border-color: #713f12; background: #fefce8; }
+.badge-nonvotant  { color: #1e3a5f; border-color: #1e3a5f; background: #eff6ff; }
+.badge-absent     { color: #3f3f46; border-color: #3f3f46; background: #f4f4f5; }
+.badge-neutre     { color: var(--encre-douce); border-color: var(--lisere); background: var(--fond); }
+
+.methode-liste li { margin: 0.5rem 0; }
+
+.pied {
+  margin-top: 3rem;
+  padding: 1.2rem 1rem 2rem;
+  border-top: 1px solid var(--lisere);
+  font-size: 0.85rem;
+  color: var(--encre-douce);
+  text-align: center;
+}

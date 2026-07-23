@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Vrai Vote — présidentielle 2027 : leurs votes, pas leurs promesses</title>
+<meta name="description" content="Pour chaque candidat à la présidentielle 2027 : ses votes réels au Parlement, sa présence et son parcours, à partir des données publiques officielles, tout sourcé.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bandeau-travail" role="status">
+  Version de travail — les données s'enrichissent au fil des imports. Chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.
+</div>
+
+<header class="entete">
+  <h1>Le Vrai Vote</h1>
+  <p class="sous-titre">Présidentielle 2027 : leurs votes, pas leurs promesses.</p>
+  <p class="chapo">Ce site montre, pour chaque candidat, ce qu'il a réellement voté au Parlement —
+  avec, pour chaque donnée, le lien vers sa source officielle. Sans commentaire, sans jugement.</p>
+</header>
+
+<main>
+  <section id="candidats" aria-labelledby="titre-candidats">
+    <h2 id="titre-candidats">Qui est candidat ?</h2>
+    <p class="note-methode" id="avertissement"></p>
+    <h3>Candidatures déclarées</h3>
+    <ul class="liste-candidats" id="liste-declares"></ul>
+    <h3>En lice pour une primaire</h3>
+    <ul class="liste-candidats" id="liste-primaires"></ul>
+    <p class="note-methode" id="note-bardella"></p>
+  </section>
+
+  <section id="donnees" aria-labelledby="titre-donnees">
+    <h2 id="titre-donnees">Les données parlementaires déjà vérifiables</h2>
+    <p>Pour les candidats ci-dessous, les scrutins publics de l'Assemblée nationale
+    (législatures 15 à 17, y compris le Congrès de Versailles) sont importés depuis
+    l'open data officiel. Les votes clés commentés par thème arrivent dans une
+    prochaine étape, avec une grille de sélection publiée.</p>
+    <div id="profils"></div>
+  </section>
+
+  <section id="methode" aria-labelledby="titre-methode">
+    <h2 id="titre-methode">Méthode, en bref</h2>
+    <ul class="methode-liste">
+      <li><strong>Tout est sourcé.</strong> Données issues de <a href="https://data.assemblee-nationale.fr">data.assemblee-nationale.fr</a> (licence ouverte), archivées avec empreinte avant import. Les déclarations de candidature citent leur source de presse.</li>
+      <li><strong>Aucune donnée inventée.</strong> Quatre états possibles pour chaque vote : position connue, non concerné (pas en poste à la date du scrutin), indisponible (jamais parlementaire), à importer.</li>
+      <li><strong>L'absence est une déduction prudente.</strong> L'Assemblée ne liste jamais les absents : un élu est compté absent si son mandat était actif à la date du scrutin et qu'il n'apparaît dans aucune liste. Cette déduction est désactivée sur les scrutins dont les totaux publiés présentent un écart. « Non-votant » signifie présent sans prendre part au vote (ex. présidence de séance) — ce n'est pas une absence.</li>
+      <li><strong>Neutralité.</strong> Les libellés décrivent, ne jugent pas. La méthodologie complète et la grille de sélection des votes clés seront publiées sur cette page.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="pied">
+  <p id="meta-maj"></p>
+  <p>Données parlementaires : licence ouverte (Assemblée nationale). Ce site : contenu sous CC BY 4.0.
+  Code source : <a href="https://github.com/Mlolita26/le-vrai-vote">github.com/Mlolita26/le-vrai-vote</a>.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

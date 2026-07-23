@@ -133,6 +133,18 @@ CREATE TABLE IF NOT EXISTS votes_cles (
     ordre         INTEGER NOT NULL DEFAULT 0
 );
 
+-- Déclarations publiques de candidature (saisie éditoriale sourcée).
+-- La liste officielle n'existe qu'après validation des parrainages par le
+-- Conseil constitutionnel (mars 2027) : statut 'officielle' réservé à ce moment.
+CREATE TABLE IF NOT EXISTS candidatures (
+    id          INTEGER PRIMARY KEY,
+    personne_id INTEGER NOT NULL UNIQUE REFERENCES personnes(id),
+    statut      TEXT NOT NULL CHECK (statut IN ('declaree','primaire','retiree','officielle')),
+    date        TEXT,                  -- date de la déclaration publique (NULL si non datée par la source)
+    detail      TEXT NOT NULL,         -- parti / cadre (ex. « primaire de la gauche unitaire »)
+    source_id   INTEGER NOT NULL REFERENCES sources(id)
+);
+
 CREATE TABLE IF NOT EXISTS affaires_judiciaires (
     id          INTEGER PRIMARY KEY,
     personne_id INTEGER NOT NULL REFERENCES personnes(id),

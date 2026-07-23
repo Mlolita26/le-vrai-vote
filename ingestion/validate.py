@@ -93,8 +93,18 @@ def controles_base_reelle(base: Path):
              cur.execute("PRAGMA foreign_key_check").fetchall() == [])
     verifier("aucune donnée fictive TEST dans la base réelle",
              cur.execute("SELECT COUNT(*) FROM personnes WHERE nom LIKE 'TEST-%'").fetchone()[0] == 0)
-    verifier("5 personnes suivies",
-             cur.execute("SELECT COUNT(*) FROM personnes").fetchone()[0] == 5)
+    verifier("26 personnes en base (25 candidats recensés + Bardella sans candidature)",
+             cur.execute("SELECT COUNT(*) FROM personnes").fetchone()[0] == 26)
+    verifier("candidatures : 18 déclarées + 7 en primaire, toutes sourcées",
+             cur.execute("SELECT COUNT(*) FROM candidatures WHERE statut='declaree'").fetchone()[0] == 18
+             and cur.execute("SELECT COUNT(*) FROM candidatures WHERE statut='primaire'").fetchone()[0] == 7)
+    verifier("Bardella : aucune candidature (Marine Le Pen déclarée pour le RN)",
+             cur.execute("SELECT COUNT(*) FROM candidatures c JOIN personnes p ON p.id = c.personne_id "
+                         "WHERE p.slug='jordan-bardella'").fetchone()[0] == 0)
+    verifier("Le Pen : candidature déclarée le 07/07/2026",
+             cur.execute("SELECT COUNT(*) FROM candidatures c JOIN personnes p ON p.id = c.personne_id "
+                         "WHERE p.slug='marine-le-pen' AND c.statut='declaree' AND c.date='2026-07-07'"
+                         ).fetchone()[0] == 1)
     verifier("toute naissance renseignée est sourcée",
              cur.execute("SELECT COUNT(*) FROM personnes WHERE naissance IS NOT NULL "
                          "AND naissance_source_id IS NULL").fetchone()[0] == 0)
@@ -137,9 +147,11 @@ def controles_base_reelle(base: Path):
     verifier("Retailleau : sénateur sans interruption de 2004 à octobre 2024",
              all(mandat_actif("bruno-retailleau", "senateur", d) == 1
                  for d in ("2005-01-01", "2015-01-01", "2022-01-01")))
-    verifier("les 5 naissances sont renseignées et sourcées",
+    verifier("Le Pen : députée active au 16/03/2023 (vote retraites → position attendue)",
+             mandat_actif("marine-le-pen", "depute", "2023-03-16") == 1)
+    verifier("les 6 naissances des personnes suivies sont renseignées et sourcées",
              cur.execute("SELECT COUNT(*) FROM personnes WHERE naissance IS NOT NULL "
-                         "AND naissance_source_id IS NOT NULL").fetchone()[0] == 5)
+                         "AND naissance_source_id IS NOT NULL").fetchone()[0] == 6)
 
     n_mandats = cur.execute("SELECT COUNT(*) FROM mandats").fetchone()[0]
     n_sources = cur.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
