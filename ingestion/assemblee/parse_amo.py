@@ -32,8 +32,8 @@ RACINE = Path(__file__).resolve().parents[2]
 BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 COFFRE = Path(r"C:\Users\mlolita\OneDrive - CGIAR\Documents\presidentielles")
 AMO_DEFAUT = (COFFRE / "donnees_brutes" / "Assemblee_Nationale" / "dump_manuel_2026-07-23"
-              / "AMO20_dep_sen_min_tous_mandats_et_organes.json.zip")
-COLLECTE_MANUELLE = "2026-07-23"  # date du téléchargement manuel sur data.assemblee-nationale.fr
+              / "AMO30_tous_acteurs_tous_mandats_tous_organes_historique.json.zip")
+COLLECTE_MANUELLE = "2026-07-23"  # date du téléchargement sur data.assemblee-nationale.fr
 
 # Personnes suivies : slug -> (nom AMO en majuscules accentuées, prénom)
 SUIVIS = {
@@ -43,6 +43,10 @@ SUIVIS = {
     "bruno-retailleau": ("RETAILLEAU", "Bruno"),
 }
 TYPE_ORGANE_VERS_MANDAT = {"ASSEMBLEE": "depute", "SENAT": "senateur"}
+# Un typeOrgane ASSEMBLEE/SENAT peut aussi décrire une fonction au bureau
+# (« Secrétaire », « Président »…) qui chevauche le mandat lui-même : seule la
+# qualité de base est un mandat, le reste serait un doublon.
+QUALITES_MANDAT = {"ASSEMBLEE": {"membre"}, "SENAT": {"SENATEUR"}}
 
 
 def texte(v):
@@ -107,9 +111,13 @@ def importer(base: Path, zip_amo: Path) -> None:
                 print(f"  naissance complétée pour {slug} : {naiss_amo} (source AMO)")
 
             for m in liste(acteur.get("mandats", {}).get("mandat")):
-                type_mandat = TYPE_ORGANE_VERS_MANDAT.get(m.get("typeOrgane"))
+                type_organe = m.get("typeOrgane")
+                type_mandat = TYPE_ORGANE_VERS_MANDAT.get(type_organe)
                 if not type_mandat:
                     continue
+                qualite = m.get("infosQualite", {}).get("libQualite")
+                if qualite not in QUALITES_MANDAT[type_organe]:
+                    continue  # fonction au bureau, pas un mandat distinct
                 debut, fin = texte(m.get("dateDebut")), texte(m.get("dateFin"))
                 if not debut:
                     continue
@@ -125,9 +133,9 @@ def importer(base: Path, zip_amo: Path) -> None:
                     remplaces += 1
                 deja = cur.execute(
                     "SELECT COUNT(*) FROM mandats WHERE personne_id = ? AND type = ? "
-                    "AND debut = ? AND source_id = ?", (pid, type_mandat, debut, src_amo)).fetchone()[0]
+                    "AND debut = ?", (pid, type_mandat, debut)).fetchone()[0]
                 if deja:
-                    continue
+                    continue  # déjà importé (autre dump AMO ou exécution précédente)
                 detail = (f"Open data AN (AMO), qualité « {m.get('infosQualite', {}).get('libQualite')} »"
                           + (f", législature {legislature}" if legislature else ""))
                 cur.execute("INSERT INTO mandats (personne_id, type, debut, fin, detail, precision, source_id) "

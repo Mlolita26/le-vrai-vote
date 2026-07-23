@@ -110,24 +110,36 @@ def controles_base_reelle(base: Path):
                          "WHERE p.slug='jordan-bardella' AND m.type='eurodepute' "
                          "AND m.debut <= '2019-06-01' AND (m.fin IS NULL OR m.fin >= '2019-06-01')"
                          ).fetchone()[0] == 0)
-    for slug in ("edouard-philippe", "jean-luc-melenchon"):
-        verifier(f"{slug} : aucun mandat parlementaire saisi (sources locales absentes → indisponible/à importer)",
-                 cur.execute("SELECT COUNT(*) FROM mandats m JOIN personnes p ON p.id = m.personne_id "
-                             "WHERE p.slug=? AND m.type IN ('depute','senateur','eurodepute')",
-                             (slug,)).fetchone()[0] == 0)
+    def mandat_actif(slug, type_, date):
+        return cur.execute(
+            "SELECT COUNT(*) FROM mandats m JOIN personnes p ON p.id = m.personne_id "
+            "WHERE p.slug=? AND m.type=? AND m.debut <= ? "
+            "AND (m.fin IS NULL OR m.fin >= ?)", (slug, type_, date, date)).fetchone()[0]
+
+    # Cas de contrôle issus de l'AMO30 historique (mandats officiels datés au jour).
+    verifier("Mélenchon : député actif au 01/01/2020 (L15)",
+             mandat_actif("jean-luc-melenchon", "depute", "2020-01-01") == 1)
+    verifier("Mélenchon : plus député au 16/03/2023 (vote retraites → non concerné)",
+             mandat_actif("jean-luc-melenchon", "depute", "2023-03-16") == 0)
+    verifier("Philippe : député actif au 01/01/2015 (L14)",
+             mandat_actif("edouard-philippe", "depute", "2015-01-01") == 1)
+    verifier("Philippe : aucun mandat parlementaire depuis nos premiers scrutins (10/07/2017 → non concerné)",
+             mandat_actif("edouard-philippe", "depute", "2017-07-10") == 0
+             and mandat_actif("edouard-philippe", "senateur", "2017-07-10") == 0)
+    verifier("Attal : député actif au 01/01/2018 (L15, avant son entrée au gouvernement)",
+             mandat_actif("gabriel-attal", "depute", "2018-01-01") == 1)
+    verifier("Attal : plus député au 16/03/2023 (ministre, siège au suppléant → non concerné)",
+             mandat_actif("gabriel-attal", "depute", "2023-03-16") == 0)
     verifier("Retailleau : sénateur actif aujourd'hui (mandat du 13/11/2025, fin NULL)",
              cur.execute("SELECT COUNT(*) FROM mandats m JOIN personnes p ON p.id = m.personne_id "
                          "WHERE p.slug='bruno-retailleau' AND m.type='senateur' AND m.fin IS NULL"
                          ).fetchone()[0] == 1)
-
-    # Point d'attention connu (informative, pas un échec) : le mandat AN 2017-2022
-    # d'Attal n'est couvert que par l'AMO30 historique — attendu tant qu'il n'est pas importé.
-    attal_2023 = cur.execute(
-        "SELECT COUNT(*) FROM mandats m JOIN personnes p ON p.id = m.personne_id "
-        "WHERE p.slug='gabriel-attal' AND m.type='depute' "
-        "AND m.debut <= '2023-03-16' AND (m.fin IS NULL OR m.fin >= '2023-03-16')").fetchone()[0]
-    print(f"  [INFO] Attal député au 16/03/2023 (vote retraites) : {attal_2023} mandat trouvé — "
-          "0 attendu tant que l'AMO30 historique n'est pas importé.")
+    verifier("Retailleau : sénateur sans interruption de 2004 à octobre 2024",
+             all(mandat_actif("bruno-retailleau", "senateur", d) == 1
+                 for d in ("2005-01-01", "2015-01-01", "2022-01-01")))
+    verifier("les 5 naissances sont renseignées et sourcées",
+             cur.execute("SELECT COUNT(*) FROM personnes WHERE naissance IS NOT NULL "
+                         "AND naissance_source_id IS NOT NULL").fetchone()[0] == 5)
 
     n_mandats = cur.execute("SELECT COUNT(*) FROM mandats").fetchone()[0]
     n_sources = cur.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
@@ -188,6 +200,21 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  80.0 <= taux <= 100.0, f"{taux:.1f} %")
     else:
         verifier("Attal a des positions sur des scrutins solennels L17", False, "aucune ligne")
+
+    # Mélenchon (PA2150) : ses positions L15 doivent exister, et rien après
+    # la fin de son mandat de député (21/06/2022).
+    verifier("Mélenchon : des positions existent sur la L15",
+             cur.execute("SELECT COUNT(*) FROM positions_vote pv "
+                         "JOIN personnes p ON p.id = pv.personne_id "
+                         "JOIN scrutins s ON s.id = pv.scrutin_id "
+                         "WHERE p.slug='jean-luc-melenchon' AND s.legislature='15'"
+                         ).fetchone()[0] > 0)
+    verifier("Mélenchon : aucune position après la fin de son mandat (21/06/2022)",
+             cur.execute("SELECT COUNT(*) FROM positions_vote pv "
+                         "JOIN personnes p ON p.id = pv.personne_id "
+                         "JOIN scrutins s ON s.id = pv.scrutin_id "
+                         "WHERE p.slug='jean-luc-melenchon' AND s.date > '2022-06-21'"
+                         ).fetchone()[0] == 0)
 
     # Cohérence : aucune absence inférée hors période de mandat pertinent
     # (séance AN : député ; Congrès : député ou sénateur).
