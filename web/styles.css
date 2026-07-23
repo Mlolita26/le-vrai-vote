@@ -146,6 +146,23 @@ h2 { margin-top: 2.2rem; font-size: 1.3rem; border-bottom: 2px solid var(--liser
 
 .methode-liste li { margin: 0.5rem 0; }
 
+/* Votes clés */
+.votes-cles { list-style: none; padding: 0; margin: 0.6rem 0 1.4rem; display: grid; gap: 0.6rem; }
+.vote-cle {
+  background: var(--carte);
+  border: 1px solid var(--lisere);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+}
+.vote-cle-page { margin: 1rem 0; }
+.vote-cle-page h2 { margin-top: 0.2rem; border-bottom: none; font-size: 1.15rem; }
+.vote-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.vote-resume { font-size: 0.92rem; color: var(--encre-douce); margin: 0.4rem 0 0.2rem; }
+.vote-contexte { font-size: 0.85rem; color: var(--encre-douce); font-style: italic; margin: 0.3rem 0 0; }
+.groupes-etat { list-style: none; padding: 0; margin: 0.5rem 0 0; font-size: 0.9rem; }
+.groupes-etat li { margin: 0.35rem 0; }
+.divergence { border-left: 4px solid var(--accent); }
+
 .pied {
   margin-top: 3rem;
   padding: 1.2rem 1rem 2rem;

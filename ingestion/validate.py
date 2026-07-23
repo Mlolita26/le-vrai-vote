@@ -60,8 +60,8 @@ def test_logique_trois_etats():
                 "VALUES ('an','TEST-1','Scrutin fictif de test','2025-03-15',?)", (src,))
     scrutin = cur.lastrowid
     cur.execute("INSERT INTO thematiques (libelle, ordre) VALUES ('TEST', 1)")
-    cur.execute("INSERT INTO votes_cles (scrutin_id, thematique_id, resume, source_resume) "
-                "VALUES (?,?, 'Résumé fictif de test', 'https://exemple.invalid/dossier')",
+    cur.execute("INSERT INTO votes_cles (scrutin_id, thematique_id, titre, resume, source_resume) "
+                "VALUES (?,?, 'TEST', 'Résumé fictif de test', 'https://exemple.invalid/dossier')",
                 (scrutin, cur.lastrowid))
     cur.execute("INSERT INTO positions_vote (personne_id, scrutin_id, position) VALUES (?,?,'contre')",
                 (ids["test-position"], scrutin))
@@ -229,6 +229,39 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                          "JOIN scrutins s ON s.id = pv.scrutin_id "
                          "WHERE p.slug='jean-luc-melenchon' AND s.date > '2022-06-21'"
                          ).fetchone()[0] == 0)
+
+    # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
+    n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
+    if n_vc:
+        verifier("24 votes clés répartis sur 6 thématiques",
+                 n_vc == 24 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 6)
+        verifier("chaque vote clé a un titre, un résumé et une source non vides",
+                 cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
+                             "OR source_resume=''").fetchone()[0] == 0)
+        n_pers = cur.execute("SELECT COUNT(*) FROM personnes").fetchone()[0]
+        verifier("couverture complète : un état par personne et par vote clé",
+                 cur.execute("SELECT COUNT(*) FROM couverture").fetchone()[0] == n_pers * n_vc)
+        verifier("aucun état vide dans la couverture",
+                 cur.execute("SELECT COUNT(*) FROM couverture WHERE etat IS NULL").fetchone()[0] == 0)
+        # Cas de contrôle des trois états sur des votes réels :
+        etat = dict(cur.execute(
+            "SELECT personne_slug, etat FROM couverture c "
+            "JOIN votes_cles vc ON vc.id = c.vote_cle_id "
+            "JOIN scrutins s ON s.id = vc.scrutin_id WHERE s.uid_officiel = 'VTANR5L16V1240'"))
+        verifier("retraites/censure 2023 : Le Pen a une position, Attal non concerné, Lisnard indisponible",
+                 etat.get("marine-le-pen") in ("pour", "contre", "abstention", "non_votant", "absent")
+                 and etat.get("gabriel-attal") == "non_concerne"
+                 and etat.get("david-lisnard") == "indisponible",
+                 str({k: etat.get(k) for k in ('marine-le-pen', 'gabriel-attal', 'david-lisnard')}))
+        etat_ivg = dict(cur.execute(
+            "SELECT personne_slug, etat FROM couverture c "
+            "JOIN votes_cles vc ON vc.id = c.vote_cle_id "
+            "JOIN scrutins s ON s.id = vc.scrutin_id WHERE s.uid_officiel = 'VTCGR5L16V1'"))
+        verifier("IVG au Congrès : Retailleau (sénateur) a un état de position, pas « non concerné »",
+                 etat_ivg.get("bruno-retailleau") in ("pour", "contre", "abstention", "non_votant", "absent"),
+                 str(etat_ivg.get("bruno-retailleau")))
+    else:
+        print("  (votes clés non semés — contrôles éditoriaux sautés)")
 
     # Cohérence : aucune absence inférée hors période de mandat pertinent
     # (séance AN : député ; Congrès : député ou sénateur).

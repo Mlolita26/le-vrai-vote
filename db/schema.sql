@@ -127,8 +127,9 @@ CREATE TABLE IF NOT EXISTS votes_cles (
     id            INTEGER PRIMARY KEY,
     scrutin_id    INTEGER NOT NULL UNIQUE REFERENCES scrutins(id),
     thematique_id INTEGER NOT NULL REFERENCES thematiques(id),
+    titre         TEXT NOT NULL,       -- intitulé court affiché (écart assumé vs doc : l'UI l'exige)
     resume        TEXT NOT NULL,       -- phrase neutre : décrit, ne juge pas
-    source_resume TEXT NOT NULL,       -- URL du dossier législatif officiel
+    source_resume TEXT NOT NULL,       -- URL de la page officielle du scrutin ou du dossier
     contexte      TEXT,
     ordre         INTEGER NOT NULL DEFAULT 0
 );

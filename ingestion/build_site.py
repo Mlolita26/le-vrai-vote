@@ -34,7 +34,34 @@ LIBELLES_MANDAT = {
 }
 SEUIL_COMPARABLE = 30  # nb minimal de votes exprimés pour entrer au comparateur
 
+THEME_SLUGS = {
+    "Écologie et agriculture": "ecologie-agriculture",
+    "Pouvoir d'achat et fiscalité": "pouvoir-achat-fiscalite",
+    "Sécurité et justice": "securite-justice",
+    "Immigration": "immigration",
+    "Questions de société": "societe",
+    "Europe et international": "europe-international",
+}
+# Libellé et classe de badge pour chaque état de la vue couverture.
+ETATS = {
+    "pour": ("pour", "badge-pour"),
+    "contre": ("contre", "badge-contre"),
+    "abstention": ("abstention", "badge-abstention"),
+    "non_votant": ("non-votant", "badge-nonvotant"),
+    "absent": ("absent (déduit)", "badge-absent"),
+    "non_concerne": ("non concerné", "badge-neutre"),
+    "indisponible": ("indisponible", "badge-neutre"),
+    "a_importer": ("à importer", "badge-neutre"),
+}
+ORDRE_ETATS = ["pour", "contre", "abstention", "non_votant", "absent",
+               "a_importer", "non_concerne", "indisponible"]
+
 e = html.escape
+
+
+def badge_etat(etat):
+    libelle, classe = ETATS[etat]
+    return f'<span class="badge {classe}">{libelle}</span>'
 
 
 def date_fr(iso):
@@ -87,13 +114,22 @@ def charger(base):
             "positions": positions, "solennels": solennels, "exprimes": exprimes,
         })
 
+    themes = [dict(t) for t in cur.execute(
+        "SELECT id, libelle, ordre FROM thematiques ORDER BY ordre")]
+    votes_cles = [dict(v) for v in cur.execute(
+        "SELECT vc.id, vc.thematique_id, vc.titre, vc.resume, vc.source_resume, "
+        "vc.contexte, s.date, s.chambre FROM votes_cles vc "
+        "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, s.date")]
+    etats = {(slug_p, vid): etat for slug_p, vid, etat in cur.execute(
+        "SELECT personne_slug, vote_cle_id, etat FROM couverture")}
+
     meta = {
         "genere_le": date.today().isoformat(),
         "n_scrutins": cur.execute("SELECT COUNT(*) FROM scrutins").fetchone()[0],
         "candidats_maj": "23/07/2026",
     }
     con.close()
-    return candidats, meta
+    return candidats, themes, votes_cles, etats, meta
 
 
 def concordances(candidats):
@@ -233,7 +269,7 @@ document.getElementById("recherche").addEventListener("input", function () {{
     return page("Candidats", "Candidats", contenu, 1, meta)
 
 
-def fiche_candidat(p, meta):
+def fiche_candidat(p, themes, votes_cles, etats, meta):
     declaration = (f"le {date_fr(p['date_declaration'])}" if p["date_declaration"]
                    else "(date non fournie par la source)")
     statut = "Candidature déclarée" if p["statut"] == "declaree" else "En lice pour une primaire"
@@ -257,20 +293,41 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
     etat, phrase = etat_couverture(p)
     positions_html = badges_positions(p) or f'<p class="couverture couverture-{etat}">{e(phrase)}</p>'
 
+    # Votes clés groupés par thème, avec l'état calculé de ce candidat.
+    votes_html = ""
+    for t in themes:
+        votes_t = [v for v in votes_cles if v["thematique_id"] == t["id"]]
+        if not votes_t:
+            continue
+        slug_t = THEME_SLUGS[t["libelle"]]
+        lignes = ""
+        for v in votes_t:
+            etat_v = etats.get((p["slug"], v["id"]), "a_importer")
+            lignes += f"""<li class="vote-cle">
+<div class="vote-tete"><strong>{e(v['titre'])}</strong> {badge_etat(etat_v)}</div>
+<p class="vote-resume">{e(v['resume'])}
+<a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
+{f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
+</li>"""
+        votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
+                       f'<ul class="votes-cles">{lignes}</ul>')
+
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
 <h1>{e(p['nom'])}</h1>
 <p class="detail">{e(p['detail'])}</p>
 <p>{statut} {e(declaration)} — <a href="{e(p['source'])}" rel="noopener">source de la déclaration</a>.
 {f"Né(e) le {date_fr(p['naissance'])} (source : open data officiel)." if p['naissance'] else "Date de naissance : à importer."}</p>
+<h2>Votes clés par thème</h2>
+<p class="note-methode">Sélection selon la <a href="../../methode/">grille de critères publiée</a>, identique
+pour tous les candidats. « Non concerné » : pas en poste dans la chambre à la date du scrutin ;
+« absent (déduit) » : mandat actif mais aucune mention au scrutin officiel.</p>
+{votes_html}
 <h2>Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
-<h2>Positions de vote — Assemblée nationale, 2017-2026</h2>
+<h2>Ensemble des positions de vote — Assemblée nationale, 2017-2026</h2>
 {positions_html}
 {solennels_html}
-<h2>Votes clés par thème</h2>
-<p class="note-methode">En préparation : la sélection suivra une grille de critères objectifs publiée sur la page
-<a href="../../methode/">Méthode</a>, identique pour tous les candidats. Aucun vote clé n'est affiché tant que la grille n'est pas publiée.</p>
 <h2>Justice</h2>
 <p class="note-methode">Volet renseigné manuellement, fait par fait, uniquement sur documents publics sourcés,
 après relecture — avec mention systématique de la présomption d'innocence pour toute procédure en cours. À venir.</p>
@@ -280,21 +337,54 @@ pour les candidats sans mandat parlementaire récent.</p>"""
     return page(p["nom"], "Candidats", contenu, 2, meta)
 
 
-def page_themes(meta):
-    themes = ["Écologie et agriculture", "Pouvoir d'achat et fiscalité", "Sécurité et justice",
-              "Immigration", "Questions de société", "Europe et international"]
-    items = "".join(f"<li>{e(t)}</li>" for t in themes)
+def page_themes_index(themes, votes_cles, meta):
+    cartes = ""
+    for t in themes:
+        n = sum(1 for v in votes_cles if v["thematique_id"] == t["id"])
+        slug_t = THEME_SLUGS[t["libelle"]]
+        cartes += f"""<article class="carte-candidat">
+<h3><a href="{slug_t}/">{e(t['libelle'])}</a></h3>
+<p class="detail">{n} votes clés</p>
+</article>"""
     contenu = f"""
 <h1>Thèmes</h1>
-<p>Chaque thème regroupera des « votes clés » : des scrutins réels, résumés de façon neutre,
-avec pour chaque candidat sa position (ou l'état « non concerné » / « indisponible »), et le lien
-vers le dossier législatif officiel.</p>
-<p class="note-methode"><strong>En préparation.</strong> La sélection des votes clés suivra une grille de critères
-objectifs et publics (scrutins solennels, textes à large débat public, votes ayant divisé les groupes,
-votes révélateurs peu médiatisés), appliquée identiquement à tous. Elle sera publiée sur la page
-<a href="../methode/">Méthode</a> avant tout affichage. Thèmes pressentis :</p>
-<ul>{items}</ul>"""
+<p>Chaque thème regroupe des « votes clés » : des scrutins réels, résumés de façon neutre,
+avec pour chaque candidat sa position — ou son état : non concerné, indisponible, à importer.
+La sélection suit la <a href="../methode/">grille de critères publiée</a>, identique pour tous.</p>
+<div class="grille-cartes">{cartes}</div>"""
     return page("Thèmes", "Thèmes", contenu, 1, meta)
+
+
+def page_theme(t, votes_t, candidats, etats, meta):
+    par_slug = {c["slug"]: c["nom"] for c in candidats}
+    blocs = ""
+    for v in votes_t:
+        groupes = {}
+        for c in candidats:
+            etat_v = etats.get((c["slug"], v["id"]), "a_importer")
+            groupes.setdefault(etat_v, []).append(c["slug"])
+        lignes_groupes = ""
+        for etat_v in ORDRE_ETATS:
+            if etat_v not in groupes:
+                continue
+            noms = ", ".join(
+                f'<a href="../../candidats/{s}/">{e(par_slug[s])}</a>' for s in groupes[etat_v])
+            lignes_groupes += f"<li>{badge_etat(etat_v)} {noms}</li>"
+        blocs += f"""<article class="vote-cle vote-cle-page">
+<h2>{e(v['titre'])}</h2>
+<p class="vote-resume">{e(v['resume'])}
+<a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
+{f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
+<ul class="groupes-etat">{lignes_groupes}</ul>
+</article>"""
+    contenu = f"""
+<nav class="fil"><a href="../">← Tous les thèmes</a></nav>
+<h1>{e(t['libelle'])}</h1>
+<p class="note-methode">Positions issues des scrutins officiels importés. « Non concerné » : pas en poste
+dans la chambre à la date du scrutin ; « indisponible » : jamais parlementaire ; « absent (déduit) » :
+mandat actif mais aucune mention au scrutin ; « à importer » : donnée pas encore chargée (ex. Sénat).</p>
+{blocs}"""
+    return page(t["libelle"], "Thèmes", contenu, 2, meta)
 
 
 def page_comparer(meta):
@@ -336,6 +426,30 @@ fetch("../data.json").then(r => r.json()).then(d => {
       <p>de positions identiques (${paire.accord.toLocaleString("fr-FR")} scrutins sur ${paire.communs.toLocaleString("fr-FR")}).</p>
       <p><a href="../candidats/${a}/">Fiche ${d.noms[a]}</a> · <a href="../candidats/${b}/">Fiche ${d.noms[b]}</a></p>`;
     res.appendChild(h);
+
+    // Détail vote clé par vote clé, divergences signalées.
+    const exprimes = new Set(["pour", "contre", "abstention"]);
+    const titreVotes = document.createElement("h2");
+    titreVotes.textContent = "Vote clé par vote clé";
+    res.appendChild(titreVotes);
+    const ul = document.createElement("ul");
+    ul.className = "votes-cles";
+    for (const v of d.votes) {
+      const ea = (d.etats[a] || {})[v.id] || "a_importer";
+      const eb = (d.etats[b] || {})[v.id] || "a_importer";
+      const diverge = exprimes.has(ea) && exprimes.has(eb) && ea !== eb;
+      const li = document.createElement("li");
+      li.className = "vote-cle" + (diverge ? " divergence" : "");
+      li.innerHTML = `<div class="vote-tete"><strong>${v.titre}</strong>
+        <span class="detail">${v.theme}</span></div>
+        <div class="badges">${badgeHtml(d, ea, d.noms[a])} ${badgeHtml(d, eb, d.noms[b])}</div>`;
+      ul.appendChild(li);
+    }
+    res.appendChild(ul);
+  }
+  function badgeHtml(d, etat, nom) {
+    const [libelle, classe] = d.libelles_etats[etat];
+    return `<span class="badge ${classe}">${nom.split(" ").slice(-1)[0]} : ${libelle}</span>`;
   }
   selA.addEventListener("change", rendre); selB.addEventListener("change", rendre);
   rendre();
@@ -393,7 +507,7 @@ toute correction est tracée.</p>"""
 # ── Génération ───────────────────────────────────────────────────────────────
 
 def generer(base):
-    candidats, meta = charger(base)
+    candidats, themes, votes_cles, etats, meta = charger(base)
     paires, comparables = concordances(candidats)
 
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
@@ -406,19 +520,34 @@ def generer(base):
     for p in candidats:
         dossier = WEB / "candidats" / p["slug"]
         dossier.mkdir(exist_ok=True)
-        (dossier / "index.html").write_text(fiche_candidat(p, meta), encoding="utf-8")
-    (WEB / "themes" / "index.html").write_text(page_themes(meta), encoding="utf-8")
+        (dossier / "index.html").write_text(
+            fiche_candidat(p, themes, votes_cles, etats, meta), encoding="utf-8")
+    (WEB / "themes" / "index.html").write_text(
+        page_themes_index(themes, votes_cles, meta), encoding="utf-8")
+    for t in themes:
+        votes_t = [v for v in votes_cles if v["thematique_id"] == t["id"]]
+        dossier = WEB / "themes" / THEME_SLUGS[t["libelle"]]
+        dossier.mkdir(exist_ok=True)
+        (dossier / "index.html").write_text(
+            page_theme(t, votes_t, candidats, etats, meta), encoding="utf-8")
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(page_methode(meta), encoding="utf-8")
 
+    libelles_themes = {t["id"]: t["libelle"] for t in themes}
     (WEB / "data.json").write_text(json.dumps({
         "comparables": comparables,
         "noms": {c["slug"]: c["nom"] for c in candidats},
         "concordances": paires,
+        "votes": [{"id": v["id"], "titre": v["titre"], "date": v["date"],
+                   "theme": libelles_themes[v["thematique_id"]]} for v in votes_cles],
+        "etats": {slug: {v["id"]: etats.get((slug, v["id"]), "a_importer") for v in votes_cles}
+                  for slug in comparables},
+        "libelles_etats": ETATS,
         "meta": meta,
     }, ensure_ascii=False), encoding="utf-8")
 
-    print(f"Site généré : accueil + {len(candidats)} fiches + candidats/themes/comparer/methode. "
+    print(f"Site généré : accueil + {len(candidats)} fiches + {len(themes)} pages thème + "
+          f"comparer/methode. {len(votes_cles)} votes clés affichés. "
           f"Comparateur : {len(comparables)} candidats, {len(paires)} paires.")
 
 

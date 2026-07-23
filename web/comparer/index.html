@@ -51,6 +51,30 @@ fetch("../data.json").then(r => r.json()).then(d => {
       <p>de positions identiques (${paire.accord.toLocaleString("fr-FR")} scrutins sur ${paire.communs.toLocaleString("fr-FR")}).</p>
       <p><a href="../candidats/${a}/">Fiche ${d.noms[a]}</a> · <a href="../candidats/${b}/">Fiche ${d.noms[b]}</a></p>`;
     res.appendChild(h);
+
+    // Détail vote clé par vote clé, divergences signalées.
+    const exprimes = new Set(["pour", "contre", "abstention"]);
+    const titreVotes = document.createElement("h2");
+    titreVotes.textContent = "Vote clé par vote clé";
+    res.appendChild(titreVotes);
+    const ul = document.createElement("ul");
+    ul.className = "votes-cles";
+    for (const v of d.votes) {
+      const ea = (d.etats[a] || {})[v.id] || "a_importer";
+      const eb = (d.etats[b] || {})[v.id] || "a_importer";
+      const diverge = exprimes.has(ea) && exprimes.has(eb) && ea !== eb;
+      const li = document.createElement("li");
+      li.className = "vote-cle" + (diverge ? " divergence" : "");
+      li.innerHTML = `<div class="vote-tete"><strong>${v.titre}</strong>
+        <span class="detail">${v.theme}</span></div>
+        <div class="badges">${badgeHtml(d, ea, d.noms[a])} ${badgeHtml(d, eb, d.noms[b])}</div>`;
+      ul.appendChild(li);
+    }
+    res.appendChild(ul);
+  }
+  function badgeHtml(d, etat, nom) {
+    const [libelle, classe] = d.libelles_etats[etat];
+    return `<span class="badge ${classe}">${nom.split(" ").slice(-1)[0]} : ${libelle}</span>`;
   }
   selA.addEventListener("change", rendre); selB.addEventListener("change", rendre);
   rendre();
