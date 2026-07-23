@@ -1,0 +1,18 @@
+# Dépendances et builds
+node_modules/
+.next/
+out/
+
+# Base de données locale et dumps bruts (volumineux, régénérables)
+*.sqlite
+*.sqlite3
+data/dumps/
+
+# Environnements Python
+.venv/
+__pycache__/
+*.pyc
+
+# Système
+.DS_Store
+Thumbs.db
