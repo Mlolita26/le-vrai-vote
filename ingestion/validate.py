@@ -149,9 +149,11 @@ def controles_base_reelle(base: Path):
                  for d in ("2005-01-01", "2015-01-01", "2022-01-01")))
     verifier("Le Pen : députée active au 16/03/2023 (vote retraites → position attendue)",
              mandat_actif("marine-le-pen", "depute", "2023-03-16") == 1)
-    verifier("les 6 naissances des personnes suivies sont renseignées et sourcées",
-             cur.execute("SELECT COUNT(*) FROM personnes WHERE naissance IS NOT NULL "
-                         "AND naissance_source_id IS NOT NULL").fetchone()[0] == 6)
+    for slug in ("gabriel-attal", "jordan-bardella", "marine-le-pen",
+                 "jean-luc-melenchon", "edouard-philippe", "bruno-retailleau"):
+        verifier(f"naissance renseignée pour {slug}",
+                 cur.execute("SELECT COUNT(*) FROM personnes WHERE slug=? AND naissance IS NOT NULL "
+                             "AND naissance_source_id IS NOT NULL", (slug,)).fetchone()[0] == 1)
 
     n_mandats = cur.execute("SELECT COUNT(*) FROM mandats").fetchone()[0]
     n_sources = cur.execute("SELECT COUNT(*) FROM sources").fetchone()[0]

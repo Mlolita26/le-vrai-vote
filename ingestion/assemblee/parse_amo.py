@@ -35,14 +35,6 @@ AMO_DEFAUT = (COFFRE / "donnees_brutes" / "Assemblee_Nationale" / "dump_manuel_2
               / "AMO30_tous_acteurs_tous_mandats_tous_organes_historique.json.zip")
 COLLECTE_MANUELLE = "2026-07-23"  # date du téléchargement sur data.assemblee-nationale.fr
 
-# Personnes suivies : slug -> (nom AMO en majuscules accentuées, prénom)
-SUIVIS = {
-    "gabriel-attal": ("ATTAL", "Gabriel"),
-    "jean-luc-melenchon": ("MÉLENCHON", "Jean-Luc"),
-    "edouard-philippe": ("PHILIPPE", "Édouard"),
-    "bruno-retailleau": ("RETAILLEAU", "Bruno"),
-    "marine-le-pen": ("LE PEN", "Marine"),
-}
 TYPE_ORGANE_VERS_MANDAT = {"ASSEMBLEE": "depute", "SENAT": "senateur"}
 # Un typeOrgane ASSEMBLEE/SENAT peut aussi décrire une fonction au bureau
 # (« Secrétaire », « Président »…) qui chevauche le mandat lui-même : seule la
@@ -76,9 +68,16 @@ def importer(base: Path, zip_amo: Path) -> None:
          f"téléchargé manuellement le {COLLECTE_MANUELLE}, archivé : {zip_amo}, sha256={sha}"))
     src_amo = cur.lastrowid
 
+    # Personnes suivies = toutes les personnes en base (candidats recensés +
+    # personnes historiques), appariées par nom + prénom contre le dump.
+    suivis = {}
+    naissances = {}
+    for pid, slug, nom_db, prenom_db, naissance in cur.execute(
+            "SELECT id, slug, nom, prenom, naissance FROM personnes").fetchall():
+        suivis[(nom_db.upper(), prenom_db)] = slug
+        naissances[slug] = naissance
     personnes = {slug: pid for pid, slug in
                  cur.execute("SELECT id, slug FROM personnes").fetchall()}
-    naissances = dict(cur.execute("SELECT slug, naissance FROM personnes").fetchall())
 
     apparies, mandats_inseres, remplaces = {}, 0, 0
     with zipfile.ZipFile(zip_amo) as z:
@@ -88,10 +87,15 @@ def importer(base: Path, zip_amo: Path) -> None:
                 acteur = json.load(f).get("acteur", {})
             ident = acteur.get("etatCivil", {}).get("ident", {})
             nom, prenom = (ident.get("nom") or "").upper(), ident.get("prenom") or ""
-            correspondance = [s for s, (n, p) in SUIVIS.items() if n == nom and p == prenom]
-            if not correspondance:
+            slug = suivis.get((nom, prenom))
+            if not slug:
                 continue
-            slug = correspondance[0]
+            # Garde-fou homonymes : deux acteurs distincts du dump ne peuvent
+            # pas revendiquer la même personne — résolution manuelle exigée.
+            if slug in apparies and apparies[slug] != texte(acteur.get("uid")):
+                sys.exit(f"Homonymie non résolue pour {slug} : {apparies[slug]} et "
+                         f"{texte(acteur.get('uid'))} portent le même nom+prénom — "
+                         "appariement interrompu, départager sur la date de naissance.")
             uid = texte(acteur.get("uid"))
             naiss_amo = texte(acteur.get("etatCivil", {}).get("infoNaissance", {}).get("dateNais"))
 
@@ -149,10 +153,11 @@ def importer(base: Path, zip_amo: Path) -> None:
                  datetime.now().isoformat(timespec="seconds")))
     con.commit()
 
-    print(f"Appariés dans {zip_amo.name} : {apparies or 'aucun'}")
-    absents = [s for s in SUIVIS if s not in apparies]
+    print(f"Appariés dans {zip_amo.name} ({len(apparies)}) : {apparies or 'aucun'}")
+    absents = sorted(set(personnes) - set(apparies))
     if absents:
-        print(f"Non trouvés dans ce dump (normal pour AMO20 si plus en exercice) : {absents}")
+        print(f"Sans correspondance dans le dump ({len(absents)}) — jamais député/sénateur/ministre "
+              f"depuis 1997, ou nom orthographié différemment : {absents}")
     print(f"{mandats_inseres} mandats parlementaires importés (précision jour), "
           f"{remplaces} mandats DIA chevauchants remplacés.")
     con.close()

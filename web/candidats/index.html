@@ -3,139 +3,129 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Accueil — Le Vrai Vote</title>
-<link rel="stylesheet" href="styles.css">
+<title>Candidats — Le Vrai Vote</title>
+<link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 <div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
 <header class="entete-nav">
-  <a class="marque" href="./">Le Vrai Vote</a>
-  <nav aria-label="Navigation principale"><a href="./" aria-current="page">Accueil</a><a href="candidats/">Candidats</a><a href="themes/">Thèmes</a><a href="comparer/">Comparer</a><a href="methode/">Méthode</a></nav>
+  <a class="marque" href=".././">Le Vrai Vote</a>
+  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/" aria-current="page">Candidats</a><a href="../themes/">Thèmes</a><a href="../comparer/">Comparer</a><a href="../methode/">Méthode</a></nav>
 </header>
 <main>
 
-<section class="hero">
-<h1>Leurs votes, pas leurs promesses.</h1>
-<p>Pour chaque candidat à la présidentielle 2027 : ce qu'il a réellement voté au Parlement,
-sa présence et son parcours — à partir des données publiques officielles, chaque fait relié à sa source.</p>
-<p class="chiffres">16 957 scrutins officiels en base · 18 candidatures déclarées
-· 7 en primaire · 9 candidats avec votes vérifiables dès maintenant</p>
-<p class="acces">
-<a class="bouton" href="candidats/">Voir les candidats</a>
-<a class="bouton bouton-second" href="comparer/">Comparer deux candidats</a>
-<a class="bouton bouton-second" href="methode/">Lire la méthode</a>
-</p>
-</section>
-<section>
-<h2>Candidatures déclarées</h2>
-<p class="note-methode">Déclarations publiques recensées et sourcées — la liste officielle des candidats
-ne sera établie par le Conseil constitutionnel qu'après validation des parrainages, en mars 2027.</p>
-<div class="grille-cartes"><article class="carte-candidat" data-nom="nathalie arthaud">
-<h3><a href="candidats/nathalie-arthaud/">Nathalie Arthaud</a></h3>
+<h1>Les candidats</h1>
+<p>Recherchez un candidat ; chaque fiche détaille mandats, votes et présence, avec les sources.</p>
+<p><label for="recherche">Rechercher :</label>
+<input id="recherche" type="search" placeholder="Nom du candidat" autocomplete="off"></p>
+<div class="grille-cartes" id="cartes"><article class="carte-candidat" data-nom="nathalie arthaud">
+<h3><a href="../candidats/nathalie-arthaud/">Nathalie Arthaud</a></h3>
 <p class="detail">Lutte ouvrière · candidature déclarée · déclaré(e) le 08/12/2025 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article><article class="carte-candidat" data-nom="françois asselineau">
-<h3><a href="candidats/francois-asselineau/">François Asselineau</a></h3>
+<h3><a href="../candidats/francois-asselineau/">François Asselineau</a></h3>
 <p class="detail">Union populaire républicaine · candidature déclarée · déclaré(e) le 31/08/2023 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article><article class="carte-candidat" data-nom="gabriel attal">
-<h3><a href="candidats/gabriel-attal/">Gabriel Attal</a></h3>
+<h3><a href="../candidats/gabriel-attal/">Gabriel Attal</a></h3>
 <p class="detail">Renaissance · candidature déclarée · déclaré(e) le 22/05/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-couvert">2 034 votes exprimés en base</p>
+</article><article class="carte-candidat" data-nom="clémentine autain">
+<h3><a href="../candidats/clementine-autain/">Clémentine Autain</a></h3>
+<p class="detail">Primaire de la gauche unitaire (11/10/2026) · en lice pour une primaire · date de déclaration non fournie par la source (<a href="https://lcp.fr/actualites/presidentielle-2027-la-liste-des-candidats-deja-en-lice-et-des-pretendants-436373" rel="noopener">source</a>)</p>
+<p class="couverture couverture-couvert">1 782 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="delphine batho">
-<h3><a href="candidats/delphine-batho/">Delphine Batho</a></h3>
+<h3><a href="../candidats/delphine-batho/">Delphine Batho</a></h3>
 <p class="detail">Génération écologie · candidature déclarée · déclaré(e) le 25/11/2025 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-couvert">2 036 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="xavier bertrand">
-<h3><a href="candidats/xavier-bertrand/">Xavier Bertrand</a></h3>
+<h3><a href="../candidats/xavier-bertrand/">Xavier Bertrand</a></h3>
 <p class="detail">Nous France · candidature déclarée · déclaré(e) le 03/02/2024 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-partiel">mandats antérieurs à la période couverte (2017-2026)</p>
 </article><article class="carte-candidat" data-nom="karim bouamrane">
-<h3><a href="candidats/karim-bouamrane/">Karim Bouamrane</a></h3>
+<h3><a href="../candidats/karim-bouamrane/">Karim Bouamrane</a></h3>
 <p class="detail">Parti socialiste · candidature déclarée · déclaré(e) le 09/06/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
+</article><article class="carte-candidat" data-nom="philippe brun">
+<h3><a href="../candidats/philippe-brun/">Philippe Brun</a></h3>
+<p class="detail">Primaire du Parti socialiste · en lice pour une primaire · déclaré(e) le 30/06/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
+<p class="couverture couverture-couvert">2 565 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="bernard cazeneuve">
-<h3><a href="candidats/bernard-cazeneuve/">Bernard Cazeneuve</a></h3>
+<h3><a href="../candidats/bernard-cazeneuve/">Bernard Cazeneuve</a></h3>
 <p class="detail">La Convention · candidature déclarée · déclaré(e) le 16/07/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-partiel">mandats antérieurs à la période couverte (2017-2026)</p>
 </article><article class="carte-candidat" data-nom="nicolas dupont-aignan">
-<h3><a href="candidats/nicolas-dupont-aignan/">Nicolas Dupont-Aignan</a></h3>
+<h3><a href="../candidats/nicolas-dupont-aignan/">Nicolas Dupont-Aignan</a></h3>
 <p class="detail">Debout la France · candidature déclarée · déclaré(e) le 08/03/2025 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-couvert">513 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="clara egger">
-<h3><a href="candidats/clara-egger/">Clara Egger</a></h3>
+<h3><a href="../candidats/clara-egger/">Clara Egger</a></h3>
 <p class="detail">Solution démocratique · candidature déclarée · date de déclaration non fournie par la source (<a href="https://lcp.fr/actualites/presidentielle-2027-la-liste-des-candidats-deja-en-lice-et-des-pretendants-436373" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article><article class="carte-candidat" data-nom="jérôme guedj">
-<h3><a href="candidats/jerome-guedj/">Jérôme Guedj</a></h3>
+<h3><a href="../candidats/jerome-guedj/">Jérôme Guedj</a></h3>
 <p class="detail">Parti socialiste · candidature déclarée · déclaré(e) le 05/02/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-couvert">2 832 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="anasse kazib">
-<h3><a href="candidats/anasse-kazib/">Anasse Kazib</a></h3>
+<h3><a href="../candidats/anasse-kazib/">Anasse Kazib</a></h3>
 <p class="detail">Révolution permanente · candidature déclarée · déclaré(e) le 01/06/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article><article class="carte-candidat" data-nom="selma labib">
-<h3><a href="candidats/selma-labib/">Selma Labib</a></h3>
+<h3><a href="../candidats/selma-labib/">Selma Labib</a></h3>
 <p class="detail">NPA – Révolutionnaires · candidature déclarée · déclaré(e) le 17/06/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article><article class="carte-candidat" data-nom="marine le pen">
-<h3><a href="candidats/marine-le-pen/">Marine Le Pen</a></h3>
+<h3><a href="../candidats/marine-le-pen/">Marine Le Pen</a></h3>
 <p class="detail">Rassemblement national · candidature déclarée · déclaré(e) le 07/07/2026 (<a href="https://www.france24.com/fr/france/20260708-marine-le-pen-candidate-en-2027-un-choix-dynastique-du-rn-qui-%C3%A9clipse-jordan-bardella" rel="noopener">source</a>)</p>
 <p class="couverture couverture-couvert">1 814 votes exprimés en base</p>
-</article><article class="carte-candidat" data-nom="antoine mikolajczak">
-<h3><a href="candidats/antoine-mikolajczak/">Antoine Mikolajczak</a></h3>
-<p class="detail">Équinoxe · candidature déclarée · date de déclaration non fournie par la source (<a href="https://lcp.fr/actualites/presidentielle-2027-la-liste-des-candidats-deja-en-lice-et-des-pretendants-436373" rel="noopener">source</a>)</p>
-<p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
-</article><article class="carte-candidat" data-nom="jean-luc mélenchon">
-<h3><a href="candidats/jean-luc-melenchon/">Jean-Luc Mélenchon</a></h3>
-<p class="detail">La France insoumise · candidature déclarée · déclaré(e) le 03/05/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
-<p class="couverture couverture-couvert">1 016 votes exprimés en base</p>
-</article><article class="carte-candidat" data-nom="édouard philippe">
-<h3><a href="candidats/edouard-philippe/">Édouard Philippe</a></h3>
-<p class="detail">Horizons · candidature déclarée · déclaré(e) le 03/09/2024 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
-<p class="couverture couverture-partiel">mandats antérieurs à la période couverte (2017-2026)</p>
-</article><article class="carte-candidat" data-nom="florian philippot">
-<h3><a href="candidats/florian-philippot/">Florian Philippot</a></h3>
-<p class="detail">Les Patriotes · candidature déclarée · déclaré(e) le 09/05/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
-<p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
-</article><article class="carte-candidat" data-nom="bruno retailleau">
-<h3><a href="candidats/bruno-retailleau/">Bruno Retailleau</a></h3>
-<p class="detail">Les Républicains · candidature déclarée · déclaré(e) le 19/04/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
-<p class="couverture couverture-partiel">sénateur — scrutins du Sénat à importer</p>
-</article></div>
-<h2>En lice pour une primaire</h2>
-<div class="grille-cartes"><article class="carte-candidat" data-nom="clémentine autain">
-<h3><a href="candidats/clementine-autain/">Clémentine Autain</a></h3>
-<p class="detail">Primaire de la gauche unitaire (11/10/2026) · en lice pour une primaire · date de déclaration non fournie par la source (<a href="https://lcp.fr/actualites/presidentielle-2027-la-liste-des-candidats-deja-en-lice-et-des-pretendants-436373" rel="noopener">source</a>)</p>
-<p class="couverture couverture-couvert">1 782 votes exprimés en base</p>
-</article><article class="carte-candidat" data-nom="philippe brun">
-<h3><a href="candidats/philippe-brun/">Philippe Brun</a></h3>
-<p class="detail">Primaire du Parti socialiste · en lice pour une primaire · déclaré(e) le 30/06/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
-<p class="couverture couverture-couvert">2 565 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="david lisnard">
-<h3><a href="candidats/david-lisnard/">David Lisnard</a></h3>
+<h3><a href="../candidats/david-lisnard/">David Lisnard</a></h3>
 <p class="detail">Nouvelle Énergie · en lice pour une primaire · déclaré(e) le 31/03/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article><article class="carte-candidat" data-nom="lydie massard">
-<h3><a href="candidats/lydie-massard/">Lydie Massard</a></h3>
+<h3><a href="../candidats/lydie-massard/">Lydie Massard</a></h3>
 <p class="detail">Primaire de la gauche unitaire · en lice pour une primaire · déclaré(e) le 02/04/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
+</article><article class="carte-candidat" data-nom="antoine mikolajczak">
+<h3><a href="../candidats/antoine-mikolajczak/">Antoine Mikolajczak</a></h3>
+<p class="detail">Équinoxe · candidature déclarée · date de déclaration non fournie par la source (<a href="https://lcp.fr/actualites/presidentielle-2027-la-liste-des-candidats-deja-en-lice-et-des-pretendants-436373" rel="noopener">source</a>)</p>
+<p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
+</article><article class="carte-candidat" data-nom="jean-luc mélenchon">
+<h3><a href="../candidats/jean-luc-melenchon/">Jean-Luc Mélenchon</a></h3>
+<p class="detail">La France insoumise · candidature déclarée · déclaré(e) le 03/05/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
+<p class="couverture couverture-couvert">1 016 votes exprimés en base</p>
+</article><article class="carte-candidat" data-nom="édouard philippe">
+<h3><a href="../candidats/edouard-philippe/">Édouard Philippe</a></h3>
+<p class="detail">Horizons · candidature déclarée · déclaré(e) le 03/09/2024 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
+<p class="couverture couverture-partiel">mandats antérieurs à la période couverte (2017-2026)</p>
+</article><article class="carte-candidat" data-nom="florian philippot">
+<h3><a href="../candidats/florian-philippot/">Florian Philippot</a></h3>
+<p class="detail">Les Patriotes · candidature déclarée · déclaré(e) le 09/05/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
+<p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
+</article><article class="carte-candidat" data-nom="bruno retailleau">
+<h3><a href="../candidats/bruno-retailleau/">Bruno Retailleau</a></h3>
+<p class="detail">Les Républicains · candidature déclarée · déclaré(e) le 19/04/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
+<p class="couverture couverture-partiel">sénateur — scrutins du Sénat à importer</p>
 </article><article class="carte-candidat" data-nom="ségolène royal">
-<h3><a href="candidats/segolene-royal/">Ségolène Royal</a></h3>
+<h3><a href="../candidats/segolene-royal/">Ségolène Royal</a></h3>
 <p class="detail">Primaire du Parti socialiste · en lice pour une primaire · déclaré(e) le 10/07/2026 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-partiel">mandats antérieurs à la période couverte (2017-2026)</p>
 </article><article class="carte-candidat" data-nom="françois ruffin">
-<h3><a href="candidats/francois-ruffin/">François Ruffin</a></h3>
+<h3><a href="../candidats/francois-ruffin/">François Ruffin</a></h3>
 <p class="detail">Primaire de la gauche unitaire · en lice pour une primaire · déclaré(e) le 01/04/2025 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-couvert">1 724 votes exprimés en base</p>
 </article><article class="carte-candidat" data-nom="marine tondelier">
-<h3><a href="candidats/marine-tondelier/">Marine Tondelier</a></h3>
+<h3><a href="../candidats/marine-tondelier/">Marine Tondelier</a></h3>
 <p class="detail">Primaire de la gauche unitaire · en lice pour une primaire · déclaré(e) le 22/10/2025 (<a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source</a>)</p>
 <p class="couverture couverture-hors">jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir</p>
 </article></div>
-<p class="note-methode">Jordan Bardella n'est pas candidat : Marine Le Pen, déclarée le 7 juillet 2026
-après l'arrêt d'appel, porte la candidature du Rassemblement national.</p>
-</section>
+<script>
+document.getElementById("recherche").addEventListener("input", function () {
+  const q = this.value.toLowerCase().trim();
+  for (const carte of document.querySelectorAll("#cartes .carte-candidat"))
+    carte.style.display = carte.dataset.nom.includes(q) ? "" : "none";
+});
+</script>
 </main>
 <footer class="pied">
 <p>Données générées le 23/07/2026 — 16 957 scrutins en base (Assemblée nationale et Congrès, juillet 2017 → juillet 2026 ; Sénat et Parlement européen à importer). Candidatures mises à jour le 23/07/2026.</p>

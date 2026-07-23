@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparer — Le Vrai Vote</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
+<header class="entete-nav">
+  <a class="marque" href=".././">Le Vrai Vote</a>
+  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../themes/">Thèmes</a><a href="../comparer/" aria-current="page">Comparer</a><a href="../methode/">Méthode</a></nav>
+</header>
+<main>
+
+<h1>Comparer deux candidats</h1>
+<p>Sur les scrutins de l'Assemblée nationale où les deux candidats ont exprimé un vote
+(pour, contre ou abstention), quelle proportion de positions identiques ?</p>
+<p class="note-methode">Seuls les candidats ayant au moins 30 votes exprimés dans la période couverte
+apparaissent ici. Le taux est calculé uniquement sur les scrutins communs — il ne dit rien des textes
+sur lesquels un seul des deux a voté. Les absences et « non-votant » sont exclus du calcul.</p>
+<div class="comparateur">
+  <label>Candidat A <select id="sel-a"></select></label>
+  <label>Candidat B <select id="sel-b"></select></label>
+</div>
+<div id="resultat"></div>
+<script>
+fetch("../data.json").then(r => r.json()).then(d => {
+  const selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
+  for (const sel of [selA, selB])
+    for (const slug of d.comparables) {
+      const o = document.createElement("option");
+      o.value = slug; o.textContent = d.noms[slug];
+      sel.appendChild(o.cloneNode(true));
+    }
+  selB.selectedIndex = Math.min(1, selB.options.length - 1);
+  function rendre() {
+    const a = selA.value, b = selB.value, res = document.getElementById("resultat");
+    res.textContent = "";
+    if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
+    const cle = [a, b].sort().join("|");
+    const paire = d.concordances[cle];
+    if (!paire) { res.textContent = "Trop peu de scrutins communs pour une comparaison honnête."; return; }
+    const pct = (100 * paire.accord / paire.communs).toFixed(1).replace(".", ",");
+    const h = document.createElement("div");
+    h.className = "resultat-comparaison";
+    h.innerHTML = `<p><strong>${d.noms[a]}</strong> et <strong>${d.noms[b]}</strong> ont exprimé un vote
+      sur <strong>${paire.communs.toLocaleString("fr-FR")}</strong> scrutins communs.</p>
+      <p class="grand-chiffre">${pct} %</p>
+      <p>de positions identiques (${paire.accord.toLocaleString("fr-FR")} scrutins sur ${paire.communs.toLocaleString("fr-FR")}).</p>
+      <p><a href="../candidats/${a}/">Fiche ${d.noms[a]}</a> · <a href="../candidats/${b}/">Fiche ${d.noms[b]}</a></p>`;
+    res.appendChild(h);
+  }
+  selA.addEventListener("change", rendre); selB.addEventListener("change", rendre);
+  rendre();
+});
+</script>
+</main>
+<footer class="pied">
+<p>Données générées le 23/07/2026 — 16 957 scrutins en base (Assemblée nationale et Congrès, juillet 2017 → juillet 2026 ; Sénat et Parlement européen à importer). Candidatures mises à jour le 23/07/2026.</p>
+<p>Données parlementaires : licence ouverte (Assemblée nationale). Contenu : CC BY 4.0. <a href="https://github.com/Mlolita26/le-vrai-vote">Code source</a>.</p>
+</footer>
+</body>
+</html>

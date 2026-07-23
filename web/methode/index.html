@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Méthode — Le Vrai Vote</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
+<header class="entete-nav">
+  <a class="marque" href=".././">Le Vrai Vote</a>
+  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../themes/">Thèmes</a><a href="../comparer/">Comparer</a><a href="../methode/" aria-current="page">Méthode</a></nav>
+</header>
+<main>
+
+<h1>Méthode</h1>
+<h2>D'où viennent les données</h2>
+<ul class="methode-liste">
+<li><strong>Scrutins et positions de vote</strong> : dumps officiels de
+<a href="https://data.assemblee-nationale.fr">data.assemblee-nationale.fr</a> (licence ouverte),
+législatures 15 à 17 (juillet 2017 → juillet 2026), y compris le Congrès de Versailles.
+Chaque fichier est archivé avec son empreinte avant transformation ; chaque import est journalisé.</li>
+<li><strong>Identités et mandats</strong> : référentiel officiel « acteurs, mandats, organes » de
+l'Assemblée nationale (précision au jour), complété par les déclarations HATVP pour les fonctions
+non couvertes. Appariement par nom, prénom et date de naissance — jamais par le nom seul.</li>
+<li><strong>Candidatures</strong> : déclarations publiques recensées par la presse, recoupées entre
+plusieurs sources, chacune datée et reliée à sa source. La liste officielle n'existera qu'après
+validation des parrainages par le Conseil constitutionnel (mars 2027).</li>
+<li><strong>Sénat et Parlement européen</strong> : à importer — indiqué comme tel sur les fiches concernées.</li>
+</ul>
+<h2>Les quatre états d'affichage</h2>
+<p>Chaque case affiche toujours l'un de ces états — jamais un vide ambigu, jamais une valeur supposée :</p>
+<ul class="methode-liste">
+<li><strong>Position connue</strong> : pour / contre / abstention / non-votant, telle que publiée au scrutin officiel.</li>
+<li><strong>Non concerné</strong> : la personne n'était pas en poste dans la chambre à la date du scrutin.</li>
+<li><strong>Indisponible</strong> : la personne n'a jamais été parlementaire — il n'existe pas de vote à afficher.</li>
+<li><strong>À importer</strong> : la donnée existe mais n'est pas encore chargée.</li>
+</ul>
+<h2>Ce que veulent dire « absent » et « non-votant »</h2>
+<p>L'Assemblée nationale ne publie jamais la liste des absents : un élu est compté <strong>absent (déduit)</strong>
+si son mandat était actif à la date du scrutin et qu'il n'apparaît dans aucune liste de votants.
+Cette déduction est désactivée sur les 33 scrutins (sur 16 957) dont les totaux publiés présentent
+un écart avec les listes nominatives. <strong>Non-votant</strong> signifie présent sans prendre part au vote
+(par exemple la présidence de séance) — ce n'est pas une absence.</p>
+<h2>Votes clés : la grille avant les votes</h2>
+<p>Aucun vote clé commenté n'est affiché tant que la grille de sélection (critères objectifs, publics,
+appliqués identiquement à tous) n'est pas publiée ici. Les résumés seront descriptifs et neutres,
+chacun relié au dossier législatif officiel.</p>
+<h2>Volet judiciaire</h2>
+<p>Renseigné manuellement, fait par fait, uniquement à partir de documents publics sourcés, avec mention
+systématique de la présomption d'innocence pour toute procédure en cours. Aucun croisement automatique
+de bases judiciaires (les décisions en open data sont pseudonymisées ; ce croisement serait illégal).</p>
+<h2>Corrections</h2>
+<p>Une donnée vous semble fausse ? Ouvrez un signalement sur
+<a href="https://github.com/Mlolita26/le-vrai-vote/issues">le dépôt public</a> avec le lien de la source :
+toute correction est tracée.</p>
+</main>
+<footer class="pied">
+<p>Données générées le 23/07/2026 — 16 957 scrutins en base (Assemblée nationale et Congrès, juillet 2017 → juillet 2026 ; Sénat et Parlement européen à importer). Candidatures mises à jour le 23/07/2026.</p>
+<p>Données parlementaires : licence ouverte (Assemblée nationale). Contenu : CC BY 4.0. <a href="https://github.com/Mlolita26/le-vrai-vote">Code source</a>.</p>
+</footer>
+</body>
+</html>
