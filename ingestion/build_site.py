@@ -169,6 +169,7 @@ def page(titre, actif, contenu, profondeur, meta):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(titre)} — Le Vrai Vote</title>
 <link rel="stylesheet" href="{r}styles.css">
+<script src="{r}theme.js" defer></script>
 </head>
 <body>
 <div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
