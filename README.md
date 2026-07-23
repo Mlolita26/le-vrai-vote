@@ -2,6 +2,15 @@
 
 > Nom de code provisoire. À choisir en évitant tout terme suggérant un parti pris.
 
+## 🔗 Voir le site
+
+**➡️ [mlolita26.github.io/le-vrai-vote](https://mlolita26.github.io/le-vrai-vote/)**
+
+Version de travail (v0) : liste sourcée des candidatures déclarées, profils parlementaires
+des candidats couverts (mandats officiels, positions de vote, participation aux scrutins
+solennels) et méthode. Déployée automatiquement depuis `web/` par GitHub Actions à chaque
+push touchant `web/**`.
+
 ## L'idée en une phrase
 
 Un site qui montre, pour chaque candidat à la présidentielle 2027, **ce qu'il a réellement voté** — pas seulement ce qu'il promet — avec pour chaque position le lien vers le scrutin officiel, afin que chacun se forge son opinion sur des faits vérifiables.
@@ -36,9 +45,13 @@ Un site qui montre, pour chaque candidat à la présidentielle 2027, **ce qu'il 
 ## État d'avancement
 
 - [x] Concept, méthodologie, architecture définis
-- [x] Schéma de données conçu
-- [x] Prototype d'interface fonctionnel (données fictives puis roster réel)
-- [ ] Grille de sélection des votes clés finalisée
-- [ ] Pipeline de collecte implémenté
-- [ ] Base de données peuplée depuis les sources officielles
-- [ ] Front connecté à une vraie API
+- [x] Schéma de données conçu (SQLite : `db/schema.sql`, vue couverture à trois états)
+- [x] Prototype d'interface fonctionnel (`prototype/transparence-2027.jsx`)
+- [x] Pipeline Assemblée nationale : 16 957 scrutins publics (législatures 15-17, Congrès inclus) importés depuis data.assemblee-nationale.fr
+- [x] Identités et mandats officiels des candidats suivis (AMO30, précision au jour)
+- [x] Candidatures 2027 recensées et sourcées (18 déclarées + 7 en primaire au 23/07/2026)
+- [x] Site v0 statique publié (liste des candidats, profils parlementaires, méthode)
+- [ ] Sénat et Parlement européen importés
+- [ ] Grille de sélection des votes clés finalisée et publiée
+- [ ] Couche éditoriale : votes clés résumés par thème
+- [ ] Front complet (pages candidat, thème, comparateur — design du prototype)
