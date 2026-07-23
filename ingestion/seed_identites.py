@@ -143,6 +143,16 @@ def seed(base: Path, coffre: Path) -> None:
     # Mélenchon, Philippe : aucun mandat saisi — aucune source locale vérifiable.
     # Leurs mandats viendront des imports officiels (AN pour Mélenchon, RNE/JO pour Philippe).
 
+    # ── Identifiants externes connus des sources locales ─────────────────────
+    s_senat_csv = source(
+        "https://www.senat.fr/senateur/retailleau_bruno04033b.html", "dataset", "2026-05-11",
+        "Export senat.fr des activités de Bruno Retailleau (matricule 04033B) — "
+        "CSV local : donnees_brutes/Bruno_Retailleau/sen_04033B.csv")
+    cur.execute("INSERT INTO identifiants_externes (personne_id, systeme, identifiant, source_id) "
+                "VALUES (?,?,?,?)", (p_bardella, "pe_mep_id", BARDELLA_MEP_ID, s_htv))
+    cur.execute("INSERT INTO identifiants_externes (personne_id, systeme, identifiant, source_id) "
+                "VALUES (?,?,?,?)", (p_retailleau, "senat_matricule", "04033B", s_senat_csv))
+
     # ── Déclarations (les deux DIA elles-mêmes) ─────────────────────────────
     cur.execute(
         "INSERT INTO declarations (personne_id, type, contenu, date, source_id) VALUES (?,?,?,?,?)",

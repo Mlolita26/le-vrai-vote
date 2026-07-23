@@ -121,13 +121,13 @@ def controles_base_reelle(base: Path):
                          ).fetchone()[0] == 1)
 
     # Point d'attention connu (informative, pas un échec) : le mandat AN 2017-2022
-    # d'Attal n'est couvert par aucune source locale — attendu jusqu'au jalon J2.
+    # d'Attal n'est couvert que par l'AMO30 historique — attendu tant qu'il n'est pas importé.
     attal_2023 = cur.execute(
         "SELECT COUNT(*) FROM mandats m JOIN personnes p ON p.id = m.personne_id "
         "WHERE p.slug='gabriel-attal' AND m.type='depute' "
         "AND m.debut <= '2023-03-16' AND (m.fin IS NULL OR m.fin >= '2023-03-16')").fetchone()[0]
     print(f"  [INFO] Attal député au 16/03/2023 (vote retraites) : {attal_2023} mandat trouvé — "
-          "0 attendu tant que l'open data AN (J2) n'est pas importé.")
+          "0 attendu tant que l'AMO30 historique n'est pas importé.")
 
     n_mandats = cur.execute("SELECT COUNT(*) FROM mandats").fetchone()[0]
     n_sources = cur.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
@@ -136,11 +136,86 @@ def controles_base_reelle(base: Path):
     con.close()
 
 
+def controles_scrutins_an(base: Path, dossier_dumps: Path):
+    """Contrôles du jalon J2 : volumes contre les dumps, recoupements externes."""
+    import zipfile
+    print(f"3. Contrôles des scrutins AN (dumps : {dossier_dumps.name})")
+    con = sqlite3.connect(base)
+    cur = con.cursor()
+
+    if cur.execute("SELECT COUNT(*) FROM scrutins WHERE chambre='an'").fetchone()[0] == 0:
+        print("  (aucun scrutin AN importé — contrôles sautés)")
+        con.close()
+        return
+
+    # Volumes : chaque zip doit être intégralement importé (pas de troncature silencieuse).
+    for zip_path in sorted(dossier_dumps.glob("Scrutins*.zip")):
+        with zipfile.ZipFile(zip_path) as z:
+            entrees = [e for e in z.namelist() if e.endswith(".json")]
+            import json as _json
+            with z.open(entrees[0]) as f:
+                leg = _json.load(f)["scrutin"]["legislature"]
+        en_base = cur.execute("SELECT COUNT(*) FROM scrutins WHERE chambre IN ('an','congres') "
+                              "AND legislature=?", (leg,)).fetchone()[0]
+        verifier(f"législature {leg} intégralement importée ({len(entrees)} scrutins)",
+                 en_base == len(entrees), f"base={en_base}, dump={len(entrees)}")
+
+    # Recoupement Datan (contrôle, jamais source) : Attal POUR l'aide à mourir
+    # au scrutin solennel de première lecture (27/05/2025).
+    rows = cur.execute(
+        "SELECT s.date, s.objet, pv.position FROM scrutins s "
+        "JOIN positions_vote pv ON pv.scrutin_id = s.id "
+        "JOIN personnes p ON p.id = pv.personne_id "
+        "WHERE p.slug='gabriel-attal' AND s.legislature='17' "
+        "AND s.type_vote LIKE '%solennel%' AND s.objet LIKE '%aide%mourir%'").fetchall()
+    verifier("Attal, scrutin solennel « aide à mourir » : position POUR retrouvée (recoupement Datan)",
+             any(r[2] == "pour" for r in rows), f"lignes trouvées : {rows}")
+
+    # Présence d'Attal aux scrutins solennels de la 17e législature.
+    # Datan affichait 93 % au 11/05/2026 ; nos données vont jusqu'à juillet 2026,
+    # on tolère une fourchette large et on affiche la valeur pour revue humaine.
+    present, total = cur.execute(
+        "SELECT SUM(CASE WHEN pv.position != 'absent' THEN 1 ELSE 0 END), COUNT(*) "
+        "FROM positions_vote pv JOIN scrutins s ON s.id = pv.scrutin_id "
+        "JOIN personnes p ON p.id = pv.personne_id "
+        "WHERE p.slug='gabriel-attal' AND s.legislature='17' AND s.type_vote LIKE '%solennel%'"
+    ).fetchone()
+    if total:
+        taux = 100.0 * present / total
+        print(f"  [INFO] Présence d'Attal aux scrutins solennels L17 : {present}/{total} = {taux:.1f} % "
+              "(Datan au 11/05/2026 : 93 %)")
+        verifier("présence solennels L17 d'Attal dans une fourchette plausible (80-100 %)",
+                 80.0 <= taux <= 100.0, f"{taux:.1f} %")
+    else:
+        verifier("Attal a des positions sur des scrutins solennels L17", False, "aucune ligne")
+
+    # Cohérence : aucune absence inférée hors période de mandat pertinent
+    # (séance AN : député ; Congrès : député ou sénateur).
+    orphelines = cur.execute(
+        "SELECT COUNT(*) FROM positions_vote pv JOIN scrutins s ON s.id = pv.scrutin_id "
+        "WHERE s.chambre IN ('an','congres') AND pv.position = 'absent' AND NOT EXISTS ("
+        "  SELECT 1 FROM mandats m WHERE m.personne_id = pv.personne_id "
+        "  AND ((s.chambre='an' AND m.type='depute') "
+        "    OR (s.chambre='congres' AND m.type IN ('depute','senateur'))) "
+        "  AND m.debut <= s.date AND COALESCE(m.fin,'9999-12-31') >= s.date)").fetchone()[0]
+    verifier("aucune absence inférée hors période de mandat", orphelines == 0, f"{orphelines} lignes")
+
+    n_pos = cur.execute("SELECT COUNT(*) FROM positions_vote").fetchone()[0]
+    n_scr = cur.execute("SELECT COUNT(*) FROM scrutins").fetchone()[0]
+    n_abs = cur.execute("SELECT COUNT(*) FROM positions_vote WHERE position='absent'").fetchone()[0]
+    print(f"  Récapitulatif : {n_scr} scrutins, {n_pos} positions ({n_abs} absences inférées).")
+    con.close()
+
+
 if __name__ == "__main__":
     base = Path(sys.argv[1]) if len(sys.argv) > 1 else BASE_DEFAUT
     test_logique_trois_etats()
     if base.exists():
         controles_base_reelle(base)
+        COFFRE = Path(r"C:\Users\mlolita\OneDrive - CGIAR\Documents\presidentielles")
+        dumps = COFFRE / "donnees_brutes" / "Assemblee_Nationale" / "dump_manuel_2026-07-23"
+        if dumps.exists():
+            controles_scrutins_an(base, dumps)
     else:
         print(f"2. Base réelle absente ({base}) — contrôles sautés.")
     if ECHECS:

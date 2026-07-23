@@ -5,7 +5,15 @@
 --   - mandats.source_id est obligatoire (le doc ne le mentionnait pas) ;
 --   - mandats.precision indique la granularité de la date fournie par la
 --     source (les DIA HATVP donnent le mois, pas le jour) ;
---   - table imports_journal pour la traçabilité de chaque import.
+--   - table imports_journal pour la traçabilité de chaque import ;
+--   - table identifiants_externes : identifiants officiels (UID AN « PAxxxx »,
+--     MEP ID du Parlement européen, matricule Sénat) ;
+--   - scrutins.legislature : la numérotation AN recommence à 1 à chaque
+--     législature, l'unicité est donc (chambre, legislature, numero) ;
+--   - position 'non_votant' : à l'AN, « non votant » signifie présent mais ne
+--     prenant pas part au vote (ex. président de séance) — ce n'est PAS une
+--     absence. L'absence, elle, est inférée : mandat actif à la date du
+--     scrutin et aucune mention dans le fichier officiel.
 
 PRAGMA foreign_keys = ON;
 
@@ -54,20 +62,36 @@ CREATE TABLE IF NOT EXISTS mandats (
     source_id   INTEGER NOT NULL REFERENCES sources(id)
 );
 
-CREATE TABLE IF NOT EXISTS scrutins (
-    id        INTEGER PRIMARY KEY,
-    chambre   TEXT NOT NULL CHECK (chambre IN ('an','senat','pe')),
-    numero    TEXT NOT NULL,
-    objet     TEXT NOT NULL,
-    date      TEXT NOT NULL,
-    source_id INTEGER NOT NULL REFERENCES sources(id),
-    UNIQUE (chambre, numero)
+CREATE TABLE IF NOT EXISTS identifiants_externes (
+    personne_id INTEGER NOT NULL REFERENCES personnes(id),
+    systeme     TEXT NOT NULL CHECK (systeme IN ('an_uid','pe_mep_id','senat_matricule')),
+    identifiant TEXT NOT NULL,
+    source_id   INTEGER NOT NULL REFERENCES sources(id),
+    PRIMARY KEY (personne_id, systeme),
+    UNIQUE (systeme, identifiant)
 );
+
+-- chambre 'congres' : Congrès de Versailles (députés et sénateurs réunis) —
+-- présent dans les dumps AN avec sa propre numérotation (uid VTCGR…).
+-- uid_officiel : identifiant du producteur de la donnée (ex. VTANR5L16V1),
+-- clé d'unicité fiable ; la numérotation seule se répète (AN vs Congrès).
+CREATE TABLE IF NOT EXISTS scrutins (
+    id           INTEGER PRIMARY KEY,
+    chambre      TEXT NOT NULL CHECK (chambre IN ('an','senat','pe','congres')),
+    legislature  TEXT,                 -- AN/Congrès : 15/16/17 ; NULL si sans objet
+    numero       TEXT NOT NULL,
+    uid_officiel TEXT UNIQUE,          -- NULL si la source n'en fournit pas
+    objet        TEXT NOT NULL,
+    type_vote    TEXT,                 -- ex. « scrutin public solennel »
+    date         TEXT NOT NULL,
+    source_id    INTEGER NOT NULL REFERENCES sources(id)
+);
+CREATE INDEX IF NOT EXISTS idx_scrutins_chambre_leg ON scrutins (chambre, legislature, numero);
 
 CREATE TABLE IF NOT EXISTS positions_vote (
     personne_id INTEGER NOT NULL REFERENCES personnes(id),
     scrutin_id  INTEGER NOT NULL REFERENCES scrutins(id),
-    position    TEXT NOT NULL CHECK (position IN ('pour','contre','abstention','absent')),
+    position    TEXT NOT NULL CHECK (position IN ('pour','contre','abstention','non_votant','absent')),
     PRIMARY KEY (personne_id, scrutin_id)
 );
 
@@ -148,11 +172,10 @@ SELECT
         WHEN NOT EXISTS (
             SELECT 1 FROM mandats m
             WHERE m.personne_id = p.id
-              AND m.type = CASE s.chambre
-                               WHEN 'an'    THEN 'depute'
-                               WHEN 'senat' THEN 'senateur'
-                               WHEN 'pe'    THEN 'eurodepute'
-                           END
+              AND ((s.chambre = 'an'      AND m.type = 'depute')
+                OR (s.chambre = 'senat'   AND m.type = 'senateur')
+                OR (s.chambre = 'pe'      AND m.type = 'eurodepute')
+                OR (s.chambre = 'congres' AND m.type IN ('depute','senateur')))
               AND m.debut <= s.date
               AND (m.fin IS NULL OR m.fin >= s.date))
         THEN 'non_concerne'
