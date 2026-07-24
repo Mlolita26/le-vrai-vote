@@ -640,6 +640,41 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                        f'aria-label="Filtrer les votes cl\u00e9s par th\u00e8me">{chips}</div>')
     else:
         filtre_html = ""
+    note_votes = (
+        '<p class="note-methode">S\u00e9lection selon la <a href="../../methode/">grille de crit\u00e8res '
+        'publi\u00e9e</a>, identique pour tous les candidats. \u00ab Non concern\u00e9 \u00bb : pas en poste dans la '
+        'chambre \u00e0 la date du scrutin ; \u00ab absent (d\u00e9duit) \u00bb : mandat actif mais aucune mention '
+        'au scrutin officiel.</p>')
+    js_filtre = """<script>
+(function() {
+  var chips = document.querySelectorAll(".filtres-themes .filtre-chip");
+  var blocs = document.querySelectorAll("#votes-themes .theme-bloc");
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
+      c.classList.add("actif"); c.setAttribute("aria-pressed", "true");
+      var cible = c.dataset.cible;
+      blocs.forEach(function (b) {
+        b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
+      });
+    });
+  });
+})();
+</script>"""
+    if etat == "hors" and votes_html:
+        # Jamais parlementaire : tous les votes cl\u00e9s sont \u00ab indisponible \u00bb.
+        # On r\u00e9sume en une phrase et on replie le d\u00e9tail (rien n'est perdu).
+        section_votes = (
+            f'<h2>Votes cl\u00e9s</h2>'
+            f'<p class="note-methode">{e(p["nom"])} n\'a jamais si\u00e9g\u00e9 au Parlement '
+            f'(Assembl\u00e9e nationale, S\u00e9nat ou Parlement europ\u00e9en) depuis 1997 : il n\'existe donc '
+            f'aucun vote personnel \u00e0 afficher sur les lois cl\u00e9s. Les positions viendront des '
+            f'd\u00e9clarations publiques (programme, discours), clairement identifi\u00e9es comme telles.</p>'
+            f'<details class="votes-replies"><summary>Voir la liste des lois cl\u00e9s '
+            f'(toutes \u00ab indisponible \u00bb pour ce candidat)</summary>{note_votes}{votes_html}</details>')
+    else:
+        section_votes = (f'<h2>Votes cl\u00e9s par th\u00e8me</h2>{note_votes}{filtre_html}'
+                         f'<div id="votes-themes">{votes_html}</div>{js_filtre}')
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
 <div class="fiche-tete">{avatar(p, "../../").replace('width="42" height="42"', 'width="72" height="72"')}
@@ -647,28 +682,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 <p class="detail">{e(p['detail'])}</p></div></div>
 <p>{statut} {e(declaration)} — <a href="{e(p['source'])}" rel="noopener">source de la déclaration</a>.
 {f"Né(e) le {date_fr(p['naissance'])} (source : open data officiel)." if p['naissance'] else "Date de naissance : à importer."}</p>
-<h2>Votes clés par thème</h2>
-<p class="note-methode">Sélection selon la <a href="../../methode/">grille de critères publiée</a>, identique
-pour tous les candidats. « Non concerné » : pas en poste dans la chambre à la date du scrutin ;
-« absent (déduit) » : mandat actif mais aucune mention au scrutin officiel.</p>
-{filtre_html}
-<div id="votes-themes">{votes_html}</div>
-<script>
-(function() {{
-  var chips = document.querySelectorAll(".filtres-themes .filtre-chip");
-  var blocs = document.querySelectorAll("#votes-themes .theme-bloc");
-  chips.forEach(function (c) {{
-    c.addEventListener("click", function () {{
-      chips.forEach(function (x) {{ x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); }});
-      c.classList.add("actif"); c.setAttribute("aria-pressed", "true");
-      var cible = c.dataset.cible;
-      blocs.forEach(function (b) {{
-        b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
-      }});
-    }});
-  }});
-}})();
-</script>
+{section_votes}
 <h2>Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
 {bloc_an}

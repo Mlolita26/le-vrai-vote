@@ -396,3 +396,9 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .filtre-chip.actif { background:var(--accent); color:var(--accent-texte); border-color:var(--accent); }
 .filtre-chip:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .theme-bloc h3 { scroll-margin-top:6rem; }
+
+/* Votes clés repliés (candidats jamais parlementaires) */
+.votes-replies { margin:.4rem 0 1rem; }
+.votes-replies > summary { cursor:pointer; color:var(--accent); font-weight:600; font-size:.9rem;
+  padding:.3rem 0; }
+.votes-replies[open] > summary { margin-bottom:.6rem; }
