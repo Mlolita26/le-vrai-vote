@@ -229,33 +229,102 @@ def carte_candidat(p, prefixe):
 </article>"""
 
 
+# Pastilles d'état de couverture (design « refonte accueil », 24/07/2026)
+PASTILLES = {
+    "couvert": ("Votes disponibles", "pastille-ok"),
+    "partiel": ("Couverture partielle", "pastille-partiel"),
+    "hors": ("Positions déclaratives", "pastille-decl"),
+}
+
+
+def carte_accueil(p):
+    etat, phrase = etat_couverture(p)
+    libelle, classe = PASTILLES[etat]
+    note = phrase[0].upper() + phrase[1:]
+    initiales = (p["nom"].split()[0][0] + p["nom"].split()[1][0]).upper() \
+        if len(p["nom"].split()) > 1 else p["nom"][:2].upper()
+    recherche = f"{p['nom']} {p['parti']}".lower()
+    return f"""<article class="cand-carte" data-nom="{e(recherche)}"><div class="cand-avatar">{e(initiales)}</div><div>
+<h3 class="cand-nom"><a href="candidats/{e(p['slug'])}/">{e(p['nom'])}</a></h3>
+<div class="cand-parti">{e(p['parti'])}</div>
+<span class="pastille {classe}">{libelle}</span>
+<div class="cand-note">{e(note)}</div></div></article>"""
+
+
 def page_accueil(candidats, meta):
     declares = [c for c in candidats if c["statut"] == "declaree"]
     primaires = [c for c in candidats if c["statut"] == "primaire"]
     n_couverts = sum(1 for c in candidats if etat_couverture(c)[0] == "couvert")
     contenu = f"""
 <section class="hero">
-<h1>Leurs votes, pas leurs promesses.</h1>
-<p>Pour chaque candidat à la présidentielle 2027 : ce qu'il a réellement voté au Parlement,
+<p class="hero-eyebrow"><i></i> Présidentielle 2027 · Transparence électorale</p>
+<h1>Leurs votes,<br>pas leurs promesses.</h1>
+<p class="hero-lead">Pour chaque candidat à la présidentielle, ce qu'il a <strong>réellement voté</strong> au Parlement,
 sa présence et son parcours — à partir des données publiques officielles, chaque fait relié à sa source.</p>
-<p class="chiffres">{nombre_fr(meta['n_scrutins'])} scrutins officiels en base · {len(declares)} candidatures déclarées
-· {len(primaires)} en primaire · {n_couverts} candidats avec votes vérifiables dès maintenant</p>
 <p class="acces">
-<a class="bouton" href="candidats/">Voir les candidats</a>
+<a class="bouton" href="#candidats">Voir les candidats</a>
 <a class="bouton bouton-second" href="comparer/">Comparer deux candidats</a>
 <a class="bouton bouton-second" href="methode/">Lire la méthode</a>
 </p>
+<div class="stats">
+<div><div class="stat-num">{nombre_fr(meta['n_scrutins'])}</div><div class="stat-lbl">scrutins officiels en base</div></div>
+<div><div class="stat-num">{len(candidats)}</div><div class="stat-lbl">candidatures suivies ({len(declares)} déclarées + {len(primaires)} en primaire)</div></div>
+<div><div class="stat-num">{n_couverts}</div><div class="stat-lbl">candidats aux votes déjà consultables</div></div>
+<div><div class="stat-num accent">100 %</div><div class="stat-lbl">des faits reliés à leur source</div></div>
+</div>
 </section>
-<section>
-<h2>Candidatures déclarées</h2>
-<p class="note-methode">Déclarations publiques recensées et sourcées — la liste officielle des candidats
-ne sera établie par le Conseil constitutionnel qu'après validation des parrainages, en mars 2027.</p>
-<div class="grille-cartes">{''.join(carte_candidat(c, '') for c in declares)}</div>
-<h2>En lice pour une primaire</h2>
-<div class="grille-cartes">{''.join(carte_candidat(c, '') for c in primaires)}</div>
+
+<section class="bloc" id="comment">
+<h2>Comment lire ce site</h2>
+<p class="intro">Trois gestes suffisent. Le site ne vous dit jamais quoi penser : il vous donne les faits, vous vous faites votre opinion.</p>
+<div class="steps">
+<div class="step"><div class="step-num">1</div><h3>Choisissez un candidat</h3><p>Parcourez les candidatures déclarées et les personnalités en lice pour une primaire. Une pastille indique d'emblée ce qui est disponible.</p></div>
+<div class="step"><div class="step-num">2</div><h3>Lisez ses votes réels</h3><p>Ses positions sur les votes clés, regroupées par thème, chacune accompagnée d'un résumé neutre de la loi et de son assiduité.</p></div>
+<div class="step"><div class="step-num">3</div><h3>Comparez deux candidats</h3><p>Mettez deux candidats côte à côte sur les mêmes votes clés et voyez, thème par thème, où ils se rejoignent et où ils s'opposent.</p></div>
+</div>
+</section>
+
+<section class="bloc">
+<h2>Trois principes non négociables</h2>
+<p class="intro">Sur un site qui parle de personnes réelles en campagne, la crédibilité est la seule valeur. Ces règles priment sur tout le reste.</p>
+<div class="principes">
+<div class="principe"><div class="principe-num">01 — Sources</div><h3>Tout est sourcé</h3><p>Chaque fait renvoie à un document officiel vérifiable en un clic. Un fait sans source ne s'affiche pas.</p></div>
+<div class="principe"><div class="principe-num">02 — Neutralité</div><h3>Aucune éditorialisation</h3><p>Méthodologie publique et identique pour tous. « A voté contre », jamais « a trahi ».</p></div>
+<div class="principe"><div class="principe-num">03 — Honnêteté</div><h3>Honnêteté sur les manques</h3><p>Trois états d'affichage clairs — jamais de vide ambigu, jamais de supposition.</p></div>
+</div>
+</section>
+
+<section class="bloc">
+<div class="etats-panel">
+<h2>Trois états</h2>
+<p>Tous les candidats n'ont pas le même historique traçable — un député cumule des milliers de scrutins, un maire n'en a aucun. Chaque pastille dit exactement ce que l'on sait, et ce que l'on ne sait pas.</p>
+<div class="etats-grid">
+<div class="etat-item"><span class="pastille pastille-ok">Votes disponibles</span><p>Le candidat était en poste et a voté. Ses positions réelles sont consultables dès maintenant.</p></div>
+<div class="etat-item"><span class="pastille pastille-partiel">Couverture partielle</span><p>Mandats hors de la période couverte, ou chambre pas encore importée (Sénat, Parlement européen).</p></div>
+<div class="etat-item"><span class="pastille pastille-decl">Positions déclaratives</span><p>Jamais parlementaire : ses positions viendront de ses déclarations publiques, clairement identifiées comme telles.</p></div>
+</div>
+</div>
+</section>
+
+<section class="bloc" id="candidats">
+<h2>Les candidats</h2>
+<p class="intro">Déclarations publiques recensées et sourcées — la liste officielle ne sera établie par le Conseil constitutionnel qu'après validation des parrainages, en mars 2027.</p>
+<p><label for="recherche" style="font-size:0.9rem;color:var(--encre-douce);">Rechercher :</label>
+<input id="recherche" type="search" placeholder="Nom du candidat ou parti" autocomplete="off"></p>
+<h3 class="sous-titre">Candidatures déclarées</h3>
+<div class="cand-grille" id="grille-declarees">{''.join(carte_accueil(c) for c in declares)}</div>
+<h3 class="sous-titre">En lice pour une primaire</h3>
+<div class="cand-grille" id="grille-primaire">{''.join(carte_accueil(c) for c in primaires)}</div>
 <p class="note-methode">Jordan Bardella n'est pas candidat : Marine Le Pen, déclarée le 7 juillet 2026
 après l'arrêt d'appel, porte la candidature du Rassemblement national.</p>
-</section>"""
+</section>
+<script>
+document.getElementById("recherche").addEventListener("input", function () {{
+  const q = this.value.toLowerCase().trim();
+  for (const carte of document.querySelectorAll(".cand-carte"))
+    carte.style.display = carte.dataset.nom.includes(q) ? "" : "none";
+}});
+</script>"""
     return page("Accueil", "Accueil", contenu, 0, meta)
 
 

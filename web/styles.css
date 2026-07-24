@@ -226,3 +226,68 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   color:var(--encre-douce); text-align:center; background:var(--faint);
 }
 .pied a { color:var(--accent); }
+
+/* ============================================================
+   Page d'accueil (refonte) — classes dédiées
+   ============================================================ */
+.hero-eyebrow { display:inline-flex; align-items:center; gap:0.5rem; font-size:0.75rem;
+  font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin:2rem 0 1.1rem; }
+.hero-eyebrow i { width:26px; height:1px; background:var(--accent); display:inline-block; font-style:normal; }
+.hero-lead { font-size:clamp(1.05rem,1.6vw,1.25rem); color:var(--encre-douce); max-width:56ch; }
+.hero-lead strong { color:var(--encre); font-weight:600; }
+
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem;
+  margin-top:2.4rem; border-top:1px solid var(--lisere); padding-top:1.6rem; }
+.stat-num { font-family:'Spectral',Georgia,serif; font-weight:700; font-size:2rem; line-height:1; }
+.stat-num.accent { color:var(--accent); }
+.stat-lbl { font-size:0.85rem; color:var(--encre-douce); margin-top:0.35rem; }
+
+.bloc { padding:2.8rem 0 0.4rem; }
+.bloc h2 { margin:0 0 0.5rem; }
+.bloc .intro { color:var(--encre-douce); max-width:60ch; margin:0 0 1.6rem; }
+
+.steps, .principes { display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+.step { background:var(--carte); border:1px solid var(--lisere); border-radius:14px; padding:1.5rem 1.4rem; }
+.step-num { font-family:'Spectral',Georgia,serif; font-weight:700; color:var(--accent-texte);
+  background:var(--accent); width:2.2rem; height:2.2rem; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; margin-bottom:1rem; }
+.step h3 { margin:0 0 0.5rem; }
+.step p { margin:0; color:var(--encre-douce); font-size:0.95rem; }
+
+.principe { border-left:3px solid var(--accent); background:var(--carte); border-radius:0 12px 12px 0; padding:1.2rem 1.3rem; }
+.principe-num { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; }
+.principe h3 { margin:0 0 0.4rem; font-size:1.15rem; }
+.principe p { margin:0; color:var(--encre-douce); font-size:0.92rem; }
+
+.etats-panel { background:var(--panneau); color:#f3efe4; border-radius:18px; padding:2.2rem 1.9rem; margin-top:1rem; }
+.etats-panel h2 { color:#fff; margin:0 0 0.6rem; }
+.etats-panel > p { color:#c9c3b6; max-width:64ch; font-size:0.98rem; margin:0; }
+.etats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1.1rem; margin-top:1.4rem; }
+.etat-item { background:rgba(255,255,255,0.05); border-radius:12px; padding:1.2rem; }
+.etat-item p { margin:0; font-size:0.9rem; color:#d9d4c8; }
+.etat-item .pastille { margin-bottom:0.8rem; }
+
+.pastille { display:inline-block; font-size:0.75rem; font-weight:600; padding:0.16rem 0.62rem; border-radius:999px; }
+.pastille-ok { background:var(--cov-couvert-bg); color:var(--cov-couvert); }
+.pastille-partiel { background:var(--cov-partiel-bg); color:var(--cov-partiel); }
+.pastille-decl { background:var(--cov-hors-bg); color:var(--cov-hors); }
+.etats-panel .pastille-ok { background:#e9f4ec; color:#1f6b3b; }
+.etats-panel .pastille-partiel { background:#faf0dd; color:#8a5a12; }
+.etats-panel .pastille-decl { background:#eceef1; color:#4f5966; }
+
+.sous-titre { font-weight:700; font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--encre-douce); margin:1.6rem 0 0.9rem; }
+
+.cand-grille { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0.8rem; margin:1rem 0 1.6rem; }
+.cand-carte { display:flex; gap:0.9rem; align-items:flex-start; background:var(--carte);
+  border:1px solid var(--lisere); border-radius:13px; padding:1rem 1.1rem;
+  transition:border-color .15s, transform .15s, box-shadow .15s; }
+.cand-carte:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.06); }
+.cand-avatar { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:50%; background:var(--faint);
+  color:var(--accent); font-family:'Spectral',Georgia,serif; font-weight:700; font-size:0.95rem;
+  display:flex; align-items:center; justify-content:center; }
+.cand-nom { font-family:'Spectral',Georgia,serif; font-weight:600; font-size:1.12rem; line-height:1.2; margin:0; }
+.cand-nom a { text-decoration:none; color:var(--encre); }
+.cand-nom a:hover { color:var(--accent); }
+.cand-parti { font-size:0.85rem; color:var(--encre-douce); margin:0.15rem 0 0.55rem; }
+.cand-note { font-size:0.8rem; color:var(--mute); margin-top:0.5rem; }
