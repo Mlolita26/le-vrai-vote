@@ -438,3 +438,39 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .cmp-desc summary { cursor:pointer; color:var(--accent); font-weight:600; }
 .cmp-desc p { color:var(--encre-douce); margin:.4rem 0 0; }
 @media (max-width:520px){ .cmp-cols { grid-template-columns:1fr; } .cmp-cols .cmp-col:last-child { align-items:flex-start; text-align:left; } .cmp-vs { display:none; } }
+
+/* ============================================================
+   Comparateur — refonte « bannieres » (26/07/2026)
+   Chaque vote : titre + description toujours visible + une banniere
+   coloree par candidat (couleur = position) -> accord/divergence lus
+   d'un coup d'oeil. Meme langage visuel que les fiches.
+   ============================================================ */
+.cmp-vote { background:var(--carte); border:1px solid var(--lisere); border-radius:14px;
+  padding:1rem 1.1rem; margin:.7rem 0; border-top:4px solid var(--lisere); }
+.cmp-vote.diverge { border-top-color:var(--b-contre-fg); }
+.cmp-vote.accord  { border-top-color:var(--b-pour-fg); }
+.cmp-vote.incomp  { opacity:.78; }
+.cmp-tete { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.3rem 1rem; }
+.cmp-titre { font-family:'Spectral',Georgia,serif; font-weight:600; font-size:1.08rem; }
+.cmp-chambre { font-family:system-ui; font-size:.7rem; font-weight:600; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--mute); white-space:nowrap; }
+.cmp-desc-texte { font-size:.88rem; color:var(--encre-douce); margin:.45rem 0 .8rem; }
+
+.cmp-bannieres { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.cmp-ban { border-radius:10px; padding:.6rem .8rem; display:flex; flex-direction:column; gap:.15rem;
+  box-shadow:inset 5px 0 0 rgba(0,0,0,.14); }
+.cmp-ban-qui { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; opacity:.85; }
+.cmp-ban-pos { font-family:'Spectral',Georgia,serif; font-weight:700; font-size:1.15rem; line-height:1.1; }
+.cmp-ban.rail-pour   { background:var(--b-pour-bg);   color:var(--b-pour-fg); }
+.cmp-ban.rail-contre { background:var(--b-contre-bg); color:var(--b-contre-fg); }
+.cmp-ban.rail-abst   { background:var(--b-abst-bg);   color:var(--b-abst-fg); }
+.cmp-ban.rail-neutre { background:var(--faint);       color:var(--encre-douce); box-shadow:inset 5px 0 0 var(--lisere); }
+
+.cmp-marque { display:inline-block; margin-top:.6rem; font-size:.74rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.05em; padding:.12rem .6rem; border-radius:999px; }
+.cmp-marque.diverge { color:var(--b-contre-fg); background:var(--b-contre-bg); }
+.cmp-marque.accord  { color:var(--b-pour-fg);  background:var(--b-pour-bg); }
+.cmp-nuance { font-size:.8rem; color:var(--encre-douce); margin:.5rem 0 0; font-style:italic;
+  padding-left:.55rem; border-left:2px solid var(--lisere); }
+.cmp-nuance strong { font-style:normal; color:var(--encre); }
+@media (max-width:520px){ .cmp-bannieres { grid-template-columns:1fr; } }

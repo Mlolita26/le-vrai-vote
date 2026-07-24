@@ -62,10 +62,18 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     if (!p) return '<span class="badge badge-neutre">' + (mode === "perso" ? "n’a pas voté" : "pas de position") + '</span>';
     var l = d.libelles[p]; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>';
   }
-  function nuanceDe(slug, vid) {
+  function nuanceDe(slug, vid, nom) {
     var e = (d.positions[slug] || {})[vid] || {};
     if (!e.nuance) return "";
-    return '<p class="cmp-nuance">' + e.nuance[0] + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
+    return '<p class="cmp-nuance"><strong>' + court(nom) + '</strong> — ' + e.nuance[0]
+      + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
+  }
+  var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
+  function banniere(nom, p) {
+    var cls = p ? RAILCLS[p] : "rail-neutre";
+    var mot = p ? d.libelles[p][0] : (mode === "perso" ? "N’a pas voté" : "Pas de position");
+    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + court(nom)
+      + '</span><span class="cmp-ban-pos">' + mot + '</span></div>';
   }
 
   function rendre() {
@@ -90,14 +98,16 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         if (comparable) { comp++; if (pa === pb) acc++; }
         // Filtre « comparables » : on masque seulement si NI l'un NI l'autre n'a de position.
         if (filtre === "comparable" && !pa && !pb) return;
-        cartes += '<article class="cmp-vote' + (diverge ? " diverge" : (comparable ? " accord" : " incomp")) + '">'
-          + '<div class="cmp-titre">' + v.titre + ' <span class="cmp-chambre">' + v.chambre + '</span></div>'
-          + '<div class="cmp-cols">'
-          + '<div class="cmp-col"><span class="qui">' + court(nomA) + '</span>' + badge(pa) + nuanceDe(a, v.id) + '</div>'
-          + '<div class="cmp-vs">' + (comparable ? (diverge ? "≠" : "=") : "") + '</div>'
-          + '<div class="cmp-col"><span class="qui">' + court(nomB) + '</span>' + badge(pb) + nuanceDe(b, v.id) + '</div>'
-          + '</div>'
-          + '<details class="cmp-desc"><summary>Voir la loi</summary><p>' + v.resume + '</p></details>'
+        var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
+        var marque = comparable ? '<span class="cmp-marque ' + etat + '">'
+          + (diverge ? "Divergence" : "Même position") + '</span>' : '';
+        cartes += '<article class="cmp-vote ' + etat + '">'
+          + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
+          + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+          + '<p class="cmp-desc-texte">' + v.resume + '</p>'
+          + '<div class="cmp-bannieres">' + banniere(nomA, pa) + banniere(nomB, pb) + '</div>'
+          + marque
+          + nuanceDe(a, v.id, nomA) + nuanceDe(b, v.id, nomB)
           + '</article>';
       });
       totComp += comp; totAcc += acc;
