@@ -232,7 +232,7 @@ def charger(base):
             "SELECT scrutin_id, position FROM positions_vote "
             "WHERE personne_id=? AND position IN ('pour','contre','abstention')", (pid,))}
         candidats.append({
-            "slug": c["slug"], "nom": f"{c['prenom']} {c['nom']}",
+            "slug": c["slug"], "nom": f"{c['prenom']} {c['nom']}", "nom_famille": c["nom"],
             "naissance": c["naissance"], "statut": c["statut"],
             "date_declaration": c["date"], "detail": c["detail"],
             "parti": c["detail"].split(" — ")[0].split(",")[0],
@@ -865,17 +865,17 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     if (!p) return '<span class="badge badge-neutre">' + (mode === "perso" ? "n\u2019a pas voté" : "pas de position") + '</span>';
     var l = d.libelles[p]; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>';
   }
-  function nuanceDe(slug, vid, nom) {
+  function nuanceDe(slug, vid, surnom) {
     var e = (d.positions[slug] || {})[vid] || {};
     if (!e.nuance) return "";
-    return '<p class="cmp-nuance"><strong>' + court(nom) + '</strong> — ' + e.nuance[0]
+    return '<p class="cmp-nuance"><strong>' + surnom + '</strong> — ' + e.nuance[0]
       + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
   }
   var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
-  function banniere(nom, p) {
+  function banniere(surnom, p) {
     var cls = p ? RAILCLS[p] : "rail-neutre";
     var mot = p ? d.libelles[p][0] : (mode === "perso" ? "N’a pas voté" : "Pas de position");
-    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + court(nom)
+    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + surnom
       + '</span><span class="cmp-ban-pos">' + mot + '</span></div>';
   }
 
@@ -886,8 +886,10 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       : "Position du parti : la position majoritaire de son groupe parlementaire — utile pour situer deux familles politiques même quand les personnes n’ont pas siégé aux mêmes moments. Ce n’est pas un vote personnel.";
     res.textContent = "";
     if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
-    var nomA = d.candidats.find(function (c) { return c.slug === a; }).nom;
-    var nomB = d.candidats.find(function (c) { return c.slug === b; }).nom;
+    var objA = d.candidats.find(function (c) { return c.slug === a; });
+    var objB = d.candidats.find(function (c) { return c.slug === b; });
+    var nomA = objA.nom, nomB = objB.nom;
+    var surA = objA.nom_famille || nomA, surB = objB.nom_famille || nomB;
 
     var totComp = 0, totAcc = 0;
     var sections = document.createElement("div");
@@ -908,9 +910,9 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<p class="cmp-desc-texte">' + v.resume + '</p>'
-          + '<div class="cmp-bannieres">' + banniere(nomA, pa) + banniere(nomB, pb) + '</div>'
+          + '<div class="cmp-bannieres">' + banniere(surA, pa) + banniere(surB, pb) + '</div>'
           + marque
-          + nuanceDe(a, v.id, nomA) + nuanceDe(b, v.id, nomB)
+          + nuanceDe(a, v.id, surA) + nuanceDe(b, v.id, surB)
           + '</article>';
       });
       totComp += comp; totAcc += acc;
@@ -1052,7 +1054,8 @@ def generer(base):
 
     libelles_themes = {t["id"]: t["libelle"] for t in themes}
     (WEB / "data.json").write_text(json.dumps({
-        "candidats": [{"slug": c["slug"], "nom": c["nom"]} for c in candidats],
+        "candidats": [{"slug": c["slug"], "nom": c["nom"], "nom_famille": c["nom_famille"]}
+                      for c in candidats],
         "themes": [t["libelle"] for t in themes],
         "votes": [{"id": str(v["id"]), "titre": v["titre"], "resume": v["resume"],
                    "theme": libelles_themes[v["thematique_id"]],
