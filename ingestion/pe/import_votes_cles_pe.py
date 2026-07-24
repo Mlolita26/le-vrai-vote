@@ -44,6 +44,21 @@ VOTES_CLES_PE = {
     "pacte_migration": 167531,
     "facilite_ukraine": 164536,
     "soutien_ukraine": 169362,
+    # Extension « votes clivants » (positions différentes entre délégations).
+    "marche_carbone": 154173,
+    "transparence_salariale": 154076,
+    "marche_electricite": 167334,
+    "preuves_electroniques": 155918,
+    "logiciels_espions": 150367,
+    "armes_a_feu": 168301,
+    "eurodac": 166929,
+    "filtrage_frontieres": 166904,
+    "convention_istanbul": 155091,
+    "avortement_charte": 168054,
+    "egalite_lgbtiq": 164215,
+    "elargissement_ue": 186518,
+    "etat_droit_hongrie": 168862,
+    "reglement_ia": 166051,
 }
 
 # « Voix 2 » = la DÉLÉGATION FRANÇAISE du groupe européen où siège le parti du
