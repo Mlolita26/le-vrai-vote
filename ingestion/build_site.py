@@ -117,6 +117,36 @@ def chip_resultat(v):
     return f'<span class="chip-resultat">{e(texte)}</span>'
 
 
+def senat_fiche(vc_id, slug, equiv_senat):
+    """Ligne \u00ab Au S\u00e9nat \u00bb sur la fiche : position du candidat sur le texte \u00e9quivalent."""
+    eq = equiv_senat.get(vc_id)
+    if not eq:
+        return ""
+    pos = eq["positions"].get(slug)
+    if not pos:
+        return ""
+    lib, classe = ETATS[pos]
+    return (f'<p class="ligne-senat">Au S\u00e9nat, sur le m\u00eame texte '
+            f'(scrutin du {date_fr(eq["date"])}) : <span class="badge {classe}">{lib}</span></p>')
+
+
+def senat_theme(vc_id, equiv_senat, par_slug):
+    """Ligne \u00ab Au S\u00e9nat \u00bb sur la page th\u00e8me : positions des candidats suivis."""
+    eq = equiv_senat.get(vc_id)
+    if not eq or not eq["positions"]:
+        return ""
+    parts = []
+    for s, pos in eq["positions"].items():
+        if s in par_slug:
+            lib, classe = ETATS[pos]
+            parts.append(f'<a href="../../candidats/{s}/">{e(par_slug[s])}</a> '
+                         f'<span class="badge {classe}">{lib}</span>')
+    if not parts:
+        return ""
+    return (f'<p class="ligne-senat">Au S\u00e9nat, m\u00eame texte (scrutin du {date_fr(eq["date"])}, '
+            f'{e(eq["sort"] or "")}) : ' + ", ".join(parts) + "</p>")
+
+
 def date_fr(iso):
     if not iso:
         return None
@@ -196,6 +226,14 @@ def charger(base):
     groupe_du_candidat = {(slug_p, leg): abrege for slug_p, leg, abrege in cur.execute(
         "SELECT p.slug, gr.legislature, gr.groupe_abrege FROM groupes_reference gr "
         "JOIN personnes p ON p.id = gr.personne_id")}
+    equiv_senat = {}
+    for vc_id, sdate, ssort in cur.execute(
+            "SELECT vc.id, s.date, s.sort FROM votes_cles vc "
+            "JOIN scrutins s ON s.id = vc.scrutin_senat_id WHERE vc.scrutin_senat_id IS NOT NULL").fetchall():
+        pos = dict(cur.execute(
+            "SELECT p.slug, pv.position FROM positions_vote pv JOIN personnes p ON p.id = pv.personne_id "
+            "JOIN votes_cles vc ON vc.scrutin_senat_id = pv.scrutin_id WHERE vc.id = ?", (vc_id,)).fetchall())
+        equiv_senat[vc_id] = {"date": sdate, "sort": ssort, "positions": pos}
     etats = {(slug_p, vid): etat for slug_p, vid, etat in cur.execute(
         "SELECT personne_slug, vote_cle_id, etat FROM couverture")}
     # Nuances : explication sourcée d'un vote contre-intuitif, par (personne, vote clé).
@@ -211,7 +249,7 @@ def charger(base):
         "candidats_maj": "23/07/2026",
     }
     con.close()
-    return candidats, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, meta
+    return (candidats, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, equiv_senat, meta)
 
 
 def concordances(candidats):
@@ -448,7 +486,7 @@ document.getElementById("recherche").addEventListener("input", function () {{
     return page("Candidats", "Candidats", contenu, 1, meta)
 
 
-def fiche_candidat(p, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, meta):
+def fiche_candidat(p, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, equiv_senat, meta):
     declaration = (f"le {date_fr(p['date_declaration'])}" if p["date_declaration"]
                    else "(date non fournie par la source)")
     statut = "Candidature déclarée" if p["statut"] == "declaree" else "En lice pour une primaire"
@@ -500,9 +538,11 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                     "Son parti n'avait pas de groupe à l'Assemblée sur cette législature : "
                     "aucun décompte officiel de groupe n'existe pour ce scrutin.")
                 groupe_html = f'<p class="ligne-groupe ligne-groupe-absente">{e(explication)}</p>'
+            senat_html = senat_fiche(v["id"], p["slug"], equiv_senat)
             lignes += f"""<li class="vote-cle">
 <div class="vote-tete"><strong>{e(v['titre'])}</strong> {chip_resultat(v)} {badge_etat(etat_v)}</div>
 {groupe_html}
+{senat_html}
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
 {nuance_html}
@@ -563,7 +603,7 @@ La sélection suit la <a href="../methode/">grille de critères publiée</a>, id
     return page("Thèmes", "Thèmes", contenu, 1, meta)
 
 
-def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta):
+def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, equiv_senat, meta):
     par_slug = {c["slug"]: c["nom"] for c in candidats}
     blocs = ""
     for v in votes_t:
@@ -601,6 +641,7 @@ def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta):
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 <ul class="groupes-etat">{lignes_groupes}</ul>
+{senat_theme(v["id"], equiv_senat, par_slug)}
 {groupes_html}
 {nuances_html}
 </article>"""
@@ -770,7 +811,7 @@ photographie librement réutilisable sont représentés par leurs initiales.</p>
 
 def generer(base):
     (candidats, themes, votes_cles, etats, nuances,
-     groupes_par_vote, groupe_du_candidat, meta) = charger(base)
+     groupes_par_vote, groupe_du_candidat, equiv_senat, meta) = charger(base)
     paires, comparables = concordances(candidats)
 
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
@@ -785,7 +826,7 @@ def generer(base):
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
             fiche_candidat(p, themes, votes_cles, etats, nuances,
-                           groupes_par_vote, groupe_du_candidat, meta), encoding="utf-8")
+                           groupes_par_vote, groupe_du_candidat, equiv_senat, meta), encoding="utf-8")
     (WEB / "themes" / "index.html").write_text(
         page_themes_index(themes, votes_cles, meta), encoding="utf-8")
     for t in themes:
@@ -793,7 +834,7 @@ def generer(base):
         dossier = WEB / "themes" / THEME_SLUGS[t["libelle"]]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta), encoding="utf-8")
+            page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, equiv_senat, meta), encoding="utf-8")
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(
         page_methode(meta, {c["slug"]: c["nom"] for c in candidats}), encoding="utf-8")

@@ -319,3 +319,7 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .fiche-tete .cand-avatar { width:4.5rem; height:4.5rem; font-size:1.4rem; }
 .fiche-tete h1 { margin:0 0 0.2rem; }
 .credits-photos { font-size:0.82rem; }
+
+/* Ligne « Au Sénat » (équivalent d'un vote clé dans l'autre chambre) */
+.ligne-senat { font-size:0.88rem; color:var(--encre-douce); margin:0.35rem 0;
+  padding-left:0.6rem; border-left:3px solid var(--lisere); }

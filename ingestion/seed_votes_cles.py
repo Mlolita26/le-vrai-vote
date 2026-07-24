@@ -156,6 +156,19 @@ VOTES = [
 ]
 
 
+# Équivalents au Sénat (MÊME texte, même lecture) : {uid vote clé AN : uid scrutin Sénat}.
+# Appariements vérifiés le 24/07/2026 sur l'objet et la date. Les faux amis ont été
+# écartés (nationalité Sénat = texte spécifique Mayotte ; « Duplomb » Sénat = projet
+# agricole 2026 distinct ; pas de CMP soins palliatifs isolable). NULL sinon.
+EQUIV_SENAT = {
+    "VTANR5L16V3213": "SEN-2023-109",   # immigration 2023 (CMP, même jour)
+    "VTANR5L16V186": "SEN-2021-152",    # pouvoir d'achat 2022 (CMP, même jour)
+    "VTANR5L17V6319": "SEN-2025-250",   # fraudes sociales et fiscales (CMP)
+    "VTANR5L17V1473": "SEN-2024-262",   # narcotrafic (CMP ; Retailleau ministre → sans position)
+    "VTANR5L17V7405": "SEN-2025-308",   # sécurité / rétention administrative (CMP)
+}
+
+
 def seed(base: Path) -> None:
     con = sqlite3.connect(base)
     con.execute("PRAGMA foreign_keys = ON")
@@ -182,10 +195,16 @@ def seed(base: Path) -> None:
         else:
             url = f"https://www.assemblee-nationale.fr/dyn/{leg}/scrutins/{numero}"
         ordre_par_theme[theme] = ordre_par_theme.get(theme, 0) + 1
+        sid_senat = None
+        if uid in EQUIV_SENAT:
+            r = cur.execute("SELECT id FROM scrutins WHERE uid_officiel=?", (EQUIV_SENAT[uid],)).fetchone()
+            if r is None:
+                sys.exit(f"Équivalent Sénat {EQUIV_SENAT[uid]} introuvable — collecter le Sénat d'abord.")
+            sid_senat = r[0]
         cur.execute(
-            "INSERT INTO votes_cles (scrutin_id, thematique_id, titre, resume, source_resume, contexte, ordre) "
-            "VALUES (?,?,?,?,?,?,?)",
-            (sid, ids_theme[theme], titre, resume, url, contexte, ordre_par_theme[theme]))
+            "INSERT INTO votes_cles (scrutin_id, thematique_id, titre, resume, source_resume, contexte, "
+            "ordre, scrutin_senat_id) VALUES (?,?,?,?,?,?,?,?)",
+            (sid, ids_theme[theme], titre, resume, url, contexte, ordre_par_theme[theme], sid_senat))
 
     con.commit()
     n = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]

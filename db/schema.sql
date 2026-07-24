@@ -136,7 +136,11 @@ CREATE TABLE IF NOT EXISTS votes_cles (
     resume        TEXT NOT NULL,       -- phrase neutre : décrit, ne juge pas
     source_resume TEXT NOT NULL,       -- URL de la page officielle du scrutin ou du dossier
     contexte      TEXT,
-    ordre         INTEGER NOT NULL DEFAULT 0
+    ordre         INTEGER NOT NULL DEFAULT 0,
+    -- Scrutin équivalent au Sénat sur le MÊME texte (autre chambre) : permet
+    -- d'afficher la position d'un sénateur (Retailleau) sur une loi clé sans
+    -- fusionner les deux votes, qui restent distincts. NULL si sans équivalent.
+    scrutin_senat_id INTEGER REFERENCES scrutins(id)
 );
 
 -- Déclarations publiques de candidature (saisie éditoriale sourcée).
