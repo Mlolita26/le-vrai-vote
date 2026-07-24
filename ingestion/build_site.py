@@ -83,17 +83,18 @@ def decompte_groupe(g):
 
 
 def chip_groupe(g, est_censure=False):
-    nom = g["abrege"] or "groupe non identifié (réf. Sénat)"
+    # Nom complet du groupe (référentiel officiel) plutôt que le sigle seul.
+    nom = g["libelle"] or g["abrege"] or "groupe non identifié (réf. Sénat)"
     # Motion de censure : seuls les votes pour sont enregistrés — on affiche
     # le nombre de voix apportées à la censure, pas une « majorité ».
     if est_censure:
         if g["pour"]:
-            return (f'<span class="badge badge-pour">{e(nom)} : {g["pour"]} voix pour la censure</span>')
-        return f'<span class="badge badge-neutre">{e(nom)} : aucune voix pour la censure</span>'
+            return (f'<span class="badge badge-groupe badge-pour">{e(nom)} : {g["pour"]} voix pour la censure</span>')
+        return f'<span class="badge badge-groupe badge-neutre">{e(nom)} : aucune voix pour la censure</span>'
     maj = majorite_groupe(g)
     classe = ETATS[maj][1] if maj else "badge-neutre"
     libelle_maj = ETATS[maj][0] if maj else "partagé"
-    return (f'<span class="badge {classe}">{e(nom)} : {libelle_maj}</span> '
+    return (f'<span class="badge badge-groupe {classe}">{e(nom)} : {libelle_maj}</span> '
             f'<span class="decompte-groupe">({e(decompte_groupe(g))})</span>')
 
 
