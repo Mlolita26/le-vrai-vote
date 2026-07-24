@@ -51,6 +51,23 @@ RATTACHEMENTS = [
     ("edouard-philippe", "17", "HOR", "Horizons — groupe Horizons & Indépendants"),
     ("marine-tondelier", "16", "Ecolo - NUPES", "Les Écologistes — groupe Écologiste-NUPES"),
     ("marine-tondelier", "17", "EcoS", "Les Écologistes — groupe Écologiste et Social"),
+    # ── Parlement européen : délégation française du parti (termes 9 et 10) ─────
+    # Cas nets uniquement (délégation française = le parti) : RN et LFI. Le
+    # candidat n'a pas nécessairement siégé au PE — c'est la position de sa
+    # délégation ; l'UI affiche « n'y siégeait pas » le cas échéant.
+    ("marine-le-pen", "pe9", "RN",
+     "Rassemblement national — délégation française au groupe Identité et démocratie "
+     "(PE, 2019-2024). Marine Le Pen n'y siégeait pas (mandat européen achevé en 2017) : "
+     "position de la délégation, pas un vote personnel."),
+    ("marine-le-pen", "pe10", "RN",
+     "Rassemblement national — délégation française au groupe Patriotes pour l'Europe "
+     "(PE, depuis 2024). Position de la délégation, pas un vote personnel de Marine Le Pen."),
+    ("jean-luc-melenchon", "pe9", "LFI",
+     "La France insoumise — délégation française au groupe The Left/GUE-NGL (PE, 2019-2024). "
+     "Jean-Luc Mélenchon n'y siégeait pas (mandat européen achevé en 2017) : position de la délégation."),
+    ("jean-luc-melenchon", "pe10", "LFI",
+     "La France insoumise — délégation française au groupe The Left/GUE-NGL (PE, depuis 2024). "
+     "Position de la délégation, pas un vote personnel de Jean-Luc Mélenchon."),
 ]
 
 
@@ -59,30 +76,58 @@ def seed(base: Path) -> None:
     con.execute("PRAGMA foreign_keys = ON")
     cur = con.cursor()
 
-    if cur.execute("SELECT COUNT(*) FROM groupes_reference").fetchone()[0]:
-        sys.exit("La table groupes_reference n'est pas vide — la vider avant de re-semer.")
-
-    cur.execute("INSERT INTO sources (url, type, collecte, detail) VALUES (?,?,?,?)",
-                ("https://www.assemblee-nationale.fr/dyn/instances", "autre", "2026-07-24",
-                 "Pages officielles des groupes politiques de l'Assemblée nationale (composition "
-                 "et affiliation partisane), croisées avec le référentiel AMO30."))
-    src = cur.lastrowid
-
+    # Idempotent : on n'ajoute que les rattachements (personne, législature) absents.
+    existants = {(pid, leg) for pid, leg in cur.execute(
+        "SELECT personne_id, legislature FROM groupes_reference")}
     abreges_connus = {a for (a,) in cur.execute(
         "SELECT DISTINCT groupe_abrege FROM positions_groupes WHERE groupe_abrege IS NOT NULL")}
 
+    a_ajouter = []
     for slug, leg, abrege, detail in RATTACHEMENTS:
         pid = cur.execute("SELECT id FROM personnes WHERE slug=?", (slug,)).fetchone()
         if not pid:
             sys.exit(f"Personne inconnue : {slug}")
+        if (pid[0], leg) in existants:
+            continue
         if abrege not in abreges_connus:
-            print(f"  [attention] {slug} L{leg} : groupe « {abrege} » absent des scrutins "
-                  "des votes clés (normal si le groupe n'existait pas encore à ces dates).")
+            print(f"  [attention] {slug} {leg} : groupe « {abrege} » absent des scrutins "
+                  "des votes clés (normal si le groupe/terme n'est pas encore importé).")
+        a_ajouter.append((pid[0], leg, abrege, detail))
+
+    if not a_ajouter:
+        print("groupes_reference : déjà à jour, rien à ajouter.")
+        con.close()
+        return
+
+    # Deux sources selon l'échelle (AN vs PE), créées seulement si nécessaires.
+    src_an = src_pe = None
+    def source_an():
+        nonlocal src_an
+        if src_an is None:
+            cur.execute("INSERT INTO sources (url, type, collecte, detail) VALUES (?,?,?,?)",
+                        ("https://www.assemblee-nationale.fr/dyn/instances", "autre", "2026-07-24",
+                         "Pages officielles des groupes politiques de l'Assemblée nationale "
+                         "(composition et affiliation partisane), croisées avec le référentiel AMO30."))
+            src_an = cur.lastrowid
+        return src_an
+    def source_pe():
+        nonlocal src_pe
+        if src_pe is None:
+            cur.execute("INSERT INTO sources (url, type, collecte, detail) VALUES (?,?,?,?)",
+                        ("https://www.europarl.europa.eu/meps/fr/", "autre", "2026-07-24",
+                         "Rattachement éditorial candidat → délégation française de son parti au "
+                         "Parlement européen (groupe et terme), fiches officielles europarl.europa.eu."))
+            src_pe = cur.lastrowid
+        return src_pe
+
+    for pid, leg, abrege, detail in a_ajouter:
+        src = source_pe() if leg.startswith("pe") else source_an()
         cur.execute("INSERT INTO groupes_reference (personne_id, legislature, groupe_abrege, detail, source_id) "
-                    "VALUES (?,?,?,?,?)", (pid[0], leg, abrege, detail, src))
+                    "VALUES (?,?,?,?,?)", (pid, leg, abrege, detail, src))
 
     con.commit()
-    print(f"Semé : {len(RATTACHEMENTS)} rattachements candidat → groupe (cas nets uniquement).")
+    print(f"Semé : {len(a_ajouter)} rattachement(s) candidat → groupe ajouté(s) "
+          f"({sum(1 for r in a_ajouter if r[1].startswith('pe'))} au PE).")
     con.close()
 
 

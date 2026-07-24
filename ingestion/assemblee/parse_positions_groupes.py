@@ -73,7 +73,10 @@ def importer(base: Path, dossier: Path) -> None:
                  "l'import des positions individuelles) ; libellés de groupes : référentiel AMO30."))
     src = cur.lastrowid
 
-    cur.execute("DELETE FROM positions_groupes")
+    # Scindé par chambre : ne pas effacer les décomptes d'autres chambres
+    # (ex. délégations européennes insérées par ingestion/pe/import_votes_cles_pe.py).
+    cur.execute("DELETE FROM positions_groupes WHERE scrutin_id IN "
+                "(SELECT id FROM scrutins WHERE chambre IN ('an','congres'))")
     inseres, inconnus = 0, set()
     for zip_path in sorted(dossier.glob("Scrutins*.zip")):
         with zipfile.ZipFile(zip_path) as z:

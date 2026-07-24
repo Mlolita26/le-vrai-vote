@@ -153,6 +153,35 @@ VOTES = [
     ("VTANR5L14V594", "institutions", "Transparence de la vie publique (2013)",
      "Crée la Haute Autorité pour la transparence de la vie publique (HATVP) et oblige les membres du Gouvernement et de nombreux élus à déclarer publiquement leur patrimoine et leurs intérêts (activités, revenus, liens pouvant créer des conflits d'intérêts). L'enjeu : prévenir la corruption et les conflits d'intérêts, et renforcer la confiance envers les responsables politiques.",
      "Adoptée après l'affaire Cahuzac (lecture définitive). Ce sont ces déclarations HATVP que le présent site utilise pour la partie « parcours » des candidats."),
+
+    # ── Parlement européen (uid PE-HTV-<vote_id>, importés par ingestion/pe) ────
+    # Pour la plupart des candidats, aucun vote personnel n'est disponible (mandat
+    # européen achevé avant 2019) : c'est la position de la DÉLÉGATION de leur parti
+    # qui s'affiche, clairement étiquetée « n'y siégeait pas ». Sélection symétrique.
+    ("PE-HTV-147342", "pouvoir-achat-fiscalite", "Salaire minimum européen (2022)",
+     "Directive fixant un cadre pour des salaires minimaux « adéquats » dans l'Union : les États dotés d'un salaire minimum légal doivent le fixer selon des critères communs (niveau de vie, salaires médians) et la négociation collective est encouragée, sans montant unique imposé à l'échelle européenne. L'enjeu : relever le niveau des bas salaires en Europe tout en laissant chaque pays fixer son propre montant.",
+     "Vote d'ensemble au Parlement européen, septembre 2022 (9e législature)."),
+    ("PE-HTV-152544", "ecologie-agriculture", "Fin des voitures thermiques neuves en 2035 (2023)",
+     "Fixe la fin de la vente de voitures et utilitaires neufs émettant du CO₂ à partir de 2035 dans l'Union : les constructeurs ne pourront plus vendre que des véhicules neufs à zéro émission. L'enjeu : réduire les émissions du transport routier, mis en balance avec les effets sur l'industrie automobile, l'emploi et le coût des véhicules pour les ménages.",
+     "Normes CO₂ pour voitures et véhicules utilitaires légers, vote de février 2023."),
+    ("PE-HTV-164499", "ecologie-agriculture", "Loi sur la restauration de la nature (2024)",
+     "Impose aux États des objectifs de restauration des milieux naturels dégradés (zones humides, forêts, rivières, terres agricoles, milieux marins) pour enrayer le déclin de la biodiversité. L'enjeu : reconstituer des écosystèmes affaiblis, la question débattue étant l'articulation entre ces objectifs et les usages agricoles et économiques des terres.",
+     "Vote d'adoption de février 2024, sur le texte négocié avec les États membres."),
+    ("PE-HTV-166183", "institutions", "Liberté des médias dans l'Union (2024)",
+     "Règlement européen sur la liberté des médias : protège l'indépendance éditoriale, impose la transparence sur la propriété des médias, encadre la publicité des pouvoirs publics dans les médias et renforce la protection des journalistes et de leurs sources. L'enjeu : préserver le pluralisme et l'indépendance de la presse face aux pressions politiques ou économiques.",
+     "European Media Freedom Act, vote d'adoption de mars 2024."),
+    ("PE-HTV-168573", "societe", "Lutte contre les violences faites aux femmes (2024)",
+     "Première directive européenne dédiée à la lutte contre les violences faites aux femmes et les violences domestiques : elle harmonise certaines infractions et sanctions (notamment les cyberviolences) et renforce la protection, l'accompagnement et l'accès à la justice des victimes dans toute l'Union. L'enjeu : un socle commun de protection, le débat ayant porté sur le périmètre des infractions harmonisées.",
+     "Directive sur la lutte contre la violence à l'égard des femmes et la violence domestique, vote d'avril 2024."),
+    ("PE-HTV-167531", "immigration", "Pacte européen sur l'asile et la migration (2024)",
+     "Pièce centrale du Pacte sur la migration et l'asile : le règlement sur la gestion de l'asile et de la migration réforme la répartition des demandeurs entre États membres et instaure un mécanisme dit de solidarité (accueil de demandeurs ou contribution financière). L'enjeu : répartir la charge de l'asile entre les pays de l'Union — un compromis critiqué à la fois comme trop contraignant et comme insuffisamment protecteur.",
+     "Volet « gestion de l'asile et de la migration » du Pacte, vote d'avril 2024."),
+    ("PE-HTV-164536", "europe-international", "Facilité pour l'Ukraine — 50 milliards (2024)",
+     "Crée la « facilité pour l'Ukraine » : un soutien financier de l'Union doté de 50 milliards d'euros sur 2024-2027 (prêts et subventions) pour le fonctionnement de l'État ukrainien, sa reconstruction et ses réformes. L'enjeu : assurer à l'Ukraine en guerre un financement européen pluriannuel et prévisible.",
+     "Établissement de la facilité pour l'Ukraine, vote de février 2024."),
+    ("PE-HTV-169362", "europe-international", "Soutien continu à l'Ukraine (2024)",
+     "Résolution appelant l'Union et les États membres à maintenir et renforcer leur soutien financier et militaire à l'Ukraine face à l'invasion russe. Une résolution exprime une position politique, sans portée juridiquement contraignante. L'enjeu : la constance et l'ampleur du soutien européen dans la durée.",
+     "Résolution sur la nécessité d'un soutien continu de l'UE à l'Ukraine, vote de juillet 2024 (10e législature)."),
 ]
 
 
@@ -174,15 +203,20 @@ def seed(base: Path) -> None:
     con.execute("PRAGMA foreign_keys = ON")
     cur = con.cursor()
 
-    if cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]:
-        sys.exit("La table votes_cles n'est pas vide — la vider avant de re-semer.")
-
+    # Idempotent : thématiques créées à la demande (libellé unique), votes clés
+    # ajoutés seulement s'ils n'existent pas déjà (permet d'ajouter le PE après coup).
     ids_theme = {}
     for ordre, (slug, libelle) in enumerate(THEMES, start=1):
-        cur.execute("INSERT INTO thematiques (libelle, ordre) VALUES (?,?)", (libelle, ordre))
-        ids_theme[slug] = cur.lastrowid
+        cur.execute("INSERT OR IGNORE INTO thematiques (libelle, ordre) VALUES (?,?)", (libelle, ordre))
+        ids_theme[slug] = cur.execute(
+            "SELECT id FROM thematiques WHERE libelle=?", (libelle,)).fetchone()[0]
 
+    # Ordre d'affichage par thème : on repart du maximum déjà présent.
     ordre_par_theme = {}
+    for tid, mx in cur.execute("SELECT thematique_id, MAX(ordre) FROM votes_cles GROUP BY thematique_id"):
+        ordre_par_theme[tid] = mx or 0
+
+    ajout = 0
     for uid, theme, titre, resume, contexte in VOTES:
         scrutin = cur.execute(
             "SELECT id, legislature, numero, chambre FROM scrutins WHERE uid_officiel = ?",
@@ -190,11 +224,16 @@ def seed(base: Path) -> None:
         if scrutin is None:
             sys.exit(f"Scrutin {uid} introuvable en base — la sélection doit pointer des scrutins importés.")
         sid, leg, numero, chambre = scrutin
+        if cur.execute("SELECT 1 FROM votes_cles WHERE scrutin_id=?", (sid,)).fetchone():
+            continue  # déjà en base
         if chambre == "congres":
             url = URL_CONGRES_IVG
+        elif chambre == "pe":
+            url = f"https://howtheyvote.eu/votes/{numero}"
         else:
             url = f"https://www.assemblee-nationale.fr/dyn/{leg}/scrutins/{numero}"
-        ordre_par_theme[theme] = ordre_par_theme.get(theme, 0) + 1
+        tid = ids_theme[theme]
+        ordre_par_theme[tid] = ordre_par_theme.get(tid, 0) + 1
         sid_senat = None
         if uid in EQUIV_SENAT:
             r = cur.execute("SELECT id FROM scrutins WHERE uid_officiel=?", (EQUIV_SENAT[uid],)).fetchone()
@@ -204,12 +243,14 @@ def seed(base: Path) -> None:
         cur.execute(
             "INSERT INTO votes_cles (scrutin_id, thematique_id, titre, resume, source_resume, contexte, "
             "ordre, scrutin_senat_id) VALUES (?,?,?,?,?,?,?,?)",
-            (sid, ids_theme[theme], titre, resume, url, contexte, ordre_par_theme[theme], sid_senat))
+            (sid, tid, titre, resume, url, contexte, ordre_par_theme[tid], sid_senat))
+        ajout += 1
 
     con.commit()
     n = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     couv = cur.execute("SELECT COUNT(*) FROM couverture").fetchone()[0]
-    print(f"Semé : {len(THEMES)} thématiques, {n} votes clés. Vue couverture : {couv} états calculés.")
+    print(f"Semé : {len(THEMES)} thématiques, +{ajout} vote(s) clé(s) ajouté(s) ({n} au total). "
+          f"Vue couverture : {couv} états calculés.")
     con.close()
 
 

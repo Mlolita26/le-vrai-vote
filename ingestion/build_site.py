@@ -82,7 +82,7 @@ def decompte_groupe(g):
     return " · ".join(morceaux) if morceaux else "aucun suffrage exprimé"
 
 
-def chip_groupe(g, est_censure=False):
+def chip_groupe(g, est_censure=False, contour=False):
     # Nom complet du groupe (référentiel officiel) plutôt que le sigle seul.
     nom = g["libelle"] or g["abrege"] or "groupe non identifié (réf. Sénat)"
     # Motion de censure : seuls les votes pour sont enregistrés — on affiche
@@ -93,6 +93,10 @@ def chip_groupe(g, est_censure=False):
         return f'<span class="badge badge-groupe badge-neutre">{e(nom)} : aucune voix pour la censure</span>'
     maj = majorite_groupe(g)
     classe = ETATS[maj][1] if maj else "badge-neutre"
+    # « contour » : position d'un PARTI/délégation (badge en contour), à distinguer
+    # visuellement du badge plein = vote personnel de la personne.
+    if contour:
+        classe = f"badge-contour {classe}"
     libelle_maj = ETATS[maj][0] if maj else "partagé"
     return (f'<span class="badge badge-groupe {classe}">{e(nom)} : {libelle_maj}</span> '
             f'<span class="decompte-groupe">({e(decompte_groupe(g))})</span>')
@@ -520,27 +524,45 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
         lignes = ""
         for v in votes_t:
             etat_v = etats.get((p["slug"], v["id"]), "a_importer")
+            est_pe = v["chambre"] == "pe"
             nuance = nuances.get((p["slug"], v["id"]))
             nuance_html = (f'<p class="vote-nuance">Nuance : {e(nuance[0])} '
                            f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</p>' if nuance else "")
-            # Position du groupe parlementaire du parti du candidat (même quand
-            # lui-même n'a pas voté : absent, non concerné, indisponible…).
+            # Voix 2 — position du groupe/délégation du parti du candidat (même
+            # quand lui-même n'a pas voté). Au PE : badge en contour (≠ vote perso).
             groupe_html = ""
             abrege = groupe_du_candidat.get((p["slug"], v["legislature"]))
             if abrege:
                 g = next((x for x in groupes_par_vote.get(v["id"], []) if x["abrege"] == abrege), None)
-                if g:
+                if g and est_pe:
+                    groupe_html = (f'<p class="ligne-groupe ligne-pe">Son parti au Parlement européen — '
+                                   f'{chip_groupe(g, contour=True)}</p>')
+                elif g:
                     groupe_html = (f'<p class="ligne-groupe">Son parti — groupe '
                                    f'{chip_groupe(g, v["est_censure"])}</p>')
-            elif any(cle[0] == p["slug"] for cle in groupe_du_candidat):
+            elif not est_pe and any(cle[0] == p["slug"] for cle in groupe_du_candidat):
                 explication = SANS_GROUPE.get(
                     (p["slug"], v["legislature"]),
                     "Son parti n'avait pas de groupe à l'Assemblée sur cette législature : "
                     "aucun décompte officiel de groupe n'existe pour ce scrutin.")
                 groupe_html = f'<p class="ligne-groupe ligne-groupe-absente">{e(explication)}</p>'
             senat_html = senat_fiche(v["id"], p["slug"], equiv_senat)
+            a_vote_perso = etat_v in ("pour", "contre", "abstention", "absent")
+            # Au PE, une carte sans vote personnel ET sans position de parti
+            # rattachée n'apporte rien : on ne l'affiche pas (évite le bruit sur
+            # les fiches des candidats sans lien avec le Parlement européen).
+            if est_pe and not a_vote_perso and not groupe_html:
+                continue
+            # Voix 1 — vote personnel. Au PE, affichée seulement si vote réel ;
+            # sinon ruban « n'y siégeait pas » (on n'affiche pas « non concerné »
+            # pour un mandat européen que la personne n'avait pas).
+            if est_pe and not a_vote_perso:
+                perso_html = f'<span class="mention-absente">{e(p["nom"])} n\'y siégeait pas</span>'
+            else:
+                perso_html = badge_etat(etat_v)
+            provenance = '<span class="provenance-pe">Parlement européen</span> ' if est_pe else ''
             lignes += f"""<li class="vote-cle">
-<div class="vote-tete"><strong>{e(v['titre'])}</strong> {chip_resultat(v)} {badge_etat(etat_v)}</div>
+<div class="vote-tete"><strong>{e(v['titre'])}</strong> {provenance}{chip_resultat(v)} {perso_html}</div>
 {groupe_html}
 {senat_html}
 <p class="vote-resume">{e(v['resume'])}
@@ -548,8 +570,9 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 {nuance_html}
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 </li>"""
-        votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
-                       f'<ul class="votes-cles">{lignes}</ul>')
+        if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
+            votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
+                           f'<ul class="votes-cles">{lignes}</ul>')
 
     n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
     bloc_an = ("<h2>Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"
