@@ -146,9 +146,14 @@ def charger(base):
         mandats = [dict(m) for m in cur.execute(
             "SELECT type, debut, fin, precision, detail FROM mandats "
             "WHERE personne_id=? ORDER BY debut", (pid,))]
+        # Positions ventilées par chambre : l'AN/Congrès et le Sénat ne se
+        # mélangent pas (échelles et périodes différentes).
         positions = dict(cur.execute(
-            "SELECT position, COUNT(*) FROM positions_vote WHERE personne_id=? "
-            "GROUP BY position", (pid,)).fetchall())
+            "SELECT position, COUNT(*) FROM positions_vote pv JOIN scrutins s ON s.id = pv.scrutin_id "
+            "WHERE pv.personne_id=? AND s.chambre IN ('an','congres') GROUP BY position", (pid,)).fetchall())
+        positions_senat = dict(cur.execute(
+            "SELECT position, COUNT(*) FROM positions_vote pv JOIN scrutins s ON s.id = pv.scrutin_id "
+            "WHERE pv.personne_id=? AND s.chambre='senat' GROUP BY position", (pid,)).fetchall())
         solennels = [dict(r) for r in cur.execute(
             "SELECT s.legislature AS leg, "
             "SUM(CASE WHEN pv.position != 'absent' THEN 1 ELSE 0 END) AS present, COUNT(*) AS total "
@@ -164,7 +169,8 @@ def charger(base):
             "date_declaration": c["date"], "detail": c["detail"],
             "parti": c["detail"].split(" — ")[0].split(",")[0],
             "source": c["source_url"], "mandats": mandats,
-            "positions": positions, "solennels": solennels, "exprimes": exprimes,
+            "positions": positions, "positions_senat": positions_senat,
+            "solennels": solennels, "exprimes": exprimes,
         })
 
     themes = [dict(t) for t in cur.execute(
@@ -259,8 +265,7 @@ def page(titre, actif, contenu, profondeur, meta):
 """
 
 
-def badges_positions(p):
-    d = p["positions"]
+def badges_positions(d):
     morceaux = []
     for cle, libelle, classe in (("pour", "pour", "badge-pour"), ("contre", "contre", "badge-contre"),
                                  ("abstention", "abstention", "badge-abstention"),
@@ -273,13 +278,17 @@ def badges_positions(p):
 
 def etat_couverture(p):
     """Phrase d'état honnête selon les données disponibles."""
-    n_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
-    a_mandat_parl = any(m["type"] in ("depute", "senateur", "eurodepute") for m in p["mandats"])
+    exprimables = ("pour", "contre", "abstention")
+    n_an = sum(v for k, v in p["positions"].items() if k in exprimables)
+    n_senat = sum(v for k, v in p.get("positions_senat", {}).items() if k in exprimables)
     est_senateur = any(m["type"] == "senateur" for m in p["mandats"])
     est_eurodepute = any(m["type"] == "eurodepute" for m in p["mandats"])
     est_depute = any(m["type"] == "depute" for m in p["mandats"])
-    if n_expr >= SEUIL_COMPARABLE:
-        return "couvert", f"{n_expr:,} votes exprimés en base".replace(",", " ")
+    a_mandat_parl = est_senateur or est_eurodepute or est_depute
+    if n_an >= SEUIL_COMPARABLE:
+        return "couvert", f"{n_an:,} votes exprimés à l'Assemblée".replace(",", " ")
+    if n_senat >= SEUIL_COMPARABLE:
+        return "couvert", f"{n_senat:,} votes exprimés au Sénat".replace(",", " ")
     if est_senateur:
         return "partiel", "sénateur — scrutins du Sénat à importer"
     if est_eurodepute and not est_depute:
@@ -461,7 +470,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 <ul>{lignes}</ul>"""
 
     etat, phrase = etat_couverture(p)
-    positions_html = badges_positions(p) or f'<p class="couverture couverture-{etat}">{e(phrase)}</p>'
+    positions_html = badges_positions(p["positions"]) or f'<p class="couverture couverture-{etat}">{e(phrase)}</p>'
 
     # Votes clés groupés par thème, avec l'état calculé de ce candidat.
     votes_html = ""
@@ -502,6 +511,14 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
         votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
                        f'<ul class="votes-cles">{lignes}</ul>')
 
+    n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
+    bloc_an = ("<h2>Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"
+               + positions_html) if n_an_expr else ""
+    b_sen = badges_positions(p["positions_senat"])
+    bloc_senat = ("<h2>Positions de vote \u2014 S\u00e9nat</h2>\n"
+                  "<p class=\"note-methode\">Scrutins publics du S\u00e9nat collect\u00e9s sur senat.fr. "
+                  "Beaucoup de textes au S\u00e9nat ne font pas l'objet d'un scrutin public : "
+                  "cette r\u00e9partition ne couvre que les scrutins publics.</p>\n" + b_sen) if b_sen else ""
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
 <div class="fiche-tete">{avatar(p, "../../").replace('width="42" height="42"', 'width="72" height="72"')}
@@ -516,8 +533,8 @@ pour tous les candidats. « Non concerné » : pas en poste dans la chambre à l
 {votes_html}
 <h2>Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
-<h2>Ensemble des positions de vote — Assemblée nationale, 2012-2026</h2>
-{positions_html}
+{bloc_an}
+{bloc_senat}
 {solennels_html}
 <h2>Justice</h2>
 <p class="note-methode">Volet renseigné manuellement, fait par fait, uniquement sur documents publics sourcés,
