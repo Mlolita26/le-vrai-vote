@@ -29,6 +29,14 @@ SOURCES = {
                     "franceinfo, juillet 2026 — positions des responsables politiques sur la loi aide à mourir"),
     "ici_narcotrafic": ("https://www.ici.fr/infos/politique/la-loi-contre-le-narcotrafic-definitivement-adoptee-par-le-parlement-8444881",
                         "ICI (Radio France), avril 2025 — adoption définitive de la loi narcotrafic, positions des groupes"),
+    "lfa_enr": ("https://www.lafranceagricole.fr/actualites/article/836388/les-deputes-adoptent-le-projet-de-loi-sur-l-acceleration-des-energies-renouvelab",
+                "La France Agricole, janvier 2023 — adoption de la loi énergies renouvelables, positions et critiques des groupes"),
+    "lcp_pouvoir_achat": ("https://lcp.fr/actualites/pouvoir-d-achat-le-parlement-adopte-definitivement-le-texte-133297",
+                          "LCP, 03/08/2022 — adoption définitive du paquet pouvoir d'achat, explications des groupes"),
+    "fi_fraudes": ("https://www.franceinfo.fr/economie/fraude/l-assemblee-nationale-approuve-largement-un-texte-pour-lutter-contre-les-fraudes-sociales-et-fiscales_7922048.html",
+                   "franceinfo, avril 2026 — adoption du texte fraudes sociales et fiscales, critiques de la gauche"),
+    "cr_ukraine_2022": ("https://www.assemblee-nationale.fr/dyn/16/comptes-rendus/seance/session-ordinaire-de-2022-2023/deuxieme-seance-du-mercredi-30-novembre-2022",
+                        "Compte rendu officiel de séance, AN, 30/11/2022 — explications de vote sur la résolution Ukraine"),
 }
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
@@ -62,6 +70,46 @@ NUANCES = [
     ("clementine-autain", "VTANR5L17V1473",
      "A voté contre, comme les députés ex-insoumis, en dénonçant une approche jugée uniquement répressive au détriment de la prévention.",
      "ici_narcotrafic"),
+    # Énergies renouvelables 2023 : LFI contre, pour des motifs propres.
+    ("francois-ruffin", "VTANR5L16V823",
+     "A voté contre avec le groupe LFI, qui critiquait notamment le classement de la valorisation des déchets parmi les énergies renouvelables et le dispositif des « zones d'accélération » — pas le principe des renouvelables.",
+     "lfa_enr"),
+    # Pouvoir d'achat 2022 : la gauche jugeait le paquet insuffisant.
+    ("clementine-autain", "VTANR5L16V186",
+     "A voté contre avec les groupes de la NUPES, qui jugeaient le texte « insoutenable sur le plan social et environnemental » et lui reprochaient d'esquiver la question des bas salaires et de la hausse du Smic.",
+     "lcp_pouvoir_achat"),
+    ("delphine-batho", "VTANR5L16V186",
+     "A voté contre avec les groupes de la NUPES, qui jugeaient le texte « insoutenable sur le plan social et environnemental » et lui reprochaient d'esquiver la question des bas salaires et de la hausse du Smic.",
+     "lcp_pouvoir_achat"),
+    ("francois-ruffin", "VTANR5L16V186",
+     "A voté contre avec les groupes de la NUPES, qui jugeaient le texte « insoutenable sur le plan social et environnemental » et lui reprochaient d'esquiver la question des bas salaires et de la hausse du Smic.",
+     "lcp_pouvoir_achat"),
+    ("jerome-guedj", "VTANR5L16V186",
+     "Abstention avec le groupe Socialistes — « le compte n'y est pas » : des revalorisations jugées inférieures à l'inflation, sans opposition frontale au principe des mesures.",
+     "lcp_pouvoir_achat"),
+    ("philippe-brun", "VTANR5L16V186",
+     "Abstention avec le groupe Socialistes — « le compte n'y est pas » : des revalorisations jugées inférieures à l'inflation, sans opposition frontale au principe des mesures.",
+     "lcp_pouvoir_achat"),
+    # Fraudes sociales et fiscales 2026 : opposition unanime de la gauche sur l'équilibre du texte.
+    ("clementine-autain", "VTANR5L17V6319",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "fi_fraudes"),
+    ("francois-ruffin", "VTANR5L17V6319",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "fi_fraudes"),
+    ("jerome-guedj", "VTANR5L17V6319",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "fi_fraudes"),
+    ("philippe-brun", "VTANR5L17V6319",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "fi_fraudes"),
+    # Résolution Ukraine 2022 : abstentions LFI et RN, motifs distincts (compte rendu officiel).
+    ("clementine-autain", "VTANR5L16V652",
+     "Abstention avec le groupe LFI : son orateur Aurélien Saintoul critiquait un « bellicisme rhétorique » et l'absence de perspective de négociation et de conditions de paix dans le texte.",
+     "cr_ukraine_2022"),
+    ("marine-le-pen", "VTANR5L16V652",
+     "Abstention avec le groupe RN : son oratrice reprochait au texte de ne rien dire du cessez-le-feu et de la paix, et estimait que la livraison d'armes offensives risquait de rendre la France « cobelligérante ».",
+     "cr_ukraine_2022"),
 ]
 
 

@@ -261,8 +261,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  etat_ivg.get("bruno-retailleau") in ("pour", "contre", "abstention", "non_votant", "absent"),
                  str(etat_ivg.get("bruno-retailleau")))
         # Nuances : chacune sourcée et adossée à une position réellement en base.
-        verifier("8 nuances, toutes adossées à une position existante",
-                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 8
+        verifier("20 nuances, toutes adossées à une position existante",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 20
                  and cur.execute(
                      "SELECT COUNT(*) FROM nuances n WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
