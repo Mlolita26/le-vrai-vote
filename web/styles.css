@@ -385,3 +385,14 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   .vote-carte { grid-template-columns:84px 1fr; }
   .ap-rail .pos { font-size:.85rem; }
 }
+
+/* Filtres par thème (fiche candidat) — barre collante sous la navigation */
+.filtres-themes { display:flex; flex-wrap:wrap; gap:.4rem; margin:.6rem 0 1.2rem;
+  position:sticky; top:3.4rem; z-index:10; background:var(--fond); padding:.5rem 0; }
+.filtre-chip { cursor:pointer; font-family:inherit; font-size:.82rem; font-weight:600;
+  color:var(--encre-douce); background:var(--carte); border:1.5px solid var(--lisere);
+  border-radius:999px; padding:.32rem .8rem; transition:background .12s, color .12s, border-color .12s; }
+.filtre-chip:hover { border-color:var(--accent); color:var(--accent); }
+.filtre-chip.actif { background:var(--accent); color:var(--accent-texte); border-color:var(--accent); }
+.filtre-chip:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.theme-bloc h3 { scroll-margin-top:6rem; }

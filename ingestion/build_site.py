@@ -550,6 +550,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 
     # Votes clés groupés par thème, avec l'état calculé de ce candidat.
     votes_html = ""
+    themes_presents = []
     for t in themes:
         votes_t = [v for v in votes_cles if v["thematique_id"] == t["id"]]
         if not votes_t:
@@ -614,8 +615,11 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 </div>
 </li>"""
         if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
-            votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
-                           f'<ul class="votes-cles">{lignes}</ul>')
+            n_cartes = lignes.count('class="vote-carte"')
+            themes_presents.append((slug_t, t["libelle"], n_cartes))
+            votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
+                           f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
+                           f'<ul class="votes-cles">{lignes}</ul></section>')
 
     n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
     bloc_an = ("<h2>Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"
@@ -625,6 +629,17 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                   "<p class=\"note-methode\">Scrutins publics du S\u00e9nat collect\u00e9s sur senat.fr. "
                   "Beaucoup de textes au S\u00e9nat ne font pas l'objet d'un scrutin public : "
                   "cette r\u00e9partition ne couvre que les scrutins publics.</p>\n" + b_sen) if b_sen else ""
+    total_votes = sum(n for _, _, n in themes_presents)
+    if len(themes_presents) > 1:
+        chips = (f'<button class="filtre-chip actif" data-cible="tous" type="button" '
+                 f'aria-pressed="true">Tous les th\u00e8mes ({total_votes})</button>')
+        for slug_t, lib, n in themes_presents:
+            chips += (f'<button class="filtre-chip" data-cible="{slug_t}" type="button" '
+                      f'aria-pressed="false">{e(lib)} ({n})</button>')
+        filtre_html = (f'<div class="filtres-themes" role="group" '
+                       f'aria-label="Filtrer les votes cl\u00e9s par th\u00e8me">{chips}</div>')
+    else:
+        filtre_html = ""
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
 <div class="fiche-tete">{avatar(p, "../../").replace('width="42" height="42"', 'width="72" height="72"')}
@@ -636,7 +651,24 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 <p class="note-methode">Sélection selon la <a href="../../methode/">grille de critères publiée</a>, identique
 pour tous les candidats. « Non concerné » : pas en poste dans la chambre à la date du scrutin ;
 « absent (déduit) » : mandat actif mais aucune mention au scrutin officiel.</p>
-{votes_html}
+{filtre_html}
+<div id="votes-themes">{votes_html}</div>
+<script>
+(function() {{
+  var chips = document.querySelectorAll(".filtres-themes .filtre-chip");
+  var blocs = document.querySelectorAll("#votes-themes .theme-bloc");
+  chips.forEach(function (c) {{
+    c.addEventListener("click", function () {{
+      chips.forEach(function (x) {{ x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); }});
+      c.classList.add("actif"); c.setAttribute("aria-pressed", "true");
+      var cible = c.dataset.cible;
+      blocs.forEach(function (b) {{
+        b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
+      }});
+    }});
+  }});
+}})();
+</script>
 <h2>Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
 {bloc_an}
