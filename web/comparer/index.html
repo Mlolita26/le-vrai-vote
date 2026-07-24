@@ -26,6 +26,10 @@ européen. Deux façons de comparer, au choix :</p>
   <button type="button" data-mode="perso" class="actif" aria-pressed="true">Votes personnels</button>
   <button type="button" data-mode="parti" aria-pressed="false">Position du parti</button>
 </div>
+<div class="mode-compare filtre-compare" role="group" aria-label="Filtrer les votes affichés">
+  <button type="button" data-filtre="comparable" class="actif" aria-pressed="true">Votes comparables</button>
+  <button type="button" data-filtre="tous" aria-pressed="false">Tous les votes clés</button>
+</div>
 <p class="note-methode" id="note-mode"></p>
 <div id="resultat"></div>
 <script>
@@ -37,16 +41,20 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
   });
   selB.selectedIndex = Math.min(1, selB.options.length - 1);
-  var mode = "perso";
-  var boutons = document.querySelectorAll(".mode-compare button");
-  boutons.forEach(function (b) {
-    b.addEventListener("click", function () {
-      mode = b.dataset.mode;
-      boutons.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
-      b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
-      rendre();
+  var mode = "perso", filtre = "comparable";
+  function brancher(sel, set) {
+    var bs = document.querySelectorAll(sel + " button");
+    bs.forEach(function (b) {
+      b.addEventListener("click", function () {
+        set(b.dataset);
+        bs.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
+        b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
+        rendre();
+      });
     });
-  });
+  }
+  brancher(".mode-compare:not(.filtre-compare)", function (ds) { mode = ds.mode; });
+  brancher(".filtre-compare", function (ds) { filtre = ds.filtre; });
 
   function court(nom) { var p = nom.split(" "); return p[p.length - 1]; }
   function pos(slug, vid) { var e = (d.positions[slug] || {})[vid] || {}; return mode === "perso" ? e.perso : e.parti; }
@@ -80,6 +88,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         var comparable = pa && pb;
         var diverge = comparable && pa !== pb;
         if (comparable) { comp++; if (pa === pb) acc++; }
+        // Filtre « comparables » : on masque seulement si NI l'un NI l'autre n'a de position.
+        if (filtre === "comparable" && !pa && !pb) return;
         cartes += '<article class="cmp-vote' + (diverge ? " diverge" : (comparable ? " accord" : " incomp")) + '">'
           + '<div class="cmp-titre">' + v.titre + ' <span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<div class="cmp-cols">'
@@ -91,6 +101,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '</article>';
       });
       totComp += comp; totAcc += acc;
+      if (!cartes) return;  // thème sans aucune carte à montrer (filtre comparables)
       var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";
       sections.innerHTML += '<section class="cmp-theme"><h2>' + theme + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
     });
