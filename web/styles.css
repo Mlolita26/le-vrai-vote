@@ -291,3 +291,11 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .cand-nom a:hover { color:var(--accent); }
 .cand-parti { font-size:0.85rem; color:var(--encre-douce); margin:0.15rem 0 0.55rem; }
 .cand-note { font-size:0.8rem; color:var(--mute); margin-top:0.5rem; }
+
+/* Positions des groupes parlementaires (ajout post-refonte, mêmes variables) */
+.ligne-groupe { font-size:0.86rem; color:var(--encre-douce); margin:0.4rem 0 0.1rem; }
+.ligne-groupe-absente { font-style:italic; color:var(--mute); }
+.decompte-groupe { font-size:0.8rem; color:var(--mute); white-space:nowrap; }
+.groupes-votes { margin:0.7rem 0 0; font-size:0.9rem; }
+.groupes-votes summary { cursor:pointer; color:var(--accent); font-weight:600; font-size:0.88rem; }
+.groupes-votes ul { list-style:none; padding:0.55rem 0 0; margin:0; display:grid; gap:0.4rem; }

@@ -64,6 +64,38 @@ def badge_etat(etat):
     return f'<span class="badge {classe}">{libelle}</span>'
 
 
+def majorite_groupe(g):
+    """Position majoritaire d'un groupe : la plus votée parmi les exprimés ; « partagé » en cas d'égalité."""
+    exprimes = [("pour", g["pour"]), ("contre", g["contre"]), ("abstention", g["abstention"])]
+    exprimes.sort(key=lambda x: -x[1])
+    if exprimes[0][1] == 0 or (len(exprimes) > 1 and exprimes[0][1] == exprimes[1][1]):
+        return None
+    return exprimes[0][0]
+
+
+def decompte_groupe(g):
+    morceaux = []
+    for cle, libelle in (("pour", "pour"), ("contre", "contre"), ("abstention", "abst.")):
+        if g[cle]:
+            morceaux.append(f"{g[cle]} {libelle}")
+    return " · ".join(morceaux) if morceaux else "aucun suffrage exprimé"
+
+
+def chip_groupe(g, est_censure=False):
+    nom = g["abrege"] or "groupe non identifié (réf. Sénat)"
+    # Motion de censure : seuls les votes pour sont enregistrés — on affiche
+    # le nombre de voix apportées à la censure, pas une « majorité ».
+    if est_censure:
+        if g["pour"]:
+            return (f'<span class="badge badge-pour">{e(nom)} : {g["pour"]} voix pour la censure</span>')
+        return f'<span class="badge badge-neutre">{e(nom)} : aucune voix pour la censure</span>'
+    maj = majorite_groupe(g)
+    classe = ETATS[maj][1] if maj else "badge-neutre"
+    libelle_maj = ETATS[maj][0] if maj else "partagé"
+    return (f'<span class="badge {classe}">{e(nom)} : {libelle_maj}</span> '
+            f'<span class="decompte-groupe">({e(decompte_groupe(g))})</span>')
+
+
 def date_fr(iso):
     if not iso:
         return None
@@ -118,8 +150,24 @@ def charger(base):
         "SELECT id, libelle, ordre FROM thematiques ORDER BY ordre")]
     votes_cles = [dict(v) for v in cur.execute(
         "SELECT vc.id, vc.thematique_id, vc.titre, vc.resume, vc.source_resume, "
-        "vc.contexte, s.date, s.chambre FROM votes_cles vc "
+        "vc.contexte, s.date, s.chambre, s.legislature, s.objet, vc.scrutin_id FROM votes_cles vc "
         "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, s.date")]
+    for v in votes_cles:
+        v["est_censure"] = "motion de censure" in (v["objet"] or "").lower()
+    # Décomptes officiels par groupe parlementaire, par vote clé.
+    groupes_par_vote = {}
+    for vid, abrege, libelle, pour, contre, abst, nonvot in cur.execute(
+            "SELECT vc.id, pg.groupe_abrege, pg.groupe_libelle, pg.pour, pg.contre, "
+            "pg.abstention, pg.non_votant FROM positions_groupes pg "
+            "JOIN votes_cles vc ON vc.scrutin_id = pg.scrutin_id "
+            "ORDER BY (pg.pour + pg.contre + pg.abstention) DESC"):
+        groupes_par_vote.setdefault(vid, []).append(
+            {"abrege": abrege, "libelle": libelle, "pour": pour,
+             "contre": contre, "abstention": abst, "non_votant": nonvot})
+    # Rattachement candidat -> groupe de son parti, par législature.
+    groupe_du_candidat = {(slug_p, leg): abrege for slug_p, leg, abrege in cur.execute(
+        "SELECT p.slug, gr.legislature, gr.groupe_abrege FROM groupes_reference gr "
+        "JOIN personnes p ON p.id = gr.personne_id")}
     etats = {(slug_p, vid): etat for slug_p, vid, etat in cur.execute(
         "SELECT personne_slug, vote_cle_id, etat FROM couverture")}
     # Nuances : explication sourcée d'un vote contre-intuitif, par (personne, vote clé).
@@ -135,7 +183,7 @@ def charger(base):
         "candidats_maj": "23/07/2026",
     }
     con.close()
-    return candidats, themes, votes_cles, etats, nuances, meta
+    return candidats, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, meta
 
 
 def concordances(candidats):
@@ -345,7 +393,7 @@ document.getElementById("recherche").addEventListener("input", function () {{
     return page("Candidats", "Candidats", contenu, 1, meta)
 
 
-def fiche_candidat(p, themes, votes_cles, etats, nuances, meta):
+def fiche_candidat(p, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, meta):
     declaration = (f"le {date_fr(p['date_declaration'])}" if p["date_declaration"]
                    else "(date non fournie par la source)")
     statut = "Candidature déclarée" if p["statut"] == "declaree" else "En lice pour une primaire"
@@ -382,8 +430,21 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             nuance = nuances.get((p["slug"], v["id"]))
             nuance_html = (f'<p class="vote-nuance">Nuance : {e(nuance[0])} '
                            f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</p>' if nuance else "")
+            # Position du groupe parlementaire du parti du candidat (même quand
+            # lui-même n'a pas voté : absent, non concerné, indisponible…).
+            groupe_html = ""
+            abrege = groupe_du_candidat.get((p["slug"], v["legislature"]))
+            if abrege:
+                g = next((x for x in groupes_par_vote.get(v["id"], []) if x["abrege"] == abrege), None)
+                if g:
+                    groupe_html = (f'<p class="ligne-groupe">Son parti — groupe '
+                                   f'{chip_groupe(g, v["est_censure"])}</p>')
+            elif any(cle[0] == p["slug"] for cle in groupe_du_candidat):
+                groupe_html = ('<p class="ligne-groupe ligne-groupe-absente">Son parti n\'avait pas de '
+                               'groupe à l\'Assemblée sur cette législature.</p>')
             lignes += f"""<li class="vote-cle">
 <div class="vote-tete"><strong>{e(v['titre'])}</strong> {badge_etat(etat_v)}</div>
+{groupe_html}
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
 {nuance_html}
@@ -435,7 +496,7 @@ La sélection suit la <a href="../methode/">grille de critères publiée</a>, id
     return page("Thèmes", "Thèmes", contenu, 1, meta)
 
 
-def page_theme(t, votes_t, candidats, etats, nuances, meta):
+def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta):
     par_slug = {c["slug"]: c["nom"] for c in candidats}
     blocs = ""
     for v in votes_t:
@@ -459,12 +520,20 @@ def page_theme(t, votes_t, candidats, etats, nuances, meta):
                                    f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</li>')
         nuances_html = (f'<p class="titre-nuances">Nuances (explications de vote rapportées, sourcées) :</p>'
                         f'<ul class="nuances">{lignes_nuances}</ul>') if lignes_nuances else ""
+        # Décomptes officiels par groupe parlementaire, repliés par défaut.
+        groupes_v = groupes_par_vote.get(v["id"], [])
+        groupes_html = ""
+        if groupes_v:
+            lignes_g = "".join(f"<li>{chip_groupe(g, v['est_censure'])}</li>" for g in groupes_v)
+            groupes_html = (f'<details class="groupes-votes"><summary>Comment ont voté les groupes '
+                            f'({len(groupes_v)})</summary><ul>{lignes_g}</ul></details>')
         blocs += f"""<article class="vote-cle vote-cle-page">
 <h2>{e(v['titre'])}</h2>
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 <ul class="groupes-etat">{lignes_groupes}</ul>
+{groupes_html}
 {nuances_html}
 </article>"""
     contenu = f"""
@@ -579,6 +648,18 @@ si son mandat était actif à la date du scrutin et qu'il n'apparaît dans aucun
 Cette déduction est désactivée sur les 33 scrutins (sur 16 957) dont les totaux publiés présentent
 un écart avec les listes nominatives. <strong>Non-votant</strong> signifie présent sans prendre part au vote
 (par exemple la présidence de séance) — ce n'est pas une absence.</p>
+<h2>La position du parti d'un candidat</h2>
+<p>Pour chaque vote clé, le site affiche aussi comment a voté le <strong>groupe parlementaire du parti</strong>
+du candidat — utile quand le candidat lui-même n'était pas en poste ou n'a pas voté. Cette position n'est
+jamais un « oui/non » décrété : c'est la répartition réelle des voix du groupe (pour, contre, abstention),
+extraite du même scrutin officiel, avec la tendance majoritaire mise en avant — « partagé » en cas d'égalité.
+Cas particulier des motions de censure : l'Assemblée n'enregistre que les voix pour ; ne pas voter est la
+manière de ne pas soutenir la censure. On affiche donc le nombre de voix apportées par chaque groupe, et
+aucune absence individuelle n'est déduite de ces scrutins.
+Le rattachement candidat → groupe suit une table publiée dans le code source (parti → groupe, par
+législature) qui ne couvre que les cas nets ; un candidat dont le parti n'a pas de groupe à l'Assemblée
+est affiché comme tel. Au Congrès de Versailles, les groupes du Sénat ne sont pas encore identifiés dans
+notre référentiel et apparaissent comme « non identifiés ».</p>
 <h2>Votes clés : la grille avant les votes</h2>
 <p>Aucun vote clé commenté n'est affiché tant que la grille de sélection (critères objectifs, publics,
 appliqués identiquement à tous) n'est pas publiée ici. Les résumés seront descriptifs et neutres,
@@ -597,7 +678,8 @@ toute correction est tracée.</p>"""
 # ── Génération ───────────────────────────────────────────────────────────────
 
 def generer(base):
-    candidats, themes, votes_cles, etats, nuances, meta = charger(base)
+    (candidats, themes, votes_cles, etats, nuances,
+     groupes_par_vote, groupe_du_candidat, meta) = charger(base)
     paires, comparables = concordances(candidats)
 
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
@@ -611,7 +693,8 @@ def generer(base):
         dossier = WEB / "candidats" / p["slug"]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            fiche_candidat(p, themes, votes_cles, etats, nuances, meta), encoding="utf-8")
+            fiche_candidat(p, themes, votes_cles, etats, nuances,
+                           groupes_par_vote, groupe_du_candidat, meta), encoding="utf-8")
     (WEB / "themes" / "index.html").write_text(
         page_themes_index(themes, votes_cles, meta), encoding="utf-8")
     for t in themes:
@@ -619,7 +702,7 @@ def generer(base):
         dossier = WEB / "themes" / THEME_SLUGS[t["libelle"]]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            page_theme(t, votes_t, candidats, etats, nuances, meta), encoding="utf-8")
+            page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta), encoding="utf-8")
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(page_methode(meta), encoding="utf-8")
 

@@ -270,6 +270,22 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         verifier("chaque nuance pointe une source avec URL",
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
+        # Positions des groupes parlementaires sur les votes clés.
+        verifier("positions de groupes extraites pour les 24 scrutins des votes clés",
+                 cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
+                             ).fetchone()[0] == 24)
+        verifier("aucun décompte de groupe négatif",
+                 cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
+                             "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
+        verifier("27 rattachements candidat → groupe, tous justifiés et sourcés",
+                 cur.execute("SELECT COUNT(*) FROM groupes_reference WHERE detail != ''"
+                             ).fetchone()[0] == 27)
+        # Recoupement avec la presse (Duplomb, 08/07/2025) : RN 119 pour, LFI-NFP 71 contre.
+        duplomb = dict(cur.execute(
+            "SELECT pg.groupe_abrege, pg.pour FROM positions_groupes pg "
+            "JOIN scrutins s ON s.id = pg.scrutin_id WHERE s.uid_officiel='VTANR5L17V2957'"))
+        verifier("Duplomb : décomptes de groupes cohérents (RN 119 pour, LFI-NFP 0 pour)",
+                 duplomb.get("RN") == 119 and duplomb.get("LFI-NFP") == 0, str(duplomb))
     else:
         print("  (votes clés non semés — contrôles éditoriaux sautés)")
 

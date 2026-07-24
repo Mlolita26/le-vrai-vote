@@ -149,6 +149,10 @@ def importer(base: Path, dossier: Path) -> None:
                 ecart = annonce is not None and n_listes != int(annonce)
                 if ecart:
                     ecarts.append((uid_officiel, date, int(annonce), n_listes))
+                # Motion de censure : seuls les votes POUR sont enregistrés ;
+                # ne pas voter est la manière de ne pas soutenir la censure.
+                # Aucune absence ne peut donc en être déduite.
+                est_censure = "motion de censure" in objet.lower()
                 for uid, position in exprimes.items():
                     pid = suivis[uid]
                     cur.execute("INSERT INTO positions_vote (personne_id, scrutin_id, position) "
@@ -156,7 +160,7 @@ def importer(base: Path, dossier: Path) -> None:
                     cur.execute("INSERT INTO presence (personne_id, type, date, statut, source_id) "
                                 "VALUES (?, 'scrutin', ?, 'present', ?)", (pid, date, src))
                     n_positions += 1
-                if not ecart:
+                if not ecart and not est_censure:
                     for uid, pid in suivis.items():
                         if uid not in exprimes and concerne(pid, date, chambre):
                             cur.execute("INSERT INTO positions_vote (personne_id, scrutin_id, position) "

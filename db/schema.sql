@@ -146,6 +146,35 @@ CREATE TABLE IF NOT EXISTS candidatures (
     source_id   INTEGER NOT NULL REFERENCES sources(id)
 );
 
+-- Positions des groupes parlementaires sur les scrutins des votes clés
+-- (brut : décomptes officiels par groupe, extraits des mêmes dumps).
+CREATE TABLE IF NOT EXISTS positions_groupes (
+    id             INTEGER PRIMARY KEY,
+    scrutin_id     INTEGER NOT NULL REFERENCES scrutins(id),
+    organe_ref     TEXT NOT NULL,      -- identifiant officiel du groupe (POxxxxxx)
+    groupe_abrege  TEXT,               -- ex. EPR, RN, LFI-NFP (NULL si réf. inconnue du référentiel)
+    groupe_libelle TEXT,
+    pour           INTEGER NOT NULL,
+    contre         INTEGER NOT NULL,
+    abstention     INTEGER NOT NULL,
+    non_votant     INTEGER NOT NULL,
+    source_id      INTEGER NOT NULL REFERENCES sources(id),
+    UNIQUE (scrutin_id, organe_ref)
+);
+
+-- Rattachement éditorial candidat → groupe parlementaire de son parti,
+-- par législature. Seuls les rattachements nets sont saisis ; l'absence
+-- de ligne signifie « pas de groupe rattachable » et s'affiche comme telle.
+CREATE TABLE IF NOT EXISTS groupes_reference (
+    id            INTEGER PRIMARY KEY,
+    personne_id   INTEGER NOT NULL REFERENCES personnes(id),
+    legislature   TEXT NOT NULL,
+    groupe_abrege TEXT NOT NULL,
+    detail        TEXT NOT NULL,       -- justification du rattachement
+    source_id     INTEGER NOT NULL REFERENCES sources(id),
+    UNIQUE (personne_id, legislature)
+);
+
 -- Nuances (éditorial) : explication d'un vote contre-intuitif, toujours
 -- attribuée et sourcée (explication de vote en séance, communiqué, presse).
 -- Une nuance décrit la justification déclarée — elle ne juge pas.
