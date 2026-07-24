@@ -68,6 +68,28 @@ RATTACHEMENTS = [
     ("jean-luc-melenchon", "pe10", "LFI",
      "La France insoumise — délégation française au groupe The Left/GUE-NGL (PE, depuis 2024). "
      "Position de la délégation, pas un vote personnel de Jean-Luc Mélenchon."),
+    # Parti socialiste → groupe S&D (délégation française : PS + Place publique).
+    ("karim-bouamrane", "pe9", "PS", "Parti socialiste — délégation française du groupe S&D au Parlement européen (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("karim-bouamrane", "pe10", "PS", "Parti socialiste — délégation française du groupe S&D au Parlement européen (depuis 2024). Position de la délégation, pas un vote personnel."),
+    ("jerome-guedj", "pe9", "PS", "Parti socialiste — délégation française du groupe S&D (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("jerome-guedj", "pe10", "PS", "Parti socialiste — délégation française du groupe S&D (depuis 2024). Position de la délégation, pas un vote personnel."),
+    ("philippe-brun", "pe9", "PS", "Parti socialiste — délégation française du groupe S&D (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("philippe-brun", "pe10", "PS", "Parti socialiste — délégation française du groupe S&D (depuis 2024). Position de la délégation, pas un vote personnel."),
+    ("segolene-royal", "pe9", "PS", "Parti socialiste — délégation française du groupe S&D (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("segolene-royal", "pe10", "PS", "Parti socialiste — délégation française du groupe S&D (depuis 2024). Position de la délégation, pas un vote personnel."),
+    # Les Républicains → groupe PPE (délégation française : LR).
+    ("bruno-retailleau", "pe9", "LR", "Les Républicains — délégation française du groupe PPE au Parlement européen (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("bruno-retailleau", "pe10", "LR", "Les Républicains — délégation française du groupe PPE (depuis 2024). Position de la délégation, pas un vote personnel."),
+    ("david-lisnard", "pe9", "LR", "Les Républicains — délégation française du groupe PPE (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("david-lisnard", "pe10", "LR", "Les Républicains — délégation française du groupe PPE (depuis 2024). Position de la délégation, pas un vote personnel."),
+    # Renaissance et Horizons → groupe Renew Europe (délégation française commune).
+    ("gabriel-attal", "pe9", "RE", "Renaissance — délégation française du groupe Renew Europe au Parlement européen (2019-2024). Position de la délégation (Renaissance, MoDem, Horizons), pas un vote personnel."),
+    ("gabriel-attal", "pe10", "RE", "Renaissance — délégation française du groupe Renew Europe (depuis 2024). Position de la délégation, pas un vote personnel."),
+    ("edouard-philippe", "pe9", "RE", "Horizons — siège au sein de la délégation française du groupe Renew Europe (2019-2024). Position de la délégation (Renaissance, MoDem, Horizons), pas un vote personnel d'Édouard Philippe."),
+    ("edouard-philippe", "pe10", "RE", "Horizons — délégation française du groupe Renew Europe (depuis 2024). Position de la délégation, pas un vote personnel."),
+    # Les Écologistes (EELV) → groupe Verts/ALE (délégation française).
+    ("marine-tondelier", "pe9", "VERT", "Les Écologistes — délégation française du groupe Verts/ALE au Parlement européen (2019-2024). Position de la délégation, pas un vote personnel."),
+    ("marine-tondelier", "pe10", "VERT", "Les Écologistes — délégation française du groupe Verts/ALE (depuis 2024). Position de la délégation, pas un vote personnel."),
 ]
 
 

@@ -46,14 +46,23 @@ VOTES_CLES_PE = {
     "soutien_ukraine": 169362,
 }
 
-# Délégation française d'un parti = ses élus français dans ces groupes européens.
-# Cas nets uniquement (v1) : RN et LFI. Les autres délégations françaises (S&D,
-# PPE, Renew, Verts) mêlent plusieurs partis → traitées plus tard, pas devinées.
+# « Voix 2 » = la DÉLÉGATION FRANÇAISE du groupe européen où siège le parti du
+# candidat (entité factuelle : les élus français de ce groupe le jour du vote).
+# On l'étiquette par le groupe + le(s) parti(s) français concerné(s) — on ne
+# prétend jamais isoler un « vote de parti » quand la délégation en mêle plusieurs.
 PARTIS_PE = {
     "RN": {"groupes": ["ID", "PFE"],
            "libelle": "Délégation française — Rassemblement national (groupe Identité et démocratie puis Patriotes pour l'Europe)"},
     "LFI": {"groupes": ["GUE_NGL"],
             "libelle": "Délégation française — La France insoumise et apparentés (groupe The Left/GUE-NGL)"},
+    "PS": {"groupes": ["SD"],
+           "libelle": "Délégation française du groupe S&D (Parti socialiste, Place publique)"},
+    "LR": {"groupes": ["EPP"],
+           "libelle": "Délégation française du groupe PPE (Les Républicains)"},
+    "RE": {"groupes": ["RENEW"],
+           "libelle": "Délégation française du groupe Renew Europe (Renaissance, MoDem, Horizons)"},
+    "VERT": {"groupes": ["GREEN_EFA"],
+             "libelle": "Délégation française du groupe Verts/ALE (Les Écologistes)"},
 }
 
 POS = {"FOR": "pour", "AGAINST": "contre", "ABSTENTION": "abstention"}
@@ -103,14 +112,15 @@ def importer(base: Path, coffre: Path) -> None:
     def concerne(pid, date):
         return any(d <= date <= f for d, f in mandats.get(pid, []))
 
-    # Réimport idempotent : on efface le 'pe' existant (scrutins + enfants).
+    # Réimport idempotent : on rafraîchit positions et décomptes, mais on NE
+    # supprime PAS les scrutins 'pe' (ils peuvent être référencés par votes_cles
+    # → FK). Les scrutins sont ré-insérés en INSERT OR IGNORE plus bas.
     cur.execute("DELETE FROM positions_vote WHERE scrutin_id IN "
                 "(SELECT id FROM scrutins WHERE chambre='pe')")
     cur.execute("DELETE FROM positions_groupes WHERE scrutin_id IN "
                 "(SELECT id FROM scrutins WHERE chambre='pe')")
     cur.execute("DELETE FROM presence WHERE source_id IN "
                 "(SELECT id FROM sources WHERE url=? AND type='scrutin_officiel')", (SOURCE_URL,))
-    cur.execute("DELETE FROM scrutins WHERE chambre='pe'")
     con.commit()
 
     horodatage = datetime.now().strftime("%Y-%m-%d")
@@ -127,13 +137,14 @@ def importer(base: Path, coffre: Path) -> None:
         date = r["timestamp"][:10]
         uid = f"PE-HTV-{vid}"
         cur.execute(
-            "INSERT INTO scrutins (chambre, legislature, numero, uid_officiel, objet, type_vote, "
+            "INSERT OR IGNORE INTO scrutins (chambre, legislature, numero, uid_officiel, objet, type_vote, "
             "date, sort, total_pour, total_contre, total_abstention, source_id) "
             "VALUES ('pe', ?, ?, ?, ?, 'appel nominal', ?, ?, ?, ?, ?, ?)",
             (legislature(date), str(vid), uid, (r.get("display_title") or "").strip(), date,
              sort_officiel(r.get("result")), entier(r.get("count_for")),
              entier(r.get("count_against")), entier(r.get("count_abstention")), src))
-        sid_par_vote[vid] = cur.lastrowid
+        sid_par_vote[vid] = cur.execute(
+            "SELECT id FROM scrutins WHERE uid_officiel=?", (uid,)).fetchone()[0]
 
     # Un seul balayage de member_votes.csv (513 Mo) filtré sur les votes retenus.
     perso = {}                       # (mep_id, vid) -> position
