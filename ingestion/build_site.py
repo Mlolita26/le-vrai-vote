@@ -121,6 +121,40 @@ def chip_resultat(v):
     return f'<span class="chip-resultat">{e(texte)}</span>'
 
 
+RAIL_MOT = {"pour": "Pour", "contre": "Contre", "abstention": "Abstention",
+            "non_votant": "Non-votant", "absent": "Absent", "non_concerne": "Non concern\u00e9",
+            "indisponible": "Indisponible", "a_importer": "\u00c0 importer"}
+RAIL_CLS = {"pour": "pour", "contre": "contre", "abstention": "abst", "non_votant": "neutre",
+            "absent": "absent", "non_concerne": "neutre", "indisponible": "neutre", "a_importer": "neutre"}
+
+
+def rail_perso(p, v, etat_v, equiv_senat, est_pe, a_vote_perso):
+    """Bandeau dominant : position de la personne (vote perso, ou \u00e9quivalent S\u00e9nat, ou \u00e9tat)."""
+    if a_vote_perso or etat_v == "non_votant":
+        return RAIL_CLS[etat_v], RAIL_MOT[etat_v], "a vot\u00e9", False
+    eq = equiv_senat.get(v["id"])
+    if eq:
+        ps = eq["positions"].get(p["slug"])
+        if ps:
+            return RAIL_CLS[ps], RAIL_MOT[ps], "au S\u00e9nat", True
+    if est_pe:
+        return "neutre", "\u2014", "n'y si\u00e9geait pas", False
+    return "neutre", RAIL_MOT.get(etat_v, "\u2014"), "", False
+
+
+def resultat_texte(v):
+    """R\u00e9sultat officiel en texte court (pas de pastille) pour la ligne meta."""
+    if v["sort"] not in ("adopt\u00e9", "rejet\u00e9") or v["total_pour"] is None:
+        return ""
+    if v["est_censure"]:
+        if v["sort"] == "rejet\u00e9":
+            return (f"Censure rejet\u00e9e \u00b7 {v['total_pour']} voix pour"
+                    + (f", {v['suffrages_requis']} requises" if v["suffrages_requis"] else ""))
+        return f"Censure adopt\u00e9e \u00b7 {v['total_pour']} voix pour"
+    lib = "Adopt\u00e9" if v["sort"] == "adopt\u00e9" else "Rejet\u00e9"
+    return f"{lib} {v['total_pour']}\u2013{v['total_contre']}"
+
+
 def senat_fiche(vc_id, slug, equiv_senat):
     """Ligne \u00ab Au S\u00e9nat \u00bb sur la fiche : position du candidat sur le texte \u00e9quivalent."""
     eq = equiv_senat.get(vc_id)
@@ -560,15 +594,24 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                 perso_html = f'<span class="mention-absente">{e(p["nom"])} n\'y siégeait pas</span>'
             else:
                 perso_html = badge_etat(etat_v)
-            provenance = '<span class="provenance-pe">Parlement européen</span> ' if est_pe else ''
-            lignes += f"""<li class="vote-cle">
-<div class="vote-tete"><strong>{e(v['titre'])}</strong> {provenance}{chip_resultat(v)} {perso_html}</div>
+            resultat_txt = resultat_texte(v)
+            rail_cls, rail_mot, rail_sous, rail_from_senat = rail_perso(
+                p, v, etat_v, equiv_senat, est_pe, a_vote_perso)
+            senat_sec = "" if rail_from_senat else senat_html
+            provenance = '<span class="provenance-pe">Parlement europ\u00e9en</span>' if est_pe else ''
+            sous_html = f'<span class="mini">{rail_sous}</span>' if rail_sous else ''
+            meta_html = f'<p class="ap-meta">{e(resultat_txt)}</p>' if resultat_txt else ''
+            lignes += f"""<li class="vote-carte">
+<div class="ap-rail rail-{rail_cls}"><span class="pos">{rail_mot}</span>{sous_html}</div>
+<div class="ap-corps">
+<p class="ap-titre">{e(v['titre'])} {provenance}</p>
+{meta_html}
 {groupe_html}
-{senat_html}
-<p class="vote-resume">{e(v['resume'])}
-<a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
+{senat_sec}
+<p class="ap-resume">{e(v['resume'])} <a href="{e(v['source_resume'])}" rel="noopener">Scrutin officiel \u2192</a></p>
 {nuance_html}
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
+</div>
 </li>"""
         if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
             votes_html += (f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
@@ -657,16 +700,18 @@ def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, equiv_se
             lignes_g = "".join(f"<li>{chip_groupe(g, v['est_censure'])}</li>" for g in groupes_v)
             groupes_html = (f'<details class="groupes-votes"><summary>Comment ont voté les groupes '
                             f'({len(groupes_v)})</summary><ul>{lignes_g}</ul></details>')
-        blocs += f"""<article class="vote-cle vote-cle-page">
-<h2>{e(v['titre'])}</h2>
-<p class="resultat-ligne">{chip_resultat(v)}</p>
-<p class="vote-resume">{e(v['resume'])}
-<a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
+        res_txt = resultat_texte(v) or "\u2014"
+        blocs += f"""<article class="vote-carte vote-carte-theme">
+<div class="ap-rail rail-neutre rail-resultat"><span class="pos-res">{e(res_txt)}</span></div>
+<div class="ap-corps">
+<h2 class="ap-titre">{e(v['titre'])}</h2>
+<p class="ap-resume">{e(v['resume'])} <a href="{e(v['source_resume'])}" rel="noopener">Scrutin officiel \u2192</a></p>
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 <ul class="groupes-etat">{lignes_groupes}</ul>
 {senat_theme(v["id"], equiv_senat, par_slug)}
 {groupes_html}
 {nuances_html}
+</div>
 </article>"""
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les thèmes</a></nav>

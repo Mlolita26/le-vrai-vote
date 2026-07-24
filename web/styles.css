@@ -335,3 +335,53 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .mention-absente { font-style:italic; color:var(--mute); font-size:0.9rem; }
 .ligne-pe { font-size:0.86rem; color:var(--encre-douce); margin:0.4rem 0 0.1rem;
   padding-left:0.6rem; border-left:3px solid var(--lisere); }
+
+/* ============================================================
+   Refonte lisibilité des votes clés (24/07/2026)
+   Une carte = un bandeau de position (dominant, à gauche) + un corps
+   démoté. La couleur pleine ne sert qu'au vote personnel ; parti et
+   Sénat en badges de contour ; résultat en texte gris fin.
+   ============================================================ */
+.votes-cles { list-style:none; padding:0; margin:.7rem 0 1.6rem; display:grid; gap:.6rem; }
+.vote-carte {
+  background:var(--carte); border:1px solid var(--lisere); border-radius:12px;
+  display:grid; grid-template-columns:108px 1fr; overflow:hidden; margin:0 0 .6rem;
+}
+.vote-carte-theme { margin:1rem 0; }
+
+/* Bandeau de position (rail) */
+.ap-rail {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.15rem; padding:.7rem .45rem; text-align:center;
+}
+.ap-rail .pos { font-weight:700; font-size:.95rem; letter-spacing:.01em; line-height:1.15; }
+.ap-rail .mini { font-size:.63rem; text-transform:uppercase; letter-spacing:.07em; opacity:.8; }
+.ap-rail .pos-res { font-weight:600; font-size:.82rem; line-height:1.2; font-variant-numeric:tabular-nums; }
+.rail-pour   { background:var(--b-pour-bg);   color:var(--b-pour-fg);   box-shadow:inset 4px 0 0 var(--b-pour-fg); }
+.rail-contre { background:var(--b-contre-bg); color:var(--b-contre-fg); box-shadow:inset 4px 0 0 var(--b-contre-fg); }
+.rail-abst   { background:var(--b-abst-bg);   color:var(--b-abst-fg);   box-shadow:inset 4px 0 0 var(--b-abst-fg); }
+.rail-absent { background:var(--b-absent-bg); color:var(--b-absent-fg); box-shadow:inset 4px 0 0 var(--b-absent-fg); }
+.rail-neutre { background:var(--faint);       color:var(--encre-douce); box-shadow:inset 4px 0 0 var(--lisere); }
+
+/* Corps de la carte */
+.ap-corps { padding:.75rem .95rem; min-width:0; }
+.ap-titre { font-family:'Spectral',Georgia,serif; font-weight:600; font-size:1.05rem; margin:0; line-height:1.25; }
+.ap-meta  { font-size:.78rem; color:var(--mute); margin:.15rem 0 0; font-variant-numeric:tabular-nums; }
+.ap-resume { font-size:.88rem; color:var(--encre-douce); margin:.5rem 0 0; }
+.ap-resume a { color:var(--accent); white-space:nowrap; }
+
+/* Lignes secondaires (parti, Sénat) : démotées, badges en contour */
+.ligne-groupe, .ligne-senat { font-size:.82rem; color:var(--encre-douce); margin:.4rem 0 0;
+  padding-left:.55rem; border-left:2px solid var(--lisere); }
+.ligne-groupe .badge, .ligne-senat .badge { background:transparent; border:1.5px solid currentColor; font-size:.76rem; }
+.ligne-groupe-absente { font-style:italic; color:var(--mute); }
+
+/* Positions groupées (page thème) : le cœur de la page, restent nettes */
+.groupes-etat { list-style:none; padding:0; margin:.6rem 0 0; display:grid; gap:.4rem; font-size:.92rem; }
+.groupes-votes { margin:.5rem 0 0; font-size:.82rem; }
+.groupes-votes summary { cursor:pointer; color:var(--accent); font-weight:600; }
+
+@media (max-width:460px){
+  .vote-carte { grid-template-columns:84px 1fr; }
+  .ap-rail .pos { font-size:.85rem; }
+}
