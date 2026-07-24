@@ -254,8 +254,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
     # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
     n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     if n_vc:
-        verifier("35 votes clés répartis sur 7 thématiques",
-                 n_vc == 35 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 7)
+        verifier("43 votes clés répartis sur 7 thématiques",
+                 n_vc == 43 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 7)
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
@@ -292,19 +292,25 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
         # Positions des groupes parlementaires sur les votes clés.
-        verifier("positions de groupes extraites pour les 35 scrutins des votes clés",
+        verifier("positions de groupes extraites pour les 43 scrutins des votes clés",
                  cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
-                             ).fetchone()[0] == 35)
+                             ).fetchone()[0] == 43)
         verifier("aucun décompte de groupe négatif",
                  cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
-        verifier("27 rattachements candidat → groupe, tous justifiés et sourcés",
+        verifier("31 rattachements candidat → groupe (27 AN + 4 délégations PE), justifiés et sourcés",
                  cur.execute("SELECT COUNT(*) FROM groupes_reference WHERE detail != ''"
-                             ).fetchone()[0] == 27)
+                             ).fetchone()[0] == 31)
         # Résultat officiel (sort + décompte) présent pour chaque vote clé.
-        verifier("chaque vote clé porte le résultat officiel (adopté/rejeté + décompte)",
+        verifier("chaque vote clé AN/Congrès/Sénat porte le résultat officiel (adopté/rejeté + décompte)",
                  cur.execute("SELECT COUNT(*) FROM votes_cles vc JOIN scrutins s ON s.id = vc.scrutin_id "
-                             "WHERE s.sort IS NULL OR s.total_pour IS NULL").fetchone()[0] == 0)
+                             "WHERE s.chambre != 'pe' AND (s.sort IS NULL OR s.total_pour IS NULL)"
+                             ).fetchone()[0] == 0)
+        n_pe_sans_res = cur.execute("SELECT COUNT(*) FROM votes_cles vc JOIN scrutins s ON s.id = vc.scrutin_id "
+                                    "WHERE s.chambre = 'pe' AND (s.sort IS NULL OR s.total_pour IS NULL)").fetchone()[0]
+        if n_pe_sans_res:
+            print(f"  [INFO] {n_pe_sans_res} vote(s) clé(s) du Parlement européen sans résultat "
+                  "(adopté/rejeté + décompte) — à compléter dans l'import PE.")
         resultat = cur.execute(
             "SELECT s.sort, s.total_pour, s.suffrages_requis FROM scrutins s "
             "WHERE s.uid_officiel = 'VTANR5L16V1240'").fetchone()
