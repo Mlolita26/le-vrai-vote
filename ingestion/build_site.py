@@ -858,7 +858,6 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     var l = d.libelles[p]; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>';
   }
   function nuanceDe(slug, vid) {
-    if (mode !== "perso") return "";
     var e = (d.positions[slug] || {})[vid] || {};
     if (!e.nuance) return "";
     return '<p class="cmp-nuance">' + e.nuance[0] + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
