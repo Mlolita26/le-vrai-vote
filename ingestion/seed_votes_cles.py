@@ -26,6 +26,7 @@ THEMES = [
     ("immigration", "Immigration"),
     ("societe", "Questions de société"),
     ("europe-international", "Europe et international"),
+    ("institutions", "Institutions et vie démocratique"),
 ]
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -117,6 +118,41 @@ VOTES = [
     ("VTANR5L17V988", "europe-international", "Renforcement du soutien à l'Ukraine (2025)",
      "Résolution européenne appelant à renforcer le soutien à l'Ukraine, notamment en mobilisant les avoirs russes gelés, et à faciliter le processus d'adhésion de l'Ukraine à l'Union européenne.",
      None),
+
+    # ── Extension 14e législature (2012-2017), validée le 24/07/2026 ────────
+    ("VTANR5L14V511", "societe", "Mariage pour tous (2013)",
+     "Ouvre le mariage et l'adoption aux couples de personnes de même sexe.",
+     "Deuxième lecture du 23 avril 2013 — dernier vote d'ensemble à l'Assemblée sur ce texte."),
+    ("VTANR5L14V1070", "societe", "Fin de vie : loi Claeys-Leonetti (2015)",
+     "Crée un droit à la sédation profonde et continue jusqu'au décès pour les malades en phase terminale et rend contraignantes les directives anticipées.",
+     "Première lecture ; le texte a été définitivement adopté début 2016. C'est le cadre que la loi sur l'aide à mourir de 2026 est venue compléter."),
+    ("VTANR5L14V726", "pouvoir-achat-fiscalite", "Réforme des retraites Touraine (2013)",
+     "Allonge progressivement la durée de cotisation jusqu'à 43 annuités et crée le compte personnel de prévention de la pénibilité.",
+     "Nouvelle lecture du 26 novembre 2013 — dernier scrutin public d'ensemble à l'Assemblée sur ce texte."),
+    ("VTANR5L14V1270", "pouvoir-achat-fiscalite", "Loi travail (El Khomri) : motion de censure (2016)",
+     "Motion de censure déposée après l'engagement de responsabilité du Gouvernement (article 49.3) sur la loi travail : accords d'entreprise prioritaires sur les accords de branche, encadrement du licenciement économique.",
+     "Comme pour les retraites en 2023, le texte n'a pas fait l'objet d'un vote direct : voter pour la motion revenait à s'opposer à son adoption ; son rejet a permis l'adoption de la loi."),
+    ("VTANR5L14V1109", "securite-justice", "Loi renseignement (2015)",
+     "Légalise et encadre des techniques de surveillance élargies pour les services de renseignement (traitement algorithmique des connexions, IMSI-catchers), sous le contrôle d'une nouvelle autorité, la CNCTR.",
+     "Votée quelques mois après les attentats de janvier 2015."),
+    ("VTANR5L14V1191", "securite-justice", "Prorogation de l'état d'urgence (2015)",
+     "Proroge de trois mois l'état d'urgence déclaré après les attentats du 13 novembre 2015 et en renforce les mesures (perquisitions administratives, assignations à résidence).",
+     None),
+    ("VTANR5L14V994", "immigration", "Réforme de l'asile (2014)",
+     "Réorganise l'examen des demandes d'asile : procédures accélérées, recours suspensif généralisé, hébergement directif des demandeurs.",
+     None),
+    ("VTANR5L14V1237", "immigration", "Déchéance de nationalité — « protection de la Nation » (2016)",
+     "Révision constitutionnelle inscrivant l'état d'urgence dans la Constitution et permettant la déchéance de nationalité des personnes condamnées pour terrorisme.",
+     "Première lecture. La révision a été abandonnée en mars 2016 faute d'accord entre l'Assemblée et le Sénat : le Congrès n'a jamais été réuni."),
+    ("VTANR5L14V1120", "ecologie-agriculture", "Transition énergétique (2015)",
+     "Fixe les grands objectifs énergétiques : part du nucléaire ramenée à 50 % de l'électricité, division par deux de la consommation d'énergie d'ici 2050, interdiction des sacs plastique à usage unique.",
+     "Nouvelle lecture du 26 mai 2015 — dernier scrutin public d'ensemble à l'Assemblée sur ce texte."),
+    ("VTANR5L14V30", "europe-international", "Ratification du traité budgétaire européen (TSCG, 2012)",
+     "Autorise la ratification du traité européen sur la stabilité, la coordination et la gouvernance (TSCG), qui impose la « règle d'or » de limitation des déficits structurels.",
+     None),
+    ("VTANR5L14V594", "institutions", "Transparence de la vie publique (2013)",
+     "Crée la Haute Autorité pour la transparence de la vie publique (HATVP) et impose aux membres du Gouvernement et aux élus des déclarations de patrimoine et d'intérêts publiques.",
+     "Adoptée après l'affaire Cahuzac (lecture définitive). Ce sont ces déclarations HATVP que le présent site utilise pour la partie « parcours » des candidats."),
 ]
 
 

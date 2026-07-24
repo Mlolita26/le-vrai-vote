@@ -41,6 +41,7 @@ THEME_SLUGS = {
     "Immigration": "immigration",
     "Questions de société": "societe",
     "Europe et international": "europe-international",
+    "Institutions et vie démocratique": "institutions",
 }
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {

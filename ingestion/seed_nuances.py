@@ -37,6 +37,10 @@ SOURCES = {
                    "franceinfo, avril 2026 — adoption du texte fraudes sociales et fiscales, critiques de la gauche"),
     "cr_ukraine_2022": ("https://www.assemblee-nationale.fr/dyn/16/comptes-rendus/seance/session-ordinaire-de-2022-2023/deuxieme-seance-du-mercredi-30-novembre-2022",
                         "Compte rendu officiel de séance, AN, 30/11/2022 — explications de vote sur la résolution Ukraine"),
+    "jdd_philippe": ("https://www.lejdd.fr/Politique/mariage-pour-tous-loi-renseignement-qua-vote-edouard-philippe-a-lassemblee-3331199",
+                     "Le JDD — récapitulatif des votes d'Édouard Philippe à l'Assemblée (mariage pour tous, loi renseignement)"),
+    "e1_tscg": ("https://www.europe1.fr/politique/Traite-europeen-ces-non-alignes-au-PS-384464",
+                "Europe 1, octobre 2012 — les députés PS ayant voté contre le TSCG et leurs motifs"),
 }
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
@@ -110,6 +114,16 @@ NUANCES = [
     ("marine-le-pen", "VTANR5L16V652",
      "Abstention avec le groupe RN : son oratrice reprochait au texte de ne rien dire du cessez-le-feu et de la paix, et estimait que la livraison d'armes offensives risquait de rendre la France « cobelligérante ».",
      "cr_ukraine_2022"),
+    # Extension L14 (24/07/2026)
+    ("edouard-philippe", "VTANR5L14V511",
+     "S'est abstenu — une position intermédiaire dans un groupe UMP qui a très majoritairement voté contre le texte.",
+     "jdd_philippe"),
+    ("edouard-philippe", "VTANR5L14V1109",
+     "A voté contre, jugeant que la loi posait « des questions graves en matière de libertés individuelles », malgré le consensus des mois suivant les attentats de janvier 2015.",
+     "jdd_philippe"),
+    ("jerome-guedj", "VTANR5L14V30",
+     "A voté contre avec une vingtaine de députés de l'aile gauche du PS, contre la position de son propre gouvernement, refusant que l'austérité soit « gravée dans le marbre ».",
+     "e1_tscg"),
 ]
 
 

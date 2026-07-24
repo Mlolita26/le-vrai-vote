@@ -247,8 +247,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
     # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
     n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     if n_vc:
-        verifier("24 votes clés répartis sur 6 thématiques",
-                 n_vc == 24 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 6)
+        verifier("35 votes clés répartis sur 7 thématiques",
+                 n_vc == 35 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 7)
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
@@ -275,8 +275,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  etat_ivg.get("bruno-retailleau") in ("pour", "contre", "abstention", "non_votant", "absent"),
                  str(etat_ivg.get("bruno-retailleau")))
         # Nuances : chacune sourcée et adossée à une position réellement en base.
-        verifier("20 nuances, toutes adossées à une position existante",
-                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 20
+        verifier("23 nuances, toutes adossées à une position existante",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 23
                  and cur.execute(
                      "SELECT COUNT(*) FROM nuances n WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
@@ -285,9 +285,9 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
         # Positions des groupes parlementaires sur les votes clés.
-        verifier("positions de groupes extraites pour les 24 scrutins des votes clés",
+        verifier("positions de groupes extraites pour les 35 scrutins des votes clés",
                  cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
-                             ).fetchone()[0] == 24)
+                             ).fetchone()[0] == 35)
         verifier("aucun décompte de groupe négatif",
                  cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
