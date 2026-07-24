@@ -276,10 +276,14 @@ def etat_couverture(p):
     n_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
     a_mandat_parl = any(m["type"] in ("depute", "senateur", "eurodepute") for m in p["mandats"])
     est_senateur = any(m["type"] == "senateur" for m in p["mandats"])
+    est_eurodepute = any(m["type"] == "eurodepute" for m in p["mandats"])
+    est_depute = any(m["type"] == "depute" for m in p["mandats"])
     if n_expr >= SEUIL_COMPARABLE:
         return "couvert", f"{n_expr:,} votes exprimés en base".replace(",", " ")
     if est_senateur:
         return "partiel", "sénateur — scrutins du Sénat à importer"
+    if est_eurodepute and not est_depute:
+        return "partiel", "eurodéputé — scrutins du Parlement européen à importer"
     if a_mandat_parl:
         return "partiel", "mandats antérieurs à la période couverte (2012-2026)"
     return "hors", "jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir"

@@ -149,6 +149,13 @@ def controles_base_reelle(base: Path):
                  for d in ("2005-01-01", "2015-01-01", "2022-01-01")))
     verifier("Le Pen : députée active au 16/03/2023 (vote retraites → position attendue)",
              mandat_actif("marine-le-pen", "depute", "2023-03-16") == 1)
+    verifier("Le Pen : eurodéputée de 2004 à 2017 (fiches europarl)",
+             mandat_actif("marine-le-pen", "eurodepute", "2005-01-01") == 1
+             and mandat_actif("marine-le-pen", "eurodepute", "2016-01-01") == 1
+             and mandat_actif("marine-le-pen", "eurodepute", "2018-01-01") == 0)
+    verifier("Philippot : eurodéputé 2014-2019, aucun mandat AN/Sénat",
+             mandat_actif("florian-philippot", "eurodepute", "2016-01-01") == 1
+             and mandat_actif("florian-philippot", "depute", "2016-01-01") == 0)
     for slug in ("gabriel-attal", "jordan-bardella", "marine-le-pen",
                  "jean-luc-melenchon", "edouard-philippe", "bruno-retailleau"):
         verifier(f"naissance renseignée pour {slug}",
