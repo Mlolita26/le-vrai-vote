@@ -133,7 +133,7 @@ def controles_base_reelle(base: Path):
              mandat_actif("jean-luc-melenchon", "depute", "2023-03-16") == 0)
     verifier("Philippe : député actif au 01/01/2015 (L14)",
              mandat_actif("edouard-philippe", "depute", "2015-01-01") == 1)
-    verifier("Philippe : aucun mandat parlementaire depuis nos premiers scrutins (10/07/2017 → non concerné)",
+    verifier("Philippe : plus de mandat parlementaire après juin 2017 (votes clés → non concerné)",
              mandat_actif("edouard-philippe", "depute", "2017-07-10") == 0
              and mandat_actif("edouard-philippe", "senateur", "2017-07-10") == 0)
     verifier("Attal : député actif au 01/01/2018 (L15, avant son entrée au gouvernement)",
@@ -174,17 +174,23 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         con.close()
         return
 
-    # Volumes : chaque zip doit être intégralement importé (pas de troncature silencieuse).
+    # Volumes : chaque zip doit être intégralement importé (pas de troncature
+    # silencieuse) — un fichier par scrutin (L15+) ou fichier agrégé (L14).
+    import json as _json
     for zip_path in sorted(dossier_dumps.glob("Scrutins*.zip")):
         with zipfile.ZipFile(zip_path) as z:
             entrees = [e for e in z.namelist() if e.endswith(".json")]
-            import json as _json
             with z.open(entrees[0]) as f:
-                leg = _json.load(f)["scrutin"]["legislature"]
+                racine = _json.load(f)
+            if "scrutins" in racine:
+                scrutins_zip = racine["scrutins"]["scrutin"]
+                leg, n_dump = scrutins_zip[0]["legislature"], len(scrutins_zip)
+            else:
+                leg, n_dump = racine["scrutin"]["legislature"], len(entrees)
         en_base = cur.execute("SELECT COUNT(*) FROM scrutins WHERE chambre IN ('an','congres') "
                               "AND legislature=?", (leg,)).fetchone()[0]
-        verifier(f"législature {leg} intégralement importée ({len(entrees)} scrutins)",
-                 en_base == len(entrees), f"base={en_base}, dump={len(entrees)}")
+        verifier(f"législature {leg} intégralement importée ({n_dump} scrutins)",
+                 en_base == n_dump, f"base={en_base}, dump={n_dump}")
 
     # Recoupement Datan (contrôle, jamais source) : Attal POUR l'aide à mourir
     # au scrutin solennel de première lecture (27/05/2025).
@@ -214,6 +220,14 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  80.0 <= taux <= 100.0, f"{taux:.1f} %")
     else:
         verifier("Attal a des positions sur des scrutins solennels L17", False, "aucune ligne")
+
+    # Philippe (PA345619) : ses positions L14 doivent exister (député 2012-2017).
+    verifier("Philippe : des positions existent sur la L14",
+             cur.execute("SELECT COUNT(*) FROM positions_vote pv "
+                         "JOIN personnes p ON p.id = pv.personne_id "
+                         "JOIN scrutins s ON s.id = pv.scrutin_id "
+                         "WHERE p.slug='edouard-philippe' AND s.legislature='14'"
+                         ).fetchone()[0] > 0)
 
     # Mélenchon (PA2150) : ses positions L15 doivent exister, et rien après
     # la fin de son mandat de député (21/06/2022).

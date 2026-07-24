@@ -27,6 +27,15 @@ def liste(v):
     return v if isinstance(v, list) else ([] if v is None else [v])
 
 
+def scrutins_de(z, entree):
+    """Un fichier par scrutin (L15+) ou fichier agrégé (L14 et antérieures)."""
+    with z.open(entree) as f:
+        racine = json.load(f)
+    if "scrutins" in racine:
+        return liste(racine["scrutins"].get("scrutin"))
+    return [racine.get("scrutin", {})]
+
+
 def entier(v):
     try:
         return int(v)
@@ -69,26 +78,26 @@ def importer(base: Path, dossier: Path) -> None:
     for zip_path in sorted(dossier.glob("Scrutins*.zip")):
         with zipfile.ZipFile(zip_path) as z:
             for entree in [x for x in z.namelist() if x.endswith(".json")]:
-                uid_scrutin = entree.split("/")[-1].removesuffix(".json")
-                if uid_scrutin not in cibles:
-                    continue
-                sid = cibles[uid_scrutin][0]
-                with z.open(entree) as f:
-                    s = json.load(f).get("scrutin", {})
-                for organe in liste(s.get("ventilationVotes", {}).get("organe")):
-                    for g in liste(organe.get("groupes", {}).get("groupe")):
-                        ref = g.get("organeRef")
-                        d = g.get("vote", {}).get("decompteVoix", {})
-                        abrege, libelle = groupes.get(ref, (None, None))
-                        if abrege is None:
-                            inconnus.add(ref)
-                        cur.execute(
-                            "INSERT INTO positions_groupes (scrutin_id, organe_ref, groupe_abrege, "
-                            "groupe_libelle, pour, contre, abstention, non_votant, source_id) "
-                            "VALUES (?,?,?,?,?,?,?,?,?)",
-                            (sid, ref, abrege, libelle, entier(d.get("pour")), entier(d.get("contre")),
-                             entier(d.get("abstentions")), entier(d.get("nonVotants")), src))
-                        inseres += 1
+                for s in scrutins_de(z, entree):
+                    uid_scrutin = s.get("uid")
+                    if uid_scrutin not in cibles:
+                        continue
+                    sid = cibles[uid_scrutin][0]
+                    for organe in liste(s.get("ventilationVotes", {}).get("organe")):
+                        for g in liste(organe.get("groupes", {}).get("groupe")):
+                            ref = g.get("organeRef")
+                            d = g.get("vote", {}).get("decompteVoix", {})
+                            abrege, libelle = groupes.get(ref, (None, None))
+                            if abrege is None:
+                                inconnus.add(ref)
+                            cur.execute(
+                                "INSERT INTO positions_groupes (scrutin_id, organe_ref, groupe_abrege, "
+                                "groupe_libelle, pour, contre, abstention, non_votant, source_id) "
+                                "VALUES (?,?,?,?,?,?,?,?,?)",
+                                (sid, ref, abrege, libelle, entier(d.get("pour")), entier(d.get("contre")),
+                                 entier(d.get("abstentions") or d.get("abstention")),
+                                 entier(d.get("nonVotants") or d.get("nonVotant")), src))
+                            inseres += 1
 
     cur.execute("INSERT INTO imports_journal (source_id, script, lignes, execute_le) VALUES (?,?,?,?)",
                 (src, "ingestion/assemblee/parse_positions_groupes.py", inseres,

@@ -229,7 +229,7 @@ def page(titre, actif, contenu, profondeur, meta):
 {contenu}
 </main>
 <footer class="pied">
-<p>Données générées le {e(date_fr(meta['genere_le']))} — {nombre_fr(meta['n_scrutins'])} scrutins en base (Assemblée nationale et Congrès, juillet 2017 → juillet 2026 ; Sénat et Parlement européen à importer). Candidatures mises à jour le {e(meta['candidats_maj'])}.</p>
+<p>Données générées le {e(date_fr(meta['genere_le']))} — {nombre_fr(meta['n_scrutins'])} scrutins en base (Assemblée nationale et Congrès, juillet 2012 → juillet 2026 ; Sénat et Parlement européen à importer). Candidatures mises à jour le {e(meta['candidats_maj'])}.</p>
 <p>Données parlementaires : licence ouverte (Assemblée nationale). Contenu : CC BY 4.0. <a href="https://github.com/Mlolita26/le-vrai-vote">Code source</a>.</p>
 </footer>
 </body>
@@ -259,7 +259,7 @@ def etat_couverture(p):
     if est_senateur:
         return "partiel", "sénateur — scrutins du Sénat à importer"
     if a_mandat_parl:
-        return "partiel", "mandats antérieurs à la période couverte (2017-2026)"
+        return "partiel", "mandats antérieurs à la période couverte (2012-2026)"
     return "hors", "jamais parlementaire depuis 1997 (données AN) — positions déclaratives à venir"
 
 
@@ -481,7 +481,7 @@ pour tous les candidats. « Non concerné » : pas en poste dans la chambre à l
 {votes_html}
 <h2>Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
-<h2>Ensemble des positions de vote — Assemblée nationale, 2017-2026</h2>
+<h2>Ensemble des positions de vote — Assemblée nationale, 2012-2026</h2>
 {positions_html}
 {solennels_html}
 <h2>Justice</h2>
@@ -639,7 +639,7 @@ def page_methode(meta):
 <ul class="methode-liste">
 <li><strong>Scrutins et positions de vote</strong> : dumps officiels de
 <a href="https://data.assemblee-nationale.fr">data.assemblee-nationale.fr</a> (licence ouverte),
-législatures 15 à 17 (juillet 2017 → juillet 2026), y compris le Congrès de Versailles.
+législatures 14 à 17 (juillet 2012 → juillet 2026), y compris le Congrès de Versailles.
 Chaque fichier est archivé avec son empreinte avant transformation ; chaque import est journalisé.</li>
 <li><strong>Identités et mandats</strong> : référentiel officiel « acteurs, mandats, organes » de
 l'Assemblée nationale (précision au jour), complété par les déclarations HATVP pour les fonctions
@@ -660,8 +660,10 @@ validation des parrainages par le Conseil constitutionnel (mars 2027).</li>
 <h2>Ce que veulent dire « absent » et « non-votant »</h2>
 <p>L'Assemblée nationale ne publie jamais la liste des absents : un élu est compté <strong>absent (déduit)</strong>
 si son mandat était actif à la date du scrutin et qu'il n'apparaît dans aucune liste de votants.
-Cette déduction est désactivée sur les 33 scrutins (sur 16 957) dont les totaux publiés présentent
-un écart avec les listes nominatives. <strong>Non-votant</strong> signifie présent sans prendre part au vote
+Cette déduction est désactivée sur les scrutins dont les totaux publiés présentent un écart avec les
+listes nominatives, et sur la partie des scrutins ordinaires de la 14e législature (2012-2017) où
+l'Assemblée ne publiait que la position de chaque groupe et les votes dissidents — on importe alors
+ces positions explicites, mais on ne déduit ni « suivi du groupe » ni absence. <strong>Non-votant</strong> signifie présent sans prendre part au vote
 (par exemple la présidence de séance) — ce n'est pas une absence.</p>
 <h2>La position du parti d'un candidat</h2>
 <p>Pour chaque vote clé, le site affiche aussi comment a voté le <strong>groupe parlementaire du parti</strong>

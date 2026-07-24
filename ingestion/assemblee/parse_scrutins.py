@@ -47,6 +47,17 @@ def liste(v):
     return v if isinstance(v, list) else [v]
 
 
+def scrutins_de(z, entree):
+    """Rend les scrutins d'une entrée de zip, quel que soit le conditionnement :
+    un fichier par scrutin (L15 et suivantes) ou un fichier agrégé contenant
+    tous les scrutins de la législature (L14 et antérieures)."""
+    with z.open(entree) as f:
+        racine = json.load(f)
+    if "scrutins" in racine:
+        return liste(racine["scrutins"].get("scrutin"))
+    return [racine.get("scrutin", {})]
+
+
 def positions_du_scrutin(scrutin: dict, uids: set):
     """Extrait ({uid suivi: position}, nombre de suffrages exprimés listés)."""
     resultat, n_exprimes_listes = {}, 0
@@ -108,9 +119,9 @@ def importer(base: Path, dossier: Path) -> None:
 
         with zipfile.ZipFile(zip_path) as z:
             entrees = [e for e in z.namelist() if e.endswith(".json")]
-            for entree in entrees:
-                with z.open(entree) as f:
-                    s = json.load(f).get("scrutin", {})
+            scrutins_zip = [s for entree in entrees for s in scrutins_de(z, entree)]
+            for s in scrutins_zip:
+                entree = s.get("uid", "?")  # pour les messages d'erreur
                 legislature = s.get("legislature")
                 numero = s.get("numero")
                 uid_officiel = s.get("uid")
@@ -134,19 +145,27 @@ def importer(base: Path, dossier: Path) -> None:
                 sid = cur.lastrowid
                 n_scrutins += 1
 
+                # Mode de publication : jusqu'à la 14e législature, une partie
+                # des scrutins ordinaires ne publie que la position majoritaire
+                # de chaque groupe et la liste nominative des seuls dissidents
+                # et non-votants. On importe alors ces positions explicites
+                # (réelles), mais on ne déduit RIEN : ni position « suivant le
+                # groupe », ni absence.
+                nominatif_complet = s.get("modePublicationDesVotes") != "DecompteDissidentsPositionGroupe"
                 exprimes, n_listes = positions_du_scrutin(s, uids)
-                # Détecteur de changement de format : si le scrutin annonce des
-                # suffrages exprimés mais que l'extraction nominative ne liste
-                # personne, la structure n'est pas celle attendue → arrêt.
+                # Détecteur de changement de format : si un scrutin à publication
+                # nominative complète annonce des suffrages exprimés mais que
+                # l'extraction ne liste personne, la structure n'est pas celle
+                # attendue → arrêt.
                 annonce = (s.get("syntheseVote") or {}).get("suffragesExprimes")
-                if annonce and int(annonce) > 0 and n_listes == 0:
+                if nominatif_complet and annonce and int(annonce) > 0 and n_listes == 0:
                     sys.exit(f"Structure de ventilation non reconnue dans {entree} "
                              f"({annonce} suffrages annoncés, 0 votant extrait) — import interrompu.")
                 # Écart annoncé/listé (mises au point publiées par l'AN) : les
                 # positions explicites restent fiables, mais l'inférence
                 # d'absence est désactivée pour ce scrutin — mieux vaut un
                 # état « à importer » qu'une absence potentiellement fausse.
-                ecart = annonce is not None and n_listes != int(annonce)
+                ecart = nominatif_complet and annonce is not None and n_listes != int(annonce)
                 if ecart:
                     ecarts.append((uid_officiel, date, int(annonce), n_listes))
                 # Motion de censure : seuls les votes POUR sont enregistrés ;
@@ -160,7 +179,7 @@ def importer(base: Path, dossier: Path) -> None:
                     cur.execute("INSERT INTO presence (personne_id, type, date, statut, source_id) "
                                 "VALUES (?, 'scrutin', ?, 'present', ?)", (pid, date, src))
                     n_positions += 1
-                if not ecart and not est_censure:
+                if nominatif_complet and not ecart and not est_censure:
                     for uid, pid in suivis.items():
                         if uid not in exprimes and concerne(pid, date, chambre):
                             cur.execute("INSERT INTO positions_vote (personne_id, scrutin_id, position) "
