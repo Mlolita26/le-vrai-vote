@@ -363,6 +363,20 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .rail-absent { background:var(--b-absent-bg); color:var(--b-absent-fg); box-shadow:inset 4px 0 0 var(--b-absent-fg); }
 .rail-neutre { background:var(--faint);       color:var(--encre-douce); box-shadow:inset 4px 0 0 var(--lisere); }
 
+/* Bannière « position du parti » (PE, quand la personne n'a pas siégé) :
+   teinte douce vert/rouge pour ne pas être manquée, mais distincte d'un vote
+   personnel — label « Parti » + « n'y siégeait pas » en gris. */
+.rail-parti-pour   { background:var(--b-pour-bg);   box-shadow:inset 4px 0 0 var(--lisere); }
+.rail-parti-contre { background:var(--b-contre-bg); box-shadow:inset 4px 0 0 var(--lisere); }
+.rail-parti-abst   { background:var(--b-abst-bg);   box-shadow:inset 4px 0 0 var(--lisere); }
+.ap-rail .pos-parti { font-size:.6rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:700; opacity:.85; }
+.rail-parti-pour   .pos-parti, .rail-parti-pour   .pos { color:var(--b-pour-fg); }
+.rail-parti-contre .pos-parti, .rail-parti-contre .pos { color:var(--b-contre-fg); }
+.rail-parti-abst   .pos-parti, .rail-parti-abst   .pos { color:var(--b-abst-fg); }
+.rail-parti-pour .mini, .rail-parti-contre .mini, .rail-parti-abst .mini {
+  color:var(--encre-douce); text-transform:none; letter-spacing:0; opacity:.85; }
+
 /* Corps de la carte */
 .ap-corps { padding:.75rem .95rem; min-width:0; }
 .ap-titre { font-family:'Spectral',Georgia,serif; font-weight:600; font-size:1.05rem; margin:0; line-height:1.25; }

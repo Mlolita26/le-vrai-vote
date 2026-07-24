@@ -612,10 +612,12 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             # Voix 2 — position du groupe/délégation du parti du candidat (même
             # quand lui-même n'a pas voté). Au PE : badge en contour (≠ vote perso).
             groupe_html = ""
+            pos_parti_pe = None   # position majoritaire de la délégation du parti (PE)
             abrege = groupe_du_candidat.get((p["slug"], v["legislature"]))
             if abrege:
                 g = next((x for x in groupes_par_vote.get(v["id"], []) if x["abrege"] == abrege), None)
                 if g and est_pe:
+                    pos_parti_pe = majorite_groupe(g)
                     groupe_html = (f'<p class="ligne-groupe ligne-pe">Son parti au Parlement européen — '
                                    f'{chip_groupe(g, contour=True)}</p>')
                 elif g:
@@ -646,10 +648,22 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                 p, v, etat_v, equiv_senat, est_pe, a_vote_perso)
             senat_sec = "" if rail_from_senat else senat_html
             provenance = '<span class="provenance-pe">Parlement europ\u00e9en</span>' if est_pe else ''
-            sous_html = f'<span class="mini">{rail_sous}</span>' if rail_sous else ''
             meta_html = f'<p class="ap-meta">{e(resultat_txt)}</p>' if resultat_txt else ''
+            # Banni\u00e8re : si la personne n'a pas si\u00e9g\u00e9 au PE mais que son parti a
+            # une position, on l'affiche en teinte douce (vert/rouge) AU-DESSUS du
+            # \u00ab n'y si\u00e9geait pas \u00bb \u2014 pour qu'elle ne soit pas manqu\u00e9e, sans la
+            # confondre avec un vote personnel (label \u00ab Parti \u00bb + mention explicite).
+            if est_pe and not a_vote_perso and pos_parti_pe:
+                rail_html = (f'<div class="ap-rail rail-parti-{pos_parti_pe}">'
+                             f'<span class="pos-parti">Parti</span>'
+                             f'<span class="pos">{ETATS[pos_parti_pe][0]}</span>'
+                             f'<span class="mini">\u2014 n\'y si\u00e9geait pas</span></div>')
+            else:
+                sous_html = f'<span class="mini">{rail_sous}</span>' if rail_sous else ''
+                rail_html = (f'<div class="ap-rail rail-{rail_cls}">'
+                             f'<span class="pos">{rail_mot}</span>{sous_html}</div>')
             lignes += f"""<li class="vote-carte">
-<div class="ap-rail rail-{rail_cls}"><span class="pos">{rail_mot}</span>{sous_html}</div>
+{rail_html}
 <div class="ap-corps">
 <p class="ap-titre">{e(v['titre'])} {provenance}</p>
 {meta_html}
