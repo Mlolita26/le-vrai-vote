@@ -290,6 +290,52 @@ def charger(base):
     return (candidats, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, equiv_senat, meta)
 
 
+CHAMBRE_LABEL = {"an": "Assembl\u00e9e nationale", "congres": "Congr\u00e8s du Parlement",
+                 "pe": "Parlement europ\u00e9en", "senat": "S\u00e9nat"}
+POS_COMPARABLE = ("pour", "contre", "abstention")
+
+
+def position_perso(slug, v, etats, equiv_senat):
+    """Position personnelle exprim\u00e9e (AN/PE via couverture, ou \u00e9quivalent S\u00e9nat)."""
+    p = etats.get((slug, v["id"]))
+    if p in POS_COMPARABLE:
+        return p
+    eq = equiv_senat.get(v["id"])
+    if eq:
+        ps = eq["positions"].get(slug)
+        if ps in POS_COMPARABLE:
+            return ps
+    return None
+
+
+def position_parti(slug, v, groupes_par_vote, groupe_du_candidat):
+    """Position majoritaire du groupe du parti du candidat sur ce vote (ou None)."""
+    ab = groupe_du_candidat.get((slug, v["legislature"]))
+    if not ab:
+        return None, None
+    g = next((x for x in groupes_par_vote.get(v["id"], []) if x["abrege"] == ab), None)
+    if not g:
+        return None, ab
+    return majorite_groupe(g), (g["libelle"] or ab)
+
+
+def positions_comparaison(candidats, votes_cles, etats, nuances, equiv_senat,
+                          groupes_par_vote, groupe_du_candidat):
+    """Pour chaque candidat et chaque vote cl\u00e9 : perso, parti, nom du parti, nuance."""
+    out = {}
+    for c in candidats:
+        slug = c["slug"]
+        d = {}
+        for v in votes_cles:
+            perso = position_perso(slug, v, etats, equiv_senat)
+            parti, parti_nom = position_parti(slug, v, groupes_par_vote, groupe_du_candidat)
+            nu = nuances.get((slug, v["id"]))
+            d[str(v["id"])] = {"perso": perso, "parti": parti, "parti_nom": parti_nom,
+                               "nuance": [nu[0], nu[1]] if nu else None}
+        out[slug] = d
+    return out
+
+
 def concordances(candidats):
     """Paires de candidats : accord sur les scrutins où tous deux ont exprimé un vote."""
     resultat = {}
@@ -770,68 +816,101 @@ mandat actif mais aucune mention au scrutin ; « à importer » : donnée pas en
 
 
 def page_comparer(meta):
+    # JS en chaîne simple (pas d'f-string) : les accolades sont littérales.
     contenu = """
 <h1>Comparer deux candidats</h1>
-<p>Sur les scrutins de l'Assemblée nationale où les deux candidats ont exprimé un vote
-(pour, contre ou abstention), quelle proportion de positions identiques ?</p>
-<p class="note-methode">Seuls les candidats ayant au moins 30 votes exprimés dans la période couverte
-apparaissent ici. Le taux est calculé uniquement sur les scrutins communs — il ne dit rien des textes
-sur lesquels un seul des deux a voté. Les absences et « non-votant » sont exclus du calcul.</p>
+<p>Sur les <strong>votes clés</strong>, thème par thème — à l'Assemblée, au Sénat et au Parlement
+européen. Deux façons de comparer, au choix :</p>
 <div class="comparateur">
   <label>Candidat A <select id="sel-a"></select></label>
   <label>Candidat B <select id="sel-b"></select></label>
 </div>
+<div class="mode-compare" role="group" aria-label="Mode de comparaison">
+  <button type="button" data-mode="perso" class="actif" aria-pressed="true">Votes personnels</button>
+  <button type="button" data-mode="parti" aria-pressed="false">Position du parti</button>
+</div>
+<p class="note-methode" id="note-mode"></p>
 <div id="resultat"></div>
 <script>
-fetch("../data.json").then(r => r.json()).then(d => {
-  const selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
-  for (const sel of [selA, selB])
-    for (const slug of d.comparables) {
-      const o = document.createElement("option");
-      o.value = slug; o.textContent = d.noms[slug];
-      sel.appendChild(o.cloneNode(true));
-    }
+fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
+  var selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
+  d.candidats.forEach(function (c) {
+    var o = document.createElement("option");
+    o.value = c.slug; o.textContent = c.nom;
+    selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
+  });
   selB.selectedIndex = Math.min(1, selB.options.length - 1);
+  var mode = "perso";
+  var boutons = document.querySelectorAll(".mode-compare button");
+  boutons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.mode;
+      boutons.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
+      b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
+      rendre();
+    });
+  });
+
+  function court(nom) { var p = nom.split(" "); return p[p.length - 1]; }
+  function pos(slug, vid) { var e = (d.positions[slug] || {})[vid] || {}; return mode === "perso" ? e.perso : e.parti; }
+  function badge(p) {
+    if (!p) return '<span class="badge badge-neutre">' + (mode === "perso" ? "n\u2019a pas voté" : "pas de position") + '</span>';
+    var l = d.libelles[p]; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>';
+  }
+  function nuanceDe(slug, vid) {
+    if (mode !== "perso") return "";
+    var e = (d.positions[slug] || {})[vid] || {};
+    if (!e.nuance) return "";
+    return '<p class="cmp-nuance">' + e.nuance[0] + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
+  }
+
   function rendre() {
-    const a = selA.value, b = selB.value, res = document.getElementById("resultat");
+    var a = selA.value, b = selB.value, res = document.getElementById("resultat");
+    document.getElementById("note-mode").textContent = (mode === "perso")
+      ? "Votes personnels : la position réellement exprimée par la personne (Assemblée, Sénat ou Parlement européen). « N’a pas voté » = elle n’était pas en poste, ou le vote n’existe pas pour elle."
+      : "Position du parti : la position majoritaire de son groupe parlementaire — utile pour situer deux familles politiques même quand les personnes n’ont pas siégé aux mêmes moments. Ce n’est pas un vote personnel.";
     res.textContent = "";
     if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
-    const cle = [a, b].sort().join("|");
-    const paire = d.concordances[cle];
-    if (!paire) { res.textContent = "Trop peu de scrutins communs pour une comparaison honnête."; return; }
-    const pct = (100 * paire.accord / paire.communs).toFixed(1).replace(".", ",");
-    const h = document.createElement("div");
-    h.className = "resultat-comparaison";
-    h.innerHTML = `<p><strong>${d.noms[a]}</strong> et <strong>${d.noms[b]}</strong> ont exprimé un vote
-      sur <strong>${paire.communs.toLocaleString("fr-FR")}</strong> scrutins communs.</p>
-      <p class="grand-chiffre">${pct} %</p>
-      <p>de positions identiques (${paire.accord.toLocaleString("fr-FR")} scrutins sur ${paire.communs.toLocaleString("fr-FR")}).</p>
-      <p><a href="../candidats/${a}/">Fiche ${d.noms[a]}</a> · <a href="../candidats/${b}/">Fiche ${d.noms[b]}</a></p>`;
-    res.appendChild(h);
+    var nomA = d.candidats.find(function (c) { return c.slug === a; }).nom;
+    var nomB = d.candidats.find(function (c) { return c.slug === b; }).nom;
 
-    // Détail vote clé par vote clé, divergences signalées.
-    const exprimes = new Set(["pour", "contre", "abstention"]);
-    const titreVotes = document.createElement("h2");
-    titreVotes.textContent = "Vote clé par vote clé";
-    res.appendChild(titreVotes);
-    const ul = document.createElement("ul");
-    ul.className = "votes-cles";
-    for (const v of d.votes) {
-      const ea = (d.etats[a] || {})[v.id] || "a_importer";
-      const eb = (d.etats[b] || {})[v.id] || "a_importer";
-      const diverge = exprimes.has(ea) && exprimes.has(eb) && ea !== eb;
-      const li = document.createElement("li");
-      li.className = "vote-cle" + (diverge ? " divergence" : "");
-      li.innerHTML = `<div class="vote-tete"><strong>${v.titre}</strong>
-        <span class="detail">${v.theme}</span></div>
-        <div class="badges">${badgeHtml(d, ea, d.noms[a])} ${badgeHtml(d, eb, d.noms[b])}</div>`;
-      ul.appendChild(li);
-    }
-    res.appendChild(ul);
-  }
-  function badgeHtml(d, etat, nom) {
-    const [libelle, classe] = d.libelles_etats[etat];
-    return `<span class="badge ${classe}">${nom.split(" ").slice(-1)[0]} : ${libelle}</span>`;
+    var totComp = 0, totAcc = 0;
+    var sections = document.createElement("div");
+    d.themes.forEach(function (theme) {
+      var votesT = d.votes.filter(function (v) { return v.theme === theme; });
+      var comp = 0, acc = 0, cartes = "";
+      votesT.forEach(function (v) {
+        var pa = pos(a, v.id), pb = pos(b, v.id);
+        var comparable = pa && pb;
+        var diverge = comparable && pa !== pb;
+        if (comparable) { comp++; if (pa === pb) acc++; }
+        cartes += '<article class="cmp-vote' + (diverge ? " diverge" : (comparable ? " accord" : " incomp")) + '">'
+          + '<div class="cmp-titre">' + v.titre + ' <span class="cmp-chambre">' + v.chambre + '</span></div>'
+          + '<div class="cmp-cols">'
+          + '<div class="cmp-col"><span class="qui">' + court(nomA) + '</span>' + badge(pa) + nuanceDe(a, v.id) + '</div>'
+          + '<div class="cmp-vs">' + (comparable ? (diverge ? "\u2260" : "=") : "") + '</div>'
+          + '<div class="cmp-col"><span class="qui">' + court(nomB) + '</span>' + badge(pb) + nuanceDe(b, v.id) + '</div>'
+          + '</div>'
+          + '<details class="cmp-desc"><summary>Voir la loi</summary><p>' + v.resume + '</p></details>'
+          + '</article>';
+      });
+      totComp += comp; totAcc += acc;
+      var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";
+      sections.innerHTML += '<section class="cmp-theme"><h2>' + theme + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
+    });
+
+    var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
+    var entete = document.createElement("div");
+    entete.className = "resultat-comparaison";
+    entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong>, '
+      + (mode === "perso" ? "votes personnels" : "positions de parti") + ' :</p>'
+      + (totComp
+          ? '<p class="grand-chiffre">' + pct + ' %</p><p>de positions identiques sur <strong>'
+            + totComp + '</strong> votes clés comparables (' + totAcc + ' accords).</p>'
+          : '<p>Aucun vote clé comparable dans ce mode. Essayez « Position du parti » pour situer leurs familles politiques.</p>')
+      + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
+    res.appendChild(entete);
+    res.appendChild(sections);
   }
   selA.addEventListener("change", rendre); selB.addEventListener("change", rendre);
   rendre();
@@ -926,8 +1005,6 @@ photographie librement réutilisable sont représentés par leurs initiales.</p>
 def generer(base):
     (candidats, themes, votes_cles, etats, nuances,
      groupes_par_vote, groupe_du_candidat, equiv_senat, meta) = charger(base)
-    paires, comparables = concordances(candidats)
-
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
     (WEB / "themes").mkdir(exist_ok=True)
     (WEB / "comparer").mkdir(exist_ok=True)
@@ -955,20 +1032,21 @@ def generer(base):
 
     libelles_themes = {t["id"]: t["libelle"] for t in themes}
     (WEB / "data.json").write_text(json.dumps({
-        "comparables": comparables,
-        "noms": {c["slug"]: c["nom"] for c in candidats},
-        "concordances": paires,
-        "votes": [{"id": v["id"], "titre": v["titre"], "date": v["date"],
-                   "theme": libelles_themes[v["thematique_id"]]} for v in votes_cles],
-        "etats": {slug: {v["id"]: etats.get((slug, v["id"]), "a_importer") for v in votes_cles}
-                  for slug in comparables},
-        "libelles_etats": ETATS,
+        "candidats": [{"slug": c["slug"], "nom": c["nom"]} for c in candidats],
+        "themes": [t["libelle"] for t in themes],
+        "votes": [{"id": str(v["id"]), "titre": v["titre"], "resume": v["resume"],
+                   "theme": libelles_themes[v["thematique_id"]],
+                   "chambre": CHAMBRE_LABEL.get(v["chambre"], v["chambre"]),
+                   "date": v["date"]} for v in votes_cles],
+        "positions": positions_comparaison(candidats, votes_cles, etats, nuances, equiv_senat,
+                                           groupes_par_vote, groupe_du_candidat),
+        "libelles": {"pour": ["Pour", "badge-pour"], "contre": ["Contre", "badge-contre"],
+                     "abstention": ["Abstention", "badge-abstention"]},
         "meta": meta,
     }, ensure_ascii=False), encoding="utf-8")
 
     print(f"Site généré : accueil + {len(candidats)} fiches + {len(themes)} pages thème + "
-          f"comparer/methode. {len(votes_cles)} votes clés affichés. "
-          f"Comparateur : {len(comparables)} candidats, {len(paires)} paires.")
+          f"comparer/methode. {len(votes_cles)} votes clés. Comparateur thématique (perso/parti).")
 
 
 if __name__ == "__main__":
