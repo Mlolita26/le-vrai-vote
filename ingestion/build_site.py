@@ -277,6 +277,18 @@ def carte_candidat(p, prefixe):
 </article>"""
 
 
+# Explications précises quand le parti d'un candidat n'avait pas de groupe
+# à l'Assemblée sur une législature (affichées à la place du message générique).
+SANS_GROUPE = {
+    ("marine-le-pen", "15"):
+        "Le RN n'avait que 8 députés en 2017 — pas assez pour former un groupe "
+        "(minimum 15) : ses élus siégeaient parmi les non-inscrits. Il n'existe donc "
+        "aucun décompte officiel « groupe RN » pour ce scrutin.",
+    ("edouard-philippe", "15"):
+        "Horizons n'existait pas encore (parti créé en octobre 2021) : aucun décompte "
+        "de groupe ne peut exister pour ce scrutin.",
+}
+
 # Pastilles d'état de couverture (design « refonte accueil », 24/07/2026)
 PASTILLES = {
     "couvert": ("Votes disponibles", "pastille-ok"),
@@ -440,8 +452,11 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                     groupe_html = (f'<p class="ligne-groupe">Son parti — groupe '
                                    f'{chip_groupe(g, v["est_censure"])}</p>')
             elif any(cle[0] == p["slug"] for cle in groupe_du_candidat):
-                groupe_html = ('<p class="ligne-groupe ligne-groupe-absente">Son parti n\'avait pas de '
-                               'groupe à l\'Assemblée sur cette législature.</p>')
+                explication = SANS_GROUPE.get(
+                    (p["slug"], v["legislature"]),
+                    "Son parti n'avait pas de groupe à l'Assemblée sur cette législature : "
+                    "aucun décompte officiel de groupe n'existe pour ce scrutin.")
+                groupe_html = f'<p class="ligne-groupe ligne-groupe-absente">{e(explication)}</p>'
             lignes += f"""<li class="vote-cle">
 <div class="vote-tete"><strong>{e(v['titre'])}</strong> {badge_etat(etat_v)}</div>
 {groupe_html}
@@ -658,7 +673,9 @@ manière de ne pas soutenir la censure. On affiche donc le nombre de voix apport
 aucune absence individuelle n'est déduite de ces scrutins.
 Le rattachement candidat → groupe suit une table publiée dans le code source (parti → groupe, par
 législature) qui ne couvre que les cas nets ; un candidat dont le parti n'a pas de groupe à l'Assemblée
-est affiché comme tel. Au Congrès de Versailles, les groupes du Sénat ne sont pas encore identifiés dans
+est affiché comme tel, avec l'explication : ainsi le RN, avec 8 députés élus en 2017 — sous le minimum
+de 15 requis pour former un groupe —, n'a aucun décompte officiel de groupe sur la législature 2017-2022,
+et Horizons n'existait pas avant octobre 2021. Au Congrès de Versailles, les groupes du Sénat ne sont pas encore identifiés dans
 notre référentiel et apparaissent comme « non identifiés ».</p>
 <h2>Votes clés : la grille avant les votes</h2>
 <p>Aucun vote clé commenté n'est affiché tant que la grille de sélection (critères objectifs, publics,
