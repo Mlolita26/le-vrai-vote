@@ -293,7 +293,7 @@ def carte_candidat(p, prefixe):
                    else "date de déclaration non fournie par la source")
     lien_statut = "candidature déclarée" if p["statut"] == "declaree" else "en lice pour une primaire"
     return f"""<article class="carte-candidat" data-nom="{e(p['nom'].lower())}">
-<h3><a href="{prefixe}candidats/{e(p['slug'])}/">{e(p['nom'])}</a></h3>
+<div class="carte-tete">{avatar(p, prefixe)}<h3><a href="{prefixe}candidats/{e(p['slug'])}/">{e(p['nom'])}</a></h3></div>
 <p class="detail">{e(p['parti'])} · {lien_statut} · {e(declaration)} (<a href="{e(p['source'])}" rel="noopener">source</a>)</p>
 <p class="couverture couverture-{etat}">{e(phrase)}</p>
 </article>"""
@@ -319,14 +319,22 @@ PASTILLES = {
 }
 
 
+def avatar(p, prefixe=""):
+    """Portrait libre (Wikimedia, crédité sur la page Méthode) ou initiales."""
+    if (WEB / "photos" / f"{p['slug']}.jpg").exists():
+        return (f'<img class="cand-avatar cand-photo" src="{prefixe}photos/{e(p["slug"])}.jpg" '
+                f'alt="" loading="lazy" width="42" height="42">')
+    initiales = (p["nom"].split()[0][0] + p["nom"].split()[1][0]).upper() \
+        if len(p["nom"].split()) > 1 else p["nom"][:2].upper()
+    return f'<div class="cand-avatar">{e(initiales)}</div>'
+
+
 def carte_accueil(p):
     etat, phrase = etat_couverture(p)
     libelle, classe = PASTILLES[etat]
     note = phrase[0].upper() + phrase[1:]
-    initiales = (p["nom"].split()[0][0] + p["nom"].split()[1][0]).upper() \
-        if len(p["nom"].split()) > 1 else p["nom"][:2].upper()
     recherche = f"{p['nom']} {p['parti']}".lower()
-    return f"""<article class="cand-carte" data-nom="{e(recherche)}"><div class="cand-avatar">{e(initiales)}</div><div>
+    return f"""<article class="cand-carte" data-nom="{e(recherche)}">{avatar(p)}<div>
 <h3 class="cand-nom"><a href="candidats/{e(p['slug'])}/">{e(p['nom'])}</a></h3>
 <div class="cand-parti">{e(p['parti'])}</div>
 <span class="pastille {classe}">{libelle}</span>
@@ -492,8 +500,9 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
-<h1>{e(p['nom'])}</h1>
-<p class="detail">{e(p['detail'])}</p>
+<div class="fiche-tete">{avatar(p, "../../").replace('width="42" height="42"', 'width="72" height="72"')}
+<div><h1>{e(p['nom'])}</h1>
+<p class="detail">{e(p['detail'])}</p></div></div>
 <p>{statut} {e(declaration)} — <a href="{e(p['source'])}" rel="noopener">source de la déclaration</a>.
 {f"Né(e) le {date_fr(p['naissance'])} (source : open data officiel)." if p['naissance'] else "Date de naissance : à importer."}</p>
 <h2>Votes clés par thème</h2>
@@ -655,7 +664,7 @@ fetch("../data.json").then(r => r.json()).then(d => {
     return page("Comparer", "Comparer", contenu, 1, meta)
 
 
-def page_methode(meta):
+def page_methode(meta, noms):
     contenu = f"""
 <h1>Méthode</h1>
 <h2>D'où viennent les données</h2>
@@ -713,8 +722,27 @@ de bases judiciaires (les décisions en open data sont pseudonymisées ; ce croi
 <h2>Corrections</h2>
 <p>Une donnée vous semble fausse ? Ouvrez un signalement sur
 <a href="https://github.com/Mlolita26/le-vrai-vote/issues">le dépôt public</a> avec le lien de la source :
-toute correction est tracée.</p>"""
+toute correction est tracée.</p>
+{credits_photos_html(noms)}"""
     return page("Méthode", "Méthode", contenu, 1, meta)
+
+
+def credits_photos_html(noms):
+    """Crédits des portraits (licences libres Wikimedia — attribution obligatoire)."""
+    chemin = WEB / "photos" / "credits.json"
+    if not chemin.exists():
+        return ""
+    credits = json.loads(chemin.read_text(encoding="utf-8"))
+    if not credits:
+        return ""
+    lignes = "".join(
+        f'<li>{e(noms.get(slug, slug))} — photo : {e(c["auteur"])}, '
+        f'licence {e(c["licence"])} (<a href="{e(c["page"])}" rel="noopener">Wikimedia Commons</a>)</li>'
+        for slug, c in sorted(credits.items()))
+    return f"""<h2>Crédits des portraits</h2>
+<p>Les portraits proviennent de Wikimedia Commons, sous licence libre ; les candidats sans
+photographie librement réutilisable sont représentés par leurs initiales.</p>
+<ul class="methode-liste credits-photos">{lignes}</ul>"""
 
 
 # ── Génération ───────────────────────────────────────────────────────────────
@@ -746,7 +774,8 @@ def generer(base):
         (dossier / "index.html").write_text(
             page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta), encoding="utf-8")
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
-    (WEB / "methode" / "index.html").write_text(page_methode(meta), encoding="utf-8")
+    (WEB / "methode" / "index.html").write_text(
+        page_methode(meta, {c["slug"]: c["nom"] for c in candidats}), encoding="utf-8")
 
     libelles_themes = {t["id"]: t["libelle"] for t in themes}
     (WEB / "data.json").write_text(json.dumps({

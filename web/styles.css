@@ -310,3 +310,12 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 
 /* Noms complets des groupes : autoriser le retour à la ligne dans les puces */
 .badge-groupe { white-space:normal; text-align:left; line-height:1.35; }
+
+/* Portraits des candidats */
+.cand-photo { object-fit:cover; border:1px solid var(--lisere); }
+.carte-tete { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.2rem; }
+.carte-tete h3 { margin:0; }
+.fiche-tete { display:flex; align-items:center; gap:1rem; margin-top:1rem; }
+.fiche-tete .cand-avatar { width:4.5rem; height:4.5rem; font-size:1.4rem; }
+.fiche-tete h1 { margin:0 0 0.2rem; }
+.credits-photos { font-size:0.82rem; }
