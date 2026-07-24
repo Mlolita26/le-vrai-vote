@@ -97,6 +97,25 @@ def chip_groupe(g, est_censure=False):
             f'<span class="decompte-groupe">({e(decompte_groupe(g))})</span>')
 
 
+def chip_resultat(v):
+    """Résultat officiel du scrutin : adopté/rejeté et décompte de synthèse."""
+    if v["sort"] not in ("adopté", "rejeté") or v["total_pour"] is None:
+        return ""
+    if v["est_censure"]:
+        if v["sort"] == "rejeté":
+            texte = (f"Censure rejetée · {v['total_pour']} voix pour"
+                     + (f", {v['suffrages_requis']} requises" if v["suffrages_requis"] else ""))
+        else:
+            texte = f"Censure adoptée · {v['total_pour']} voix pour"
+    else:
+        libelle = "Adopté" if v["sort"] == "adopté" else "Rejeté"
+        morceaux = [f"{v['total_pour']} pour", f"{v['total_contre']} contre"]
+        if v["total_abstention"]:
+            morceaux.append(f"{v['total_abstention']} abst.")
+        texte = f"{libelle} · {', '.join(morceaux)}"
+    return f'<span class="chip-resultat">{e(texte)}</span>'
+
+
 def date_fr(iso):
     if not iso:
         return None
@@ -151,7 +170,8 @@ def charger(base):
         "SELECT id, libelle, ordre FROM thematiques ORDER BY ordre")]
     votes_cles = [dict(v) for v in cur.execute(
         "SELECT vc.id, vc.thematique_id, vc.titre, vc.resume, vc.source_resume, "
-        "vc.contexte, s.date, s.chambre, s.legislature, s.objet, vc.scrutin_id FROM votes_cles vc "
+        "vc.contexte, s.date, s.chambre, s.legislature, s.objet, s.sort, s.total_pour, "
+        "s.total_contre, s.total_abstention, s.suffrages_requis, vc.scrutin_id FROM votes_cles vc "
         "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, s.date")]
     for v in votes_cles:
         v["est_censure"] = "motion de censure" in (v["objet"] or "").lower()
@@ -459,7 +479,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                     "aucun décompte officiel de groupe n'existe pour ce scrutin.")
                 groupe_html = f'<p class="ligne-groupe ligne-groupe-absente">{e(explication)}</p>'
             lignes += f"""<li class="vote-cle">
-<div class="vote-tete"><strong>{e(v['titre'])}</strong> {badge_etat(etat_v)}</div>
+<div class="vote-tete"><strong>{e(v['titre'])}</strong> {chip_resultat(v)} {badge_etat(etat_v)}</div>
 {groupe_html}
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
@@ -545,6 +565,7 @@ def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, meta):
                             f'({len(groupes_v)})</summary><ul>{lignes_g}</ul></details>')
         blocs += f"""<article class="vote-cle vote-cle-page">
 <h2>{e(v['titre'])}</h2>
+<p class="resultat-ligne">{chip_resultat(v)}</p>
 <p class="vote-resume">{e(v['resume'])}
 <a href="{e(v['source_resume'])}" rel="noopener">scrutin officiel du {date_fr(v['date'])}</a></p>
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}

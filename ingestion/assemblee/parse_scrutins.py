@@ -138,10 +138,24 @@ def importer(base: Path, dossier: Path) -> None:
                     chambre = "congres"
                 else:
                     sys.exit(f"Préfixe d'uid inconnu « {uid_officiel} » dans {entree} — import interrompu.")
+                synthese = s.get("syntheseVote") or {}
+                decompte = synthese.get("decompte") or {}
+
+                def entier(v):
+                    try:
+                        return int(v)
+                    except (TypeError, ValueError):
+                        return None
+
                 cur.execute(
-                    "INSERT INTO scrutins (chambre, legislature, numero, uid_officiel, objet, type_vote, date, source_id) "
-                    "VALUES (?,?,?,?,?,?,?,?)",
-                    (chambre, legislature, numero, uid_officiel, objet, type_vote, date, src))
+                    "INSERT INTO scrutins (chambre, legislature, numero, uid_officiel, objet, type_vote, "
+                    "date, sort, total_pour, total_contre, total_abstention, suffrages_requis, source_id) "
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (chambre, legislature, numero, uid_officiel, objet, type_vote, date,
+                     (s.get("sort") or {}).get("code"),
+                     entier(decompte.get("pour")), entier(decompte.get("contre")),
+                     entier(decompte.get("abstentions") or decompte.get("abstention")),
+                     entier(synthese.get("nbrSuffragesRequis")), src))
                 sid = cur.lastrowid
                 n_scrutins += 1
 

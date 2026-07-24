@@ -299,3 +299,11 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .groupes-votes { margin:0.7rem 0 0; font-size:0.9rem; }
 .groupes-votes summary { cursor:pointer; color:var(--accent); font-weight:600; font-size:0.88rem; }
 .groupes-votes ul { list-style:none; padding:0.55rem 0 0; margin:0; display:grid; gap:0.4rem; }
+
+/* Résultat officiel du scrutin + nuances plus visibles */
+.chip-resultat { display:inline-block; border-radius:999px; padding:0.14rem 0.65rem;
+  font-size:0.78rem; font-weight:600; background:var(--faint); color:var(--encre-douce);
+  border:1px solid var(--lisere); white-space:nowrap; }
+.resultat-ligne { margin:0.15rem 0 0.3rem; }
+.vote-nuance { border-left:3px solid var(--accent); }
+.nuances { border-left:3px solid var(--accent); }

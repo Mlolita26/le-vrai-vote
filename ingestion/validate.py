@@ -294,6 +294,16 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         verifier("27 rattachements candidat → groupe, tous justifiés et sourcés",
                  cur.execute("SELECT COUNT(*) FROM groupes_reference WHERE detail != ''"
                              ).fetchone()[0] == 27)
+        # Résultat officiel (sort + décompte) présent pour chaque vote clé.
+        verifier("chaque vote clé porte le résultat officiel (adopté/rejeté + décompte)",
+                 cur.execute("SELECT COUNT(*) FROM votes_cles vc JOIN scrutins s ON s.id = vc.scrutin_id "
+                             "WHERE s.sort IS NULL OR s.total_pour IS NULL").fetchone()[0] == 0)
+        resultat = cur.execute(
+            "SELECT s.sort, s.total_pour, s.suffrages_requis FROM scrutins s "
+            "WHERE s.uid_officiel = 'VTANR5L16V1240'").fetchone()
+        verifier("censure retraites 2023 : rejetée, 278 voix pour, 287 requises",
+                 resultat == ("rejeté", 278, 287), str(resultat))
+
         # Recoupement avec la presse (Duplomb, 08/07/2025) : RN 119 pour, LFI-NFP 71 contre.
         duplomb = dict(cur.execute(
             "SELECT pg.groupe_abrege, pg.pour FROM positions_groupes pg "

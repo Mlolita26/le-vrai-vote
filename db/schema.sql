@@ -76,15 +76,20 @@ CREATE TABLE IF NOT EXISTS identifiants_externes (
 -- uid_officiel : identifiant du producteur de la donnée (ex. VTANR5L16V1),
 -- clé d'unicité fiable ; la numérotation seule se répète (AN vs Congrès).
 CREATE TABLE IF NOT EXISTS scrutins (
-    id           INTEGER PRIMARY KEY,
-    chambre      TEXT NOT NULL CHECK (chambre IN ('an','senat','pe','congres')),
-    legislature  TEXT,                 -- AN/Congrès : 15/16/17 ; NULL si sans objet
-    numero       TEXT NOT NULL,
-    uid_officiel TEXT UNIQUE,          -- NULL si la source n'en fournit pas
-    objet        TEXT NOT NULL,
-    type_vote    TEXT,                 -- ex. « scrutin public solennel »
-    date         TEXT NOT NULL,
-    source_id    INTEGER NOT NULL REFERENCES sources(id)
+    id               INTEGER PRIMARY KEY,
+    chambre          TEXT NOT NULL CHECK (chambre IN ('an','senat','pe','congres')),
+    legislature      TEXT,             -- AN/Congrès : 14/15/16/17 ; NULL si sans objet
+    numero           TEXT NOT NULL,
+    uid_officiel     TEXT UNIQUE,      -- NULL si la source n'en fournit pas
+    objet            TEXT NOT NULL,
+    type_vote        TEXT,             -- ex. « scrutin public solennel »
+    date             TEXT NOT NULL,
+    sort             TEXT,             -- résultat officiel : adopté | rejeté (sort.code de la source)
+    total_pour       INTEGER,          -- décompte de synthèse publié
+    total_contre     INTEGER,
+    total_abstention INTEGER,
+    suffrages_requis INTEGER,          -- majorité requise (utile pour les motions de censure)
+    source_id        INTEGER NOT NULL REFERENCES sources(id)
 );
 CREATE INDEX IF NOT EXISTS idx_scrutins_chambre_leg ON scrutins (chambre, legislature, numero);
 
