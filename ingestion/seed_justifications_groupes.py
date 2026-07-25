@@ -545,16 +545,6 @@ JUSTIFS = [
      "A voté pour, avec l'ensemble des autres groupes, ce texte transpartisan salué par les associations de familles.",
      "carenews_cancer"),
 
-    # ── Transports : pacte ferroviaire (SNCF), 2018 (L15) ────────────────────
-    ("VTANR5L15V942", "LaREM",
-     "A voté pour : préparer l'ouverture à la concurrence prévue par l'Union et redresser la situation financière de la SNCF.",
-     "bdt_ferroviaire"),
-    ("VTANR5L15V942", "FI",
-     "A voté contre, dénonçant une privatisation rampante et la fin du statut de cheminot.",
-     "bdt_ferroviaire"),
-    ("VTANR5L15V942", "GDR",
-     "A voté contre : le groupe communiste dénonçait un texte au service de « l'ultralibéralisme » et la casse du service public ferroviaire.",
-     "bdt_ferroviaire"),
 
     # ── Société : loi Schiappa (violences sexuelles), 2018 (L15) ─────────────
     ("VTANR5L15V619", "LaREM",

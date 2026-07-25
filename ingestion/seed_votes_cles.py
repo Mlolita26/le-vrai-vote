@@ -32,7 +32,6 @@ THEMES = [
     ("taxe-impots", "Taxe et impôts"),
     ("budget", "Budget"),
     ("travail", "Travail"),
-    ("transports", "Transports"),
     ("logement", "Logement"),
     ("defense", "Défense"),
 ]
@@ -397,10 +396,7 @@ VOTES = [
     ("VTANR5L17V6572", "sante", "Médicaments contre les cancers de l'enfant (2026)",
      "Crée un cadre pour développer les médicaments contre les cancers et les maladies rares de l'enfant (recherche, disponibilité), financé notamment par une contribution des laboratoires pharmaceutiques. L'enjeu : répondre au manque de traitements pédiatriques, faute de rentabilité pour l'industrie ; texte porté de façon transpartisane, salué par les associations de familles.",
      "Adopté très largement (98 voix contre 22). Fait notable : le RN est le seul groupe à avoir voté contre."),
-    ("VTANR5L15V942", "transports", "Pacte ferroviaire — réforme de la SNCF (2018)",
-     "Réforme de la SNCF en trois volets : elle change son statut juridique (l'établissement public devient une société anonyme, dont l'État reste actionnaire à 100 %) ; elle ouvre le rail à la concurrence — d'autres compagnies que la SNCF pourront exploiter des lignes, comme l'imposent les règles européennes ; et elle supprime, pour les seuls nouveaux embauchés, le « statut de cheminot » (emploi garanti, avantages propres au rail). L'enjeu : ses promoteurs y voient un moyen de moderniser la SNCF et, par la concurrence, d'améliorer le service et de contenir les prix ; ses opposants redoutent l'inverse — une privatisation à terme (l'État pouvant plus tard se désengager), la fermeture de petites lignes non rentables et une dégradation du service public là où la concurrence ne joue pas. « Privatisation » renvoie ici à ce risque de désengagement public, pas à une hausse automatique des prix.",
-     "Vote sur le texte issu de la commission mixte paritaire, au terme d'un long conflit social au printemps 2018."),
-    ("PE-HTV-144789", "transports", "Quotas CO₂ pour l'aviation (UE, 2022)",
+    ("PE-HTV-144789", "ecologie-agriculture", "Quotas CO₂ pour l'aviation (UE, 2022)",
      "Révise le marché carbone européen appliqué à l'aviation : suppression progressive des quotas d'émission gratuits dont bénéficiaient les compagnies aériennes, qui devront donc payer davantage pour leurs émissions de CO₂. L'enjeu : faire contribuer le transport aérien à la baisse des émissions, mis en balance avec le coût pour les compagnies et le prix des billets.",
      "Vote au Parlement européen ; seule la délégation du RN a voté contre."),
     ("VTANR5L15V619", "societe", "Violences sexuelles et sexistes — loi Schiappa (2018)",
@@ -725,8 +721,6 @@ SENS = {
     # ── Ajouts (cancer, transports, femmes, handicap) ──
     "VTANR5L17V6572": ("adopter le cadre de soutien aux médicaments contre les cancers de l'enfant (financé par une contribution des laboratoires)",
                        "rejeter le texte"),
-    "VTANR5L15V942": ("adopter le pacte ferroviaire (SNCF en société anonyme, ouverture à la concurrence, fin de l'embauche au statut de cheminot)",
-                      "rejeter le texte"),
     "PE-HTV-144789": ("faire payer davantage l'aviation pour ses émissions de CO₂ (fin des quotas gratuits)",
                       "s'y opposer"),
     "VTANR5L15V619": ("adopter la loi Schiappa (prescription allongée, outrage sexiste, cyberharcèlement)",
