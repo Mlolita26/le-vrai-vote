@@ -41,6 +41,10 @@ SOURCES = {
                      "Le JDD — récapitulatif des votes d'Édouard Philippe à l'Assemblée (mariage pour tous, loi renseignement)"),
     "e1_tscg": ("https://www.europe1.fr/politique/Traite-europeen-ces-non-alignes-au-PS-384464",
                 "Europe 1, octobre 2012 — les députés PS ayant voté contre le TSCG et leurs motifs"),
+    "aubry_seqe": ("https://manonaubry.eu/mes-combats/vote/revision-du-systeme-dechange-de-quotas-demission-de-gaz-effet-de-serre-dans-lunion",
+                   "manonaubry.eu — fiche de vote de Manon Aubry (LFI / groupe The Left) sur la révision du "
+                   "marché carbone : « fausse solution », « logiques spéculatives », « droits à polluer », "
+                   "texte affaibli par « l'alliance des droites et la pression des lobbies »"),
 }
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
@@ -124,6 +128,17 @@ NUANCES = [
     ("jerome-guedj", "VTANR5L14V30",
      "A voté contre avec une vingtaine de députés de l'aile gauche du PS, contre la position de son propre gouvernement, refusant que l'austérité soit « gravée dans le marbre ».",
      "e1_tscg"),
+    # Parlement européen — vote CONTRE-INTUITIF de la délégation LFI sur le climat :
+    # contre le marché carbone, non par climato-scepticisme mais par rejet du
+    # mécanisme de marché. Position de groupe (Mélenchon n'y siégeait pas) — d'où
+    # le garde-fou assoupli acceptant une position de délégation.
+    ("jean-luc-melenchon", "PE-HTV-154173",
+     "La délégation LFI (groupe The Left), menée par Manon Aubry, a voté contre : elle rejette le marché "
+     "carbone comme une « fausse solution » fondée sur des « logiques spéculatives » et l'échange de "
+     "« droits à polluer », et dénonçait un texte affaibli par « l'alliance des droites et la pression des "
+     "lobbies » — un désaccord sur le mécanisme de marché, pas sur l'objectif climatique. "
+     "(Position du groupe : Jean-Luc Mélenchon n'y siégeait pas.)",
+     "aubry_seqe"),
 ]
 
 
@@ -132,29 +147,54 @@ def seed(base: Path) -> None:
     con.execute("PRAGMA foreign_keys = ON")
     cur = con.cursor()
 
-    if cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0]:
-        sys.exit("La table nuances n'est pas vide — la vider avant de re-semer.")
+    existantes = {(pid, sid) for pid, sid in cur.execute(
+        "SELECT personne_id, scrutin_id FROM nuances")}
 
-    ids_source = {}
-    for cle, (url, detail) in SOURCES.items():
-        cur.execute("INSERT INTO sources (url, type, collecte, detail) VALUES (?, 'presse', '2026-07-23', ?)",
-                    (url, detail))
-        ids_source[cle] = cur.lastrowid
+    def position_reelle(pid, sid):
+        """Garde-fou : la nuance doit expliquer une position réellement en base —
+        soit un vote PERSONNEL, soit (au PE) la position de la DÉLÉGATION du parti
+        rattachée au candidat (groupes_reference × positions_groupes)."""
+        if cur.execute("SELECT 1 FROM positions_vote WHERE personne_id=? AND scrutin_id=?",
+                       (pid, sid)).fetchone():
+            return True
+        leg = cur.execute("SELECT legislature FROM scrutins WHERE id=?", (sid,)).fetchone()[0]
+        abrege = cur.execute("SELECT groupe_abrege FROM groupes_reference "
+                             "WHERE personne_id=? AND legislature=?", (pid, leg)).fetchone()
+        return bool(abrege and cur.execute(
+            "SELECT 1 FROM positions_groupes WHERE scrutin_id=? AND groupe_abrege=?",
+            (sid, abrege[0])).fetchone())
 
+    a_inserer = []
     for slug, uid, texte, cle_source in NUANCES:
         pid = cur.execute("SELECT id FROM personnes WHERE slug=?", (slug,)).fetchone()
         sid = cur.execute("SELECT id FROM scrutins WHERE uid_officiel=?", (uid,)).fetchone()
         if not (pid and sid):
             sys.exit(f"Nuance orpheline : {slug} / {uid} introuvable.")
-        # Garde-fou : la nuance doit expliquer une position réellement en base.
-        if not cur.execute("SELECT 1 FROM positions_vote WHERE personne_id=? AND scrutin_id=?",
-                           (pid[0], sid[0])).fetchone():
-            sys.exit(f"Nuance sans position correspondante en base : {slug} / {uid} — refusée.")
+        if (pid[0], sid[0]) in existantes:
+            continue  # idempotent : déjà en base
+        if not position_reelle(pid[0], sid[0]):
+            sys.exit(f"Nuance sans position (perso ou délégation) en base : {slug} / {uid} — refusée.")
+        a_inserer.append((pid[0], sid[0], texte, cle_source))
+
+    if not a_inserer:
+        print("nuances : déjà à jour, rien à ajouter.")
+        con.close()
+        return
+
+    # Ne créer que les sources réellement nécessaires aux nuances ajoutées.
+    ids_source = {}
+    for cle in {item[3] for item in a_inserer}:
+        url, detail = SOURCES[cle]
+        cur.execute("INSERT INTO sources (url, type, collecte, detail) VALUES (?, 'presse', '2026-07-25', ?)",
+                    (url, detail))
+        ids_source[cle] = cur.lastrowid
+
+    for pid, sid, texte, cle_source in a_inserer:
         cur.execute("INSERT INTO nuances (personne_id, scrutin_id, texte, source_id) VALUES (?,?,?,?)",
-                    (pid[0], sid[0], texte, ids_source[cle_source]))
+                    (pid, sid, texte, ids_source[cle_source]))
 
     con.commit()
-    print(f"Semé : {len(NUANCES)} nuances sourcées ({len(SOURCES)} sources presse).")
+    print(f"Semé : {len(a_inserer)} nuance(s) ajoutée(s) ({len(ids_source)} source(s)).")
     con.close()
 
 
