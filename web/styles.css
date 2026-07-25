@@ -577,3 +577,27 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 
 /* Médias fluides (toutes tailles) — filet anti-débordement */
 img, svg, table { max-width:100%; }
+
+/* ============================================================
+   Fiche candidat sur mobile (≤640px) : rail de position en bandeau
+   HAUT (rend toute la largeur au texte) + cartes de vote REPLIABLES.
+   .collapsible/.open sont posées par theme.js ; sans JS tout reste
+   déplié (aucune information cachée — RGAA / honnêteté).
+   ============================================================ */
+@media (max-width:640px){
+  /* Rail = bandeau horizontal en tête de carte au lieu d'une colonne */
+  .vote-carte{ display:block; }
+  .ap-rail{ flex-direction:row; align-items:center; justify-content:flex-start;
+    gap:.55rem; padding:.5rem .9rem; box-shadow:none; text-align:left; }
+  .ap-rail .pos{ font-size:.92rem; }
+  .ap-rail .mini, .ap-rail .pos-parti, .ap-rail .pos-res{ font-size:.7rem; }
+
+  /* Carte repliée : rail + titre + résultat seulement ; le reste au tap */
+  .vote-carte.collapsible{ cursor:pointer; }
+  .vote-carte.collapsible:not(.open) > .ap-corps > :not(.ap-titre):not(.ap-meta){ display:none; }
+  .vote-carte.collapsible > .ap-corps > .ap-titre::after{
+    content:" ›  voir le détail"; color:var(--accent); font-weight:600;
+    font-size:.78rem; font-family:'Libre Franklin', system-ui, sans-serif; letter-spacing:0; }
+  .vote-carte.collapsible.open > .ap-corps > .ap-titre::after{ content:" ⌄  replier"; }
+  .vote-carte.collapsible:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+}

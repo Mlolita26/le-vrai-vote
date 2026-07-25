@@ -51,3 +51,59 @@
     nav.appendChild(btn);
   });
 })();
+
+/* Le Vrai Vote — cartes de vote repliables sur mobile.
+   Amélioration progressive : sans JS, tout reste déplié (aucune info
+   cachée). Sur mobile, chaque carte devient un bouton accessible au
+   clavier (Entrée/Espace) qui déplie le détail ; les liens restent
+   cliquables sans déplier. Desktop : inchangé. */
+(function () {
+  function ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+  ready(function () {
+    if (!window.matchMedia) return;
+    var mq = window.matchMedia('(max-width:640px)');
+    var cards = [].slice.call(document.querySelectorAll('.vote-carte'));
+    if (!cards.length) return;
+    function toggle(card, e) {
+      if (e && e.target && e.target.closest && e.target.closest('a')) return;
+      var open = card.classList.toggle('open');
+      card.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    function onClick(e) { toggle(e.currentTarget, e); }
+    function onKey(e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        if (e.target.closest && e.target.closest('a')) return;
+        e.preventDefault();
+        toggle(e.currentTarget, null);
+      }
+    }
+    function apply() {
+      cards.forEach(function (c) {
+        if (mq.matches) {
+          if (c.dataset.coll) return;
+          c.dataset.coll = '1';
+          c.classList.add('collapsible');
+          c.setAttribute('role', 'button');
+          c.setAttribute('tabindex', '0');
+          c.setAttribute('aria-expanded', 'false');
+          c.addEventListener('click', onClick);
+          c.addEventListener('keydown', onKey);
+        } else if (c.dataset.coll) {
+          delete c.dataset.coll;
+          c.classList.remove('collapsible', 'open');
+          c.removeAttribute('role');
+          c.removeAttribute('tabindex');
+          c.removeAttribute('aria-expanded');
+          c.removeEventListener('click', onClick);
+          c.removeEventListener('keydown', onKey);
+        }
+      });
+    }
+    apply();
+    if (mq.addEventListener) mq.addEventListener('change', apply);
+    else if (mq.addListener) mq.addListener(apply);
+  });
+})();
