@@ -45,6 +45,10 @@ SOURCES = {
                    "manonaubry.eu — fiche de vote de Manon Aubry (LFI / groupe The Left) sur la révision du "
                    "marché carbone : « fausse solution », « logiques spéculatives », « droits à polluer », "
                    "texte affaibli par « l'alliance des droites et la pression des lobbies »"),
+    "lfi_electricite": ("https://lafranceinsoumise.fr/2024/04/11/le-parlement-europeen-vote-la-catastrophique-reforme-du-marche-de-lelectricite-seul-le-groupe-lfi-sy-oppose/",
+                        "lafranceinsoumise.fr, 11/04/2024 — le groupe LFI/The Left explique son opposition à la "
+                        "réforme du marché de l'électricité (fin des tarifs réglementés, indexation sur le gaz, "
+                        "risque de privatisation)"),
 }
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
@@ -139,6 +143,12 @@ NUANCES = [
      "lobbies » — un désaccord sur le mécanisme de marché, pas sur l'objectif climatique. "
      "(Position du groupe : Jean-Luc Mélenchon n'y siégeait pas.)",
      "aubry_seqe"),
+    ("jean-luc-melenchon", "PE-HTV-167334",
+     "La délégation LFI (groupe The Left) a voté contre, dénonçant la fin programmée des tarifs réglementés "
+     "de vente, le maintien de l'indexation du prix de l'électricité sur celui du gaz et un risque de "
+     "privatisation ; elle défendait un contrôle public des prix de l'énergie. "
+     "(Position du groupe : Jean-Luc Mélenchon n'y siégeait pas.)",
+     "lfi_electricite"),
 ]
 
 
