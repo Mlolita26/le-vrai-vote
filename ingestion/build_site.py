@@ -656,15 +656,16 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             # Voix 2 — position du groupe/délégation du parti du candidat (même
             # quand lui-même n'a pas voté). Au PE : badge en contour (≠ vote perso).
             groupe_html = ""
-            pos_parti_pe = None   # position majoritaire de la délégation du parti (PE)
+            pos_parti = None   # position majoritaire du groupe/délégation du parti (toutes chambres)
             abrege = groupe_du_candidat.get((p["slug"], v["legislature"]))
             if abrege:
                 g = next((x for x in groupes_par_vote.get(v["id"], []) if x["abrege"] == abrege), None)
                 if g and est_pe:
-                    pos_parti_pe = majorite_groupe(g)
+                    pos_parti = majorite_groupe(g)
                     groupe_html = (f'<p class="ligne-groupe ligne-pe">Son parti au Parlement européen — '
                                    f'{chip_groupe(g, contour=True)}</p>')
                 elif g:
+                    pos_parti = majorite_groupe(g)
                     groupe_html = (f'<p class="ligne-groupe">Son parti — groupe '
                                    f'{chip_groupe(g, v["est_censure"])}</p>')
             elif not est_pe and any(cle[0] == p["slug"] for cle in groupe_du_candidat):
@@ -698,15 +699,21 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             senat_sec = "" if rail_from_senat else senat_html
             provenance = '<span class="provenance-pe">Parlement europ\u00e9en</span>' if est_pe else ''
             meta_html = f'<p class="ap-meta">{e(resultat_txt)}</p>' if resultat_txt else ''
-            # Banni\u00e8re : si la personne n'a pas si\u00e9g\u00e9 au PE mais que son parti a
-            # une position, on l'affiche en teinte douce (vert/rouge) AU-DESSUS du
-            # \u00ab n'y si\u00e9geait pas \u00bb \u2014 pour qu'elle ne soit pas manqu\u00e9e, sans la
-            # confondre avec un vote personnel (label \u00ab Parti \u00bb + mention explicite).
-            if est_pe and not a_vote_perso and pos_parti_pe:
-                rail_html = (f'<div class="ap-rail rail-parti-{pos_parti_pe}">'
+            # Banni\u00e8re : quand la personne n'a pas vot\u00e9 elle-m\u00eame (mandat europ\u00e9en
+            # qu'elle n'avait pas, ou pas en poste \u00e0 l'Assembl\u00e9e/au Congr\u00e8s \u00e0 la date)
+            # mais que son parti a une position, on l'affiche en teinte douce
+            # (vert/rouge) avec la m\u00eame pr\u00e9sentation partout \u2014 label \u00ab Parti \u00bb +
+            # mention explicite \u2014 pour ne pas la confondre avec un vote personnel.
+            # (Exclu pour les motions de censure : seul le \u00ab pour \u00bb y est compt\u00e9,
+            # une banni\u00e8re color\u00e9e serait ambigu\u00eb.)
+            if not a_vote_perso and not rail_from_senat and pos_parti and not v["est_censure"]:
+                mention_parti = ("n'y si\u00e9geait pas" if est_pe
+                                 else "n'\u00e9tait pas en poste" if etat_v == "non_concerne"
+                                 else "position de son parti")
+                rail_html = (f'<div class="ap-rail rail-parti-{pos_parti}">'
                              f'<span class="pos-parti">Parti</span>'
-                             f'<span class="pos">{ETATS[pos_parti_pe][0]}</span>'
-                             f'<span class="mini">\u2014 n\'y si\u00e9geait pas</span></div>')
+                             f'<span class="pos">{ETATS[pos_parti][0]}</span>'
+                             f'<span class="mini">\u2014 {mention_parti}</span></div>')
             else:
                 sous_html = f'<span class="mini">{rail_sous}</span>' if rail_sous else ''
                 rail_html = (f'<div class="ap-rail rail-{rail_cls}">'
@@ -768,6 +775,10 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
       blocs.forEach(function (b) {
         b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
       });
+      // Remonter au niveau des filtres : sinon, après un clic en bas de page,
+      // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
+      var barre = document.querySelector(".filtres-themes");
+      if (barre && barre.scrollIntoView) barre.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 })();
@@ -899,14 +910,12 @@ def page_comparer(meta):
     contenu = """
 <h1>Comparer deux candidats</h1>
 <p>Sur les <strong>votes clés</strong>, thème par thème — à l'Assemblée, au Sénat et au Parlement
-européen. Deux façons de comparer, au choix :</p>
+européen. Chaque candidat est comparé <strong>au plus précis</strong> : son vote personnel s'il a voté,
+sinon la position de son parti — clairement marquée. Ainsi deux candidats restent comparables même
+lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
 <div class="comparateur">
   <label>Candidat A <select id="sel-a"></select></label>
   <label>Candidat B <select id="sel-b"></select></label>
-</div>
-<div class="mode-compare" role="group" aria-label="Mode de comparaison">
-  <button type="button" data-mode="perso" class="actif" aria-pressed="true">Votes personnels</button>
-  <button type="button" data-mode="parti" aria-pressed="false">Position du parti</button>
 </div>
 <div class="mode-compare filtre-compare" role="group" aria-label="Filtrer les votes affichés">
   <button type="button" data-filtre="comparable" class="actif" aria-pressed="true">Votes comparables</button>
@@ -923,7 +932,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
   });
   selB.selectedIndex = Math.min(1, selB.options.length - 1);
-  var mode = "perso", filtre = "comparable";
+  var filtre = "comparable";
   function brancher(sel, set) {
     var bs = document.querySelectorAll(sel + " button");
     bs.forEach(function (b) {
@@ -932,41 +941,42 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         bs.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
         b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
         rendre();
+        var res = document.getElementById("resultat");
+        if (res && res.scrollIntoView) res.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
   }
-  brancher(".mode-compare:not(.filtre-compare)", function (ds) { mode = ds.mode; });
   brancher(".filtre-compare", function (ds) { filtre = ds.filtre; });
 
-  function court(nom) { var p = nom.split(" "); return p[p.length - 1]; }
-  function pos(slug, vid) { var e = (d.positions[slug] || {})[vid] || {}; return mode === "perso" ? e.perso : e.parti; }
-  function badge(p) {
-    if (!p) return '<span class="badge badge-neutre">' + (mode === "perso" ? "n\u2019a pas voté" : "pas de position") + '</span>';
-    var l = d.libelles[p]; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>';
-  }
-  function nuanceDe(slug, vid, surnom) {
+  // Vue unique : pour chaque candidat, le niveau le plus précis disponible —
+  // vote personnel s'il a voté, sinon position de son groupe (étiquetée).
+  function infoDe(slug, vid) {
     var e = (d.positions[slug] || {})[vid] || {};
-    // En mode « perso » : la nuance personnelle ; en mode « parti » : la
-    // justification sourcée du groupe du candidat.
-    var j = (mode === "perso") ? e.nuance : e.justif_parti;
-    if (!j) return "";
-    var etiq = (mode === "perso") ? surnom : (surnom + " — son groupe");
-    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + j[0]
-      + ' (<a href="' + j[1] + '" rel="noopener">source</a>)</p>';
+    if (e.perso) return { pos: e.perso, niveau: "perso", just: e.nuance || null };
+    if (e.parti) return { pos: e.parti, niveau: "parti", just: e.justif_parti || null };
+    return { pos: null, niveau: null, just: null };
   }
   var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
-  function banniere(surnom, p) {
-    var cls = p ? RAILCLS[p] : "rail-neutre";
-    var mot = p ? d.libelles[p][0] : (mode === "perso" ? "N’a pas voté" : "Pas de position");
-    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + surnom
+  function banniere(surnom, info) {
+    var cls = info.pos ? RAILCLS[info.pos] : "rail-neutre";
+    var mot = info.pos ? d.libelles[info.pos][0] : "Aucune donnée";
+    var tag = (info.niveau === "parti") ? '<span class="cmp-ban-tag">position du parti</span>' : '';
+    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + surnom + tag
       + '</span><span class="cmp-ban-pos">' + mot + '</span></div>';
+  }
+  function justifDe(surnom, info) {
+    if (!info.just) return "";
+    var etiq = (info.niveau === "parti") ? (surnom + " — son parti") : surnom;
+    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + info.just[0]
+      + ' (<a href="' + info.just[1] + '" rel="noopener">source</a>)</p>';
   }
 
   function rendre() {
     var a = selA.value, b = selB.value, res = document.getElementById("resultat");
-    document.getElementById("note-mode").textContent = (mode === "perso")
-      ? "Votes personnels : la position réellement exprimée par la personne (Assemblée, Sénat ou Parlement européen). « N’a pas voté » = elle n’était pas en poste, ou le vote n’existe pas pour elle."
-      : "Position du parti : la position majoritaire de son groupe parlementaire — utile pour situer deux familles politiques même quand les personnes n’ont pas siégé aux mêmes moments. Ce n’est pas un vote personnel.";
+    document.getElementById("note-mode").textContent =
+      "Vue unique : chaque candidat au niveau le plus précis disponible — son vote personnel s'il a voté, "
+      + "sinon la position majoritaire de son groupe (marquée « position du parti »). "
+      + "« Aucune donnée » = ni vote personnel ni parti rattaché pour ce scrutin.";
     res.textContent = "";
     if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
     var objA = d.candidats.find(function (c) { return c.slug === a; });
@@ -980,15 +990,15 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       var votesT = d.votes.filter(function (v) { return v.theme === theme; });
       var comp = 0, acc = 0, cartes = "";
       votesT.forEach(function (v) {
-        var pa = pos(a, v.id), pb = pos(b, v.id);
+        var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
+        var pa = ia.pos, pb = ib.pos;
         var comparable = pa && pb;
         var diverge = comparable && pa !== pb;
         if (comparable) { comp++; if (pa === pb) acc++; }
-        // Filtre « comparables » : on masque seulement si NI l'un NI l'autre n'a de position.
         if (filtre === "comparable" && !pa && !pb) return;
         var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
         var marque = comparable ? '<span class="cmp-marque ' + etat + '">'
-          + (diverge ? "Divergence" : "M\u00eame position") + '</span>' : '';
+          + (diverge ? "Divergence" : "Même position") + '</span>' : '';
         var sens = (v.sens_pour && v.sens_contre)
           ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
             + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
@@ -999,13 +1009,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<p class="cmp-desc-texte">' + v.resume + '</p>'
           + sens
-          + '<div class="cmp-bannieres">' + banniere(surA, pa) + banniere(surB, pb) + '</div>'
+          + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
           + marque
-          + nuanceDe(a, v.id, surA) + nuanceDe(b, v.id, surB)
+          + justifDe(surA, ia) + justifDe(surB, ib)
           + '</article>';
       });
       totComp += comp; totAcc += acc;
-      if (!cartes) return;  // thème sans aucune carte à montrer (filtre comparables)
+      if (!cartes) return;
       var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";
       sections.innerHTML += '<section class="cmp-theme"><h2>' + theme + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
     });
@@ -1013,12 +1023,12 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
     var entete = document.createElement("div");
     entete.className = "resultat-comparaison";
-    entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong>, '
-      + (mode === "perso" ? "votes personnels" : "positions de parti") + ' :</p>'
+    entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong> '
+      + '(vote personnel ou, à défaut, position du parti) :</p>'
       + (totComp
           ? '<p class="grand-chiffre">' + pct + ' %</p><p>de positions identiques sur <strong>'
             + totComp + '</strong> votes clés comparables (' + totAcc + ' accords).</p>'
-          : '<p>Aucun vote clé comparable dans ce mode. Essayez « Position du parti » pour situer leurs familles politiques.</p>')
+          : '<p>Aucun vote clé comparable entre ces deux candidats.</p>')
       + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
     res.appendChild(entete);
     res.appendChild(sections);
@@ -1028,7 +1038,6 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
 });
 </script>"""
     return page("Comparer", "Comparer", contenu, 1, meta)
-
 
 def page_methode(meta, noms):
     contenu = f"""

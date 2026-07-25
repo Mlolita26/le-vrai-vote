@@ -201,6 +201,27 @@ JUSTIFS = [
     ("VTANR5L16V3213", "SOC",
      "A voté contre, refusant de « sombrer dans le populisme de la droite et de l'extrême droite » et jugeant le texte contraire à l'accueil des personnes forcées de fuir.",
      "ps_immigration_2023"),
+
+    # ── Mesures d'urgence pouvoir d'achat, 2022 (L16) ────────────────────────
+    ("VTANR5L16V186", "LFI - NUPES",
+     "A voté contre, avec les groupes de la NUPES, jugeant le paquet « insoutenable sur le plan social et environnemental » et lui reprochant d'esquiver la hausse du Smic et des bas salaires.",
+     "lcp_pouvoir_achat"),
+    ("VTANR5L16V186", "Ecolo - NUPES",
+     "A voté contre, avec les groupes de la NUPES, jugeant le paquet « insoutenable sur le plan social et environnemental » et lui reprochant d'esquiver la hausse du Smic et des bas salaires.",
+     "lcp_pouvoir_achat"),
+    ("VTANR5L16V186", "GDR - NUPES",
+     "A voté contre, avec les groupes de la NUPES, jugeant le paquet « insoutenable sur le plan social et environnemental » et lui reprochant d'esquiver la hausse du Smic et des bas salaires.",
+     "lcp_pouvoir_achat"),
+    ("VTANR5L16V186", "SOC",
+     "S'est abstenu — « le compte n'y est pas » : des revalorisations jugées inférieures à l'inflation, sans opposition de principe aux mesures.",
+     "lcp_pouvoir_achat"),
+
+    # ── Accord UE-Mercosur, déclaration du Gouvernement, 2024 (L17) ──────────
+    # « Contre » ici ne veut PAS dire soutenir l'accord : LFI voulait un rejet
+    # plus net que celui du Gouvernement — d'où l'explication, indispensable.
+    ("VTANR5L17V456", "LFI-NFP",
+     "A voté contre la déclaration du Gouvernement — non pour soutenir l'accord, mais parce qu'elle se bornait à refuser l'accord « en l'état » : LFI réclamait un rejet « tout court » et reprochait au Gouvernement une « absence de stratégie ».",
+     "lfi_mercosur"),
 ]
 
 

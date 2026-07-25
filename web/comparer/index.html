@@ -17,14 +17,12 @@
 
 <h1>Comparer deux candidats</h1>
 <p>Sur les <strong>votes clés</strong>, thème par thème — à l'Assemblée, au Sénat et au Parlement
-européen. Deux façons de comparer, au choix :</p>
+européen. Chaque candidat est comparé <strong>au plus précis</strong> : son vote personnel s'il a voté,
+sinon la position de son parti — clairement marquée. Ainsi deux candidats restent comparables même
+lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
 <div class="comparateur">
   <label>Candidat A <select id="sel-a"></select></label>
   <label>Candidat B <select id="sel-b"></select></label>
-</div>
-<div class="mode-compare" role="group" aria-label="Mode de comparaison">
-  <button type="button" data-mode="perso" class="actif" aria-pressed="true">Votes personnels</button>
-  <button type="button" data-mode="parti" aria-pressed="false">Position du parti</button>
 </div>
 <div class="mode-compare filtre-compare" role="group" aria-label="Filtrer les votes affichés">
   <button type="button" data-filtre="comparable" class="actif" aria-pressed="true">Votes comparables</button>
@@ -41,7 +39,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
   });
   selB.selectedIndex = Math.min(1, selB.options.length - 1);
-  var mode = "perso", filtre = "comparable";
+  var filtre = "comparable";
   function brancher(sel, set) {
     var bs = document.querySelectorAll(sel + " button");
     bs.forEach(function (b) {
@@ -50,41 +48,42 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         bs.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
         b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
         rendre();
+        var res = document.getElementById("resultat");
+        if (res && res.scrollIntoView) res.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
   }
-  brancher(".mode-compare:not(.filtre-compare)", function (ds) { mode = ds.mode; });
   brancher(".filtre-compare", function (ds) { filtre = ds.filtre; });
 
-  function court(nom) { var p = nom.split(" "); return p[p.length - 1]; }
-  function pos(slug, vid) { var e = (d.positions[slug] || {})[vid] || {}; return mode === "perso" ? e.perso : e.parti; }
-  function badge(p) {
-    if (!p) return '<span class="badge badge-neutre">' + (mode === "perso" ? "n’a pas voté" : "pas de position") + '</span>';
-    var l = d.libelles[p]; return '<span class="badge ' + l[1] + '">' + l[0] + '</span>';
-  }
-  function nuanceDe(slug, vid, surnom) {
+  // Vue unique : pour chaque candidat, le niveau le plus précis disponible —
+  // vote personnel s'il a voté, sinon position de son groupe (étiquetée).
+  function infoDe(slug, vid) {
     var e = (d.positions[slug] || {})[vid] || {};
-    // En mode « perso » : la nuance personnelle ; en mode « parti » : la
-    // justification sourcée du groupe du candidat.
-    var j = (mode === "perso") ? e.nuance : e.justif_parti;
-    if (!j) return "";
-    var etiq = (mode === "perso") ? surnom : (surnom + " — son groupe");
-    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + j[0]
-      + ' (<a href="' + j[1] + '" rel="noopener">source</a>)</p>';
+    if (e.perso) return { pos: e.perso, niveau: "perso", just: e.nuance || null };
+    if (e.parti) return { pos: e.parti, niveau: "parti", just: e.justif_parti || null };
+    return { pos: null, niveau: null, just: null };
   }
   var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
-  function banniere(surnom, p) {
-    var cls = p ? RAILCLS[p] : "rail-neutre";
-    var mot = p ? d.libelles[p][0] : (mode === "perso" ? "N’a pas voté" : "Pas de position");
-    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + surnom
+  function banniere(surnom, info) {
+    var cls = info.pos ? RAILCLS[info.pos] : "rail-neutre";
+    var mot = info.pos ? d.libelles[info.pos][0] : "Aucune donnée";
+    var tag = (info.niveau === "parti") ? '<span class="cmp-ban-tag">position du parti</span>' : '';
+    return '<div class="cmp-ban ' + cls + '"><span class="cmp-ban-qui">' + surnom + tag
       + '</span><span class="cmp-ban-pos">' + mot + '</span></div>';
+  }
+  function justifDe(surnom, info) {
+    if (!info.just) return "";
+    var etiq = (info.niveau === "parti") ? (surnom + " — son parti") : surnom;
+    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + info.just[0]
+      + ' (<a href="' + info.just[1] + '" rel="noopener">source</a>)</p>';
   }
 
   function rendre() {
     var a = selA.value, b = selB.value, res = document.getElementById("resultat");
-    document.getElementById("note-mode").textContent = (mode === "perso")
-      ? "Votes personnels : la position réellement exprimée par la personne (Assemblée, Sénat ou Parlement européen). « N’a pas voté » = elle n’était pas en poste, ou le vote n’existe pas pour elle."
-      : "Position du parti : la position majoritaire de son groupe parlementaire — utile pour situer deux familles politiques même quand les personnes n’ont pas siégé aux mêmes moments. Ce n’est pas un vote personnel.";
+    document.getElementById("note-mode").textContent =
+      "Vue unique : chaque candidat au niveau le plus précis disponible — son vote personnel s'il a voté, "
+      + "sinon la position majoritaire de son groupe (marquée « position du parti »). "
+      + "« Aucune donnée » = ni vote personnel ni parti rattaché pour ce scrutin.";
     res.textContent = "";
     if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
     var objA = d.candidats.find(function (c) { return c.slug === a; });
@@ -98,11 +97,11 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       var votesT = d.votes.filter(function (v) { return v.theme === theme; });
       var comp = 0, acc = 0, cartes = "";
       votesT.forEach(function (v) {
-        var pa = pos(a, v.id), pb = pos(b, v.id);
+        var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
+        var pa = ia.pos, pb = ib.pos;
         var comparable = pa && pb;
         var diverge = comparable && pa !== pb;
         if (comparable) { comp++; if (pa === pb) acc++; }
-        // Filtre « comparables » : on masque seulement si NI l'un NI l'autre n'a de position.
         if (filtre === "comparable" && !pa && !pb) return;
         var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
         var marque = comparable ? '<span class="cmp-marque ' + etat + '">'
@@ -117,13 +116,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<p class="cmp-desc-texte">' + v.resume + '</p>'
           + sens
-          + '<div class="cmp-bannieres">' + banniere(surA, pa) + banniere(surB, pb) + '</div>'
+          + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
           + marque
-          + nuanceDe(a, v.id, surA) + nuanceDe(b, v.id, surB)
+          + justifDe(surA, ia) + justifDe(surB, ib)
           + '</article>';
       });
       totComp += comp; totAcc += acc;
-      if (!cartes) return;  // thème sans aucune carte à montrer (filtre comparables)
+      if (!cartes) return;
       var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";
       sections.innerHTML += '<section class="cmp-theme"><h2>' + theme + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
     });
@@ -131,12 +130,12 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
     var entete = document.createElement("div");
     entete.className = "resultat-comparaison";
-    entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong>, '
-      + (mode === "perso" ? "votes personnels" : "positions de parti") + ' :</p>'
+    entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong> '
+      + '(vote personnel ou, à défaut, position du parti) :</p>'
       + (totComp
           ? '<p class="grand-chiffre">' + pct + ' %</p><p>de positions identiques sur <strong>'
             + totComp + '</strong> votes clés comparables (' + totAcc + ' accords).</p>'
-          : '<p>Aucun vote clé comparable dans ce mode. Essayez « Position du parti » pour situer leurs familles politiques.</p>')
+          : '<p>Aucun vote clé comparable entre ces deux candidats.</p>')
       + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
     res.appendChild(entete);
     res.appendChild(sections);

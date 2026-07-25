@@ -495,6 +495,10 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   box-shadow:inset 5px 0 0 rgba(0,0,0,.14); }
 .cmp-ban-qui { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; opacity:.85; }
 .cmp-ban-pos { font-family:'Spectral',Georgia,serif; font-weight:700; font-size:1.15rem; line-height:1.1; }
+/* Étiquette « position du parti » quand le vote personnel n'existe pas. */
+.cmp-ban-tag { display:inline-block; margin-left:.4rem; padding:.05rem .4rem; border-radius:999px;
+  font-size:.62rem; font-weight:700; text-transform:none; letter-spacing:0;
+  border:1px solid currentColor; opacity:.9; vertical-align:middle; }
 .cmp-ban.rail-pour   { background:var(--b-pour-bg);   color:var(--b-pour-fg); }
 .cmp-ban.rail-contre { background:var(--b-contre-bg); color:var(--b-contre-fg); }
 .cmp-ban.rail-abst   { background:var(--b-abst-bg);   color:var(--b-abst-fg); }

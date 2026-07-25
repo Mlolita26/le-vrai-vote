@@ -287,8 +287,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         # Nuances : chacune sourcée et adossée à une position réellement en base —
         # soit un vote PERSONNEL, soit (au PE surtout) la position de la DÉLÉGATION
         # du parti rattachée au candidat (même garde-fou que seed_nuances.py).
-        verifier("45 nuances, toutes adossées à une position (perso ou délégation)",
-                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 45
+        verifier("23 nuances, toutes adossées à une position (perso ou délégation)",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 23
                  and cur.execute(
                      "SELECT COUNT(*) FROM nuances n WHERE NOT ("
                      "  EXISTS (SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
@@ -311,8 +311,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
         # Justifications de groupe (éditorial) : chacune adossée à un décompte de
         # groupe réel pour ce scrutin, et sourcée avec une URL non vide.
-        verifier("21 justifications de groupe, toutes adossées à un décompte et sourcées",
-                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 21
+        verifier("39 justifications de groupe, toutes adossées à un décompte et sourcées",
+                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 39
                  and cur.execute(
                      "SELECT COUNT(*) FROM justifications_groupes j WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_groupes pg WHERE pg.scrutin_id = j.scrutin_id "

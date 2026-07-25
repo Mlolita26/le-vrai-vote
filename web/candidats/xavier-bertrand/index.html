@@ -507,7 +507,7 @@ Né(e) le 21/03/1965 (source : open data officiel).</p>
 <div class="ap-corps">
 <p class="ap-titre">Accord UE-Mercosur : déclaration du Gouvernement (2024) </p>
 <p class="ap-meta">Adopté 485–69</p>
-<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = approuver l&#x27;opposition de la France à l&#x27;accord UE-Mercosur en l&#x27;état</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = ne pas s&#x27;associer à ce refus de l&#x27;accord</span></p>
+<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = soutenir la déclaration du Gouvernement, c&#x27;est-à-dire dire non à l&#x27;accord Mercosur en l&#x27;état</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = refuser de voter cette déclaration du Gouvernement — ce qui, ici, ne signifie pas soutenir l&#x27;accord</span></p>
 
 
 
@@ -592,6 +592,10 @@ Né(e) le 21/03/1965 (source : open data officiel).</p>
       blocs.forEach(function (b) {
         b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
       });
+      // Remonter au niveau des filtres : sinon, après un clic en bas de page,
+      // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
+      var barre = document.querySelector(".filtres-themes");
+      if (barre && barre.scrollIntoView) barre.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 })();
