@@ -294,17 +294,25 @@ def charger(base):
         equiv_senat[vc_id] = {"date": sdate, "sort": ssort, "positions": pos}
     etats = {(slug_p, vid): etat for slug_p, vid, etat in cur.execute(
         "SELECT personne_slug, vote_cle_id, etat FROM couverture")}
-    # Nuances : explication sourcée d'un vote contre-intuitif, par (personne, vote clé).
+    # Concept unifié « justification » : une explication sourcée d'un vote, au
+    # niveau d'une PERSONNE ou d'un GROUPE. La vue `justifications` réunit les deux
+    # sources de curation (personnes et groupes) — le reste du code, et le site,
+    # ne voient plus qu'un seul objet « justification ».
+    cur.execute("""CREATE VIEW IF NOT EXISTS justifications AS
+        SELECT scrutin_id, personne_id, NULL AS groupe_abrege, texte, source_id FROM nuances
+        UNION ALL
+        SELECT scrutin_id, NULL AS personne_id, groupe_abrege, texte, source_id FROM justifications_groupes""")
+    # Justification d'une personne, par (personne, vote clé).
     nuances = {(slug_p, vid): (texte, url) for slug_p, vid, texte, url in cur.execute(
-        "SELECT p.slug, vc.id, n.texte, src.url FROM nuances n "
-        "JOIN personnes p ON p.id = n.personne_id "
-        "JOIN votes_cles vc ON vc.scrutin_id = n.scrutin_id "
-        "JOIN sources src ON src.id = n.source_id")}
-    # Justifications de groupe : « pourquoi » sourcé de chaque parti, par (vote clé, groupe abrégé).
+        "SELECT p.slug, vc.id, j.texte, src.url FROM justifications j "
+        "JOIN personnes p ON p.id = j.personne_id "
+        "JOIN votes_cles vc ON vc.scrutin_id = j.scrutin_id "
+        "JOIN sources src ON src.id = j.source_id WHERE j.personne_id IS NOT NULL")}
+    # Justification d'un groupe, par (vote clé, groupe abrégé).
     justifs_groupes = {(vid, ab): (texte, url) for vid, ab, texte, url in cur.execute(
-        "SELECT vc.id, jg.groupe_abrege, jg.texte, src.url FROM justifications_groupes jg "
-        "JOIN votes_cles vc ON vc.scrutin_id = jg.scrutin_id "
-        "JOIN sources src ON src.id = jg.source_id")}
+        "SELECT vc.id, j.groupe_abrege, j.texte, src.url FROM justifications j "
+        "JOIN votes_cles vc ON vc.scrutin_id = j.scrutin_id "
+        "JOIN sources src ON src.id = j.source_id WHERE j.groupe_abrege IS NOT NULL")}
 
     meta = {
         "genere_le": date.today().isoformat(),
@@ -654,7 +662,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             # Justification sourcée du groupe du candidat (le « pourquoi » du parti).
             jp = justifs_groupes.get((v["id"], abrege)) if abrege else None
             justif_parti_html = (
-                f'<p class="groupe-justif">Pourquoi son groupe a voté ainsi : {e(jp[0])} '
+                f'<p class="groupe-justif">Justification du groupe : {e(jp[0])} '
                 f'(<a href="{e(jp[1])}" rel="noopener">source</a>)</p>' if jp else "")
             senat_html = senat_fiche(v["id"], p["slug"], equiv_senat)
             a_vote_perso = etat_v in ("pour", "contre", "abstention", "absent")

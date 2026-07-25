@@ -189,9 +189,11 @@ CREATE TABLE IF NOT EXISTS groupes_reference (
     UNIQUE (personne_id, legislature)
 );
 
--- Nuances (éditorial) : explication d'un vote contre-intuitif, toujours
--- attribuée et sourcée (explication de vote en séance, communiqué, presse).
--- Une nuance décrit la justification déclarée — elle ne juge pas.
+-- JUSTIFICATION d'une PERSONNE (éditorial) : pourquoi un individu a voté comme
+-- il l'a fait — utile surtout quand il s'écarte de la ligne de son groupe.
+-- Toujours attribuée et sourcée ; décrit la position déclarée, ne juge pas.
+-- (Table historiquement nommée « nuances » ; c'est le versant « personne » du
+--  concept unifié « justification » — voir la vue `justifications` plus bas.)
 CREATE TABLE IF NOT EXISTS nuances (
     id          INTEGER PRIMARY KEY,
     personne_id INTEGER NOT NULL REFERENCES personnes(id),
@@ -215,6 +217,16 @@ CREATE TABLE IF NOT EXISTS justifications_groupes (
     source_id     INTEGER NOT NULL REFERENCES sources(id),
     UNIQUE (scrutin_id, groupe_abrege)
 );
+
+-- Concept unifié « justification » : une explication sourcée d'un vote, au niveau
+-- d'une PERSONNE (table nuances) OU d'un GROUPE (table justifications_groupes).
+-- Le site et le code de génération ne lisent QUE cette vue — d'où un seul objet
+-- « justification » de bout en bout. Les deux tables restent les points de saisie
+-- (curation distincte : individus vs partis).
+CREATE VIEW IF NOT EXISTS justifications AS
+    SELECT scrutin_id, personne_id, NULL AS groupe_abrege, texte, source_id FROM nuances
+    UNION ALL
+    SELECT scrutin_id, NULL AS personne_id, groupe_abrege, texte, source_id FROM justifications_groupes;
 
 CREATE TABLE IF NOT EXISTS affaires_judiciaires (
     id          INTEGER PRIMARY KEY,
