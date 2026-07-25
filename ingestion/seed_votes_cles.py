@@ -27,6 +27,7 @@ THEMES = [
     ("societe", "Questions de société"),
     ("europe-international", "Europe et international"),
     ("institutions", "Institutions et vie démocratique"),
+    ("sante", "Santé"),
 ]
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -272,6 +273,26 @@ VOTES = [
     ("VTANR5L17V1303", "institutions", "Parité dans les petites communes (2025)",
      "Étend le scrutin de liste — à la proportionnelle et paritaire (autant de femmes que d'hommes) — aux communes de moins de 1 000 habitants, qui élisaient jusqu'ici leurs conseillers au scrutin majoritaire, sans obligation de parité. L'enjeu : renforcer la représentation des femmes dans les conseils municipaux des petites communes, la question débattue étant la difficulté à constituer des listes complètes et paritaires dans les villages.",
      "Adoptée en première lecture, 206 voix contre 181, puis promulguée le 21 mai 2025 pour les municipales de 2026. Les positions habituelles s'y sont inversées : la gauche (dont LFI) a voté pour, le RN contre."),
+
+    # ── Santé (thème créé le 25/07/2026) ─────────────────────────────────────
+    ("VTANR5L14V1200", "sante", "Modernisation du système de santé — loi Touraine (2016)",
+     "Réforme d'ensemble du système de santé : généralisation du tiers payant (ne plus avancer les frais chez le médecin), paquet de cigarettes neutre, ouverture de salles de consommation de drogue à moindre risque, renforcement de la prévention. L'enjeu : faciliter l'accès aux soins et agir sur la santé publique, le tiers payant généralisé étant vivement contesté par une partie des médecins.",
+     None),
+    ("VTANR5L16V875", "sante", "Accès direct aux paramédicaux — loi Rist (2023)",
+     "Ouvre l'accès direct à certains professionnels de santé — kinésithérapeutes, orthophonistes, infirmiers en pratique avancée — sans passer d'abord par un médecin, pour raccourcir les délais. L'enjeu : désengorger l'accès aux soins face au manque de médecins, la question débattue étant la coordination des soins autour du médecin traitant.",
+     None),
+    ("VTANR5L17V1607", "sante", "Déserts médicaux : régulation de l'installation (2025)",
+     "Encadre l'installation des médecins : dans les zones déjà bien pourvues, un nouveau médecin ne pourrait s'installer qu'en remplaçant un départ. L'enjeu : lutter contre les « déserts médicaux » en répartissant mieux les médecins sur le territoire, une régulation combattue par une partie de la profession au nom de la liberté d'installation.",
+     None),
+    ("VTANR5L15V2760", "sante", "Programmation pour l'hôpital public (2020)",
+     "Proposition de loi prévoyant un plan pluriannuel d'investissement, de créations de postes et de revalorisations à l'hôpital public, au sortir de la première vague de Covid. L'enjeu : redonner des moyens à l'hôpital public, le débat portant sur le coût et le calendrier de tels engagements.",
+     None),
+    ("VTANR5L17V600", "sante", "Ratios de soignants par patient (2025)",
+     "Instaure un nombre minimum de soignants par patient dans les établissements de santé (ratios), pour garantir un niveau de personnel au chevet des malades. L'enjeu : la sécurité des patients et les conditions de travail des soignants, mis en balance avec le coût et la pénurie de personnel disponible.",
+     None),
+    ("VTANR5L15V4414", "sante", "Allongement du délai d'IVG à 14 semaines (2022)",
+     "Allonge de 12 à 14 semaines le délai légal pour recourir à une interruption volontaire de grossesse (IVG). L'enjeu : l'accès effectif à l'IVG pour les femmes hors délai — qui devaient jusque-là se rendre à l'étranger —, face à des objections d'ordre médical et éthique.",
+     None),
 ]
 
 
@@ -440,6 +461,19 @@ SENS = {
                        "conserver le mode de scrutin actuel, sans parité obligatoire, dans ces communes"),
     "VTANR5L17V7454": ("inscrire dans la Constitution un statut d'autonomie pour la Corse au sein de la République",
                        "refuser ce statut d'autonomie"),
+    # ── Santé ──
+    "VTANR5L14V1200": ("adopter la réforme (tiers payant généralisé, paquet de cigarettes neutre, salles de consommation à moindre risque)",
+                       "rejeter le texte"),
+    "VTANR5L16V875": ("autoriser l'accès direct à certains paramédicaux, sans passer d'abord par un médecin",
+                      "s'opposer à cet accès direct"),
+    "VTANR5L17V1607": ("réguler l'installation des médecins (la limiter dans les zones déjà bien dotées)",
+                       "refuser cette régulation de l'installation"),
+    "VTANR5L15V2760": ("adopter le plan d'investissement et d'embauches pour l'hôpital public",
+                       "rejeter cette proposition"),
+    "VTANR5L17V600": ("imposer un nombre minimum de soignants par patient",
+                      "ne pas imposer ces ratios"),
+    "VTANR5L15V4414": ("allonger le délai légal de l'IVG de 12 à 14 semaines",
+                       "maintenir le délai à 12 semaines"),
 }
 
 

@@ -49,6 +49,7 @@ THEME_SLUGS = {
     "Questions de société": "societe",
     "Europe et international": "europe-international",
     "Institutions et vie démocratique": "institutions",
+    "Santé": "sante",
 }
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {
