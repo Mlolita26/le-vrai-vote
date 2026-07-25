@@ -254,8 +254,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
     # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
     n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     if n_vc:
-        verifier("43 votes clés répartis sur 7 thématiques",
-                 n_vc == 43 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 7)
+        verifier("70 votes clés répartis sur 7 thématiques",
+                 n_vc == 70 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 7)
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
@@ -281,26 +281,45 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         verifier("IVG au Congrès : Retailleau (sénateur) a un état de position, pas « non concerné »",
                  etat_ivg.get("bruno-retailleau") in ("pour", "contre", "abstention", "non_votant", "absent"),
                  str(etat_ivg.get("bruno-retailleau")))
-        # Nuances : chacune sourcée et adossée à une position réellement en base.
-        verifier("23 nuances, toutes adossées à une position existante",
-                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 23
+        # Nuances : chacune sourcée et adossée à une position réellement en base —
+        # soit un vote PERSONNEL, soit (au PE surtout) la position de la DÉLÉGATION
+        # du parti rattachée au candidat (même garde-fou que seed_nuances.py).
+        verifier("45 nuances, toutes adossées à une position (perso ou délégation)",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 45
                  and cur.execute(
-                     "SELECT COUNT(*) FROM nuances n WHERE NOT EXISTS ("
-                     "SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
-                     "AND pv.scrutin_id = n.scrutin_id)").fetchone()[0] == 0)
+                     "SELECT COUNT(*) FROM nuances n WHERE NOT ("
+                     "  EXISTS (SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
+                     "          AND pv.scrutin_id = n.scrutin_id)"
+                     "  OR EXISTS (SELECT 1 FROM groupes_reference gr "
+                     "             JOIN scrutins s ON s.id = n.scrutin_id "
+                     "             JOIN positions_groupes pg ON pg.scrutin_id = n.scrutin_id "
+                     "               AND pg.groupe_abrege = gr.groupe_abrege "
+                     "             WHERE gr.personne_id = n.personne_id "
+                     "               AND gr.legislature = s.legislature))").fetchone()[0] == 0)
         verifier("chaque nuance pointe une source avec URL",
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
         # Positions des groupes parlementaires sur les votes clés.
-        verifier("positions de groupes extraites pour les 43 scrutins des votes clés",
+        verifier("positions de groupes extraites pour les 70 scrutins des votes clés",
                  cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
-                             ).fetchone()[0] == 43)
+                             ).fetchone()[0] == 70)
         verifier("aucun décompte de groupe négatif",
                  cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
-        verifier("31 rattachements candidat → groupe (27 AN + 4 délégations PE), justifiés et sourcés",
+        # Justifications de groupe (éditorial) : chacune adossée à un décompte de
+        # groupe réel pour ce scrutin, et sourcée avec une URL non vide.
+        verifier("21 justifications de groupe, toutes adossées à un décompte et sourcées",
+                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 21
+                 and cur.execute(
+                     "SELECT COUNT(*) FROM justifications_groupes j WHERE NOT EXISTS ("
+                     "SELECT 1 FROM positions_groupes pg WHERE pg.scrutin_id = j.scrutin_id "
+                     "AND pg.groupe_abrege = j.groupe_abrege)").fetchone()[0] == 0
+                 and cur.execute("SELECT COUNT(*) FROM justifications_groupes j "
+                                 "JOIN sources s ON s.id = j.source_id WHERE s.url = ''"
+                                 ).fetchone()[0] == 0)
+        verifier("49 rattachements candidat → groupe, justifiés et sourcés",
                  cur.execute("SELECT COUNT(*) FROM groupes_reference WHERE detail != ''"
-                             ).fetchone()[0] == 31)
+                             ).fetchone()[0] == 49)
         # Résultat officiel (sort + décompte) présent pour chaque vote clé.
         verifier("chaque vote clé AN/Congrès/Sénat porte le résultat officiel (adopté/rejeté + décompte)",
                  cur.execute("SELECT COUNT(*) FROM votes_cles vc JOIN scrutins s ON s.id = vc.scrutin_id "

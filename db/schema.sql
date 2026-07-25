@@ -196,6 +196,21 @@ CREATE TABLE IF NOT EXISTS nuances (
     UNIQUE (personne_id, scrutin_id)
 );
 
+-- Justifications de GROUPE (éditorial) : pourquoi un groupe parlementaire a
+-- voté comme il l'a fait sur un scrutin, telle que la justification a été
+-- déclarée publiquement (explication de vote en séance, communiqué, presse).
+-- Complète positions_groupes (le décompte brut, jamais édité) par le « pourquoi »
+-- éditorial, parti par parti. Toujours attribuée et SOURCÉE — une justification
+-- sans source ne s'affiche pas. Elle rapporte la position déclarée : décrit, ne juge pas.
+CREATE TABLE IF NOT EXISTS justifications_groupes (
+    id            INTEGER PRIMARY KEY,
+    scrutin_id    INTEGER NOT NULL REFERENCES scrutins(id),
+    groupe_abrege TEXT NOT NULL,      -- doit correspondre à un groupe présent dans positions_groupes
+    texte         TEXT NOT NULL,
+    source_id     INTEGER NOT NULL REFERENCES sources(id),
+    UNIQUE (scrutin_id, groupe_abrege)
+);
+
 CREATE TABLE IF NOT EXISTS affaires_judiciaires (
     id          INTEGER PRIMARY KEY,
     personne_id INTEGER NOT NULL REFERENCES personnes(id),

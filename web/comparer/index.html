@@ -64,9 +64,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
   function nuanceDe(slug, vid, surnom) {
     var e = (d.positions[slug] || {})[vid] || {};
-    if (!e.nuance) return "";
-    return '<p class="cmp-nuance"><strong>' + surnom + '</strong> — ' + e.nuance[0]
-      + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
+    // En mode « perso » : la nuance personnelle ; en mode « parti » : la
+    // justification sourcée du groupe du candidat.
+    var j = (mode === "perso") ? e.nuance : e.justif_parti;
+    if (!j) return "";
+    var etiq = (mode === "perso") ? surnom : (surnom + " — son groupe");
+    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + j[0]
+      + ' (<a href="' + j[1] + '" rel="noopener">source</a>)</p>';
   }
   var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
   function banniere(surnom, p) {

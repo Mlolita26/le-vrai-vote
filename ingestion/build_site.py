@@ -287,6 +287,11 @@ def charger(base):
         "JOIN personnes p ON p.id = n.personne_id "
         "JOIN votes_cles vc ON vc.scrutin_id = n.scrutin_id "
         "JOIN sources src ON src.id = n.source_id")}
+    # Justifications de groupe : « pourquoi » sourcé de chaque parti, par (vote clé, groupe abrégé).
+    justifs_groupes = {(vid, ab): (texte, url) for vid, ab, texte, url in cur.execute(
+        "SELECT vc.id, jg.groupe_abrege, jg.texte, src.url FROM justifications_groupes jg "
+        "JOIN votes_cles vc ON vc.scrutin_id = jg.scrutin_id "
+        "JOIN sources src ON src.id = jg.source_id")}
 
     meta = {
         "genere_le": date.today().isoformat(),
@@ -294,7 +299,8 @@ def charger(base):
         "candidats_maj": "23/07/2026",
     }
     con.close()
-    return (candidats, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, equiv_senat, meta)
+    return (candidats, themes, votes_cles, etats, nuances, justifs_groupes,
+            groupes_par_vote, groupe_du_candidat, equiv_senat, meta)
 
 
 CHAMBRE_LABEL = {"an": "Assembl\u00e9e nationale", "congres": "Congr\u00e8s du Parlement",
@@ -326,9 +332,9 @@ def position_parti(slug, v, groupes_par_vote, groupe_du_candidat):
     return majorite_groupe(g), (g["libelle"] or ab)
 
 
-def positions_comparaison(candidats, votes_cles, etats, nuances, equiv_senat,
+def positions_comparaison(candidats, votes_cles, etats, nuances, justifs_groupes, equiv_senat,
                           groupes_par_vote, groupe_du_candidat):
-    """Pour chaque candidat et chaque vote cl\u00e9 : perso, parti, nom du parti, nuance."""
+    """Pour chaque candidat et chaque vote cl\u00e9 : perso, parti, nom du parti, nuance, justif du parti."""
     out = {}
     for c in candidats:
         slug = c["slug"]
@@ -337,8 +343,11 @@ def positions_comparaison(candidats, votes_cles, etats, nuances, equiv_senat,
             perso = position_perso(slug, v, etats, equiv_senat)
             parti, parti_nom = position_parti(slug, v, groupes_par_vote, groupe_du_candidat)
             nu = nuances.get((slug, v["id"]))
+            ab = groupe_du_candidat.get((slug, v["legislature"]))
+            jp = justifs_groupes.get((v["id"], ab)) if ab else None
             d[str(v["id"])] = {"perso": perso, "parti": parti, "parti_nom": parti_nom,
-                               "nuance": [nu[0], nu[1]] if nu else None}
+                               "nuance": [nu[0], nu[1]] if nu else None,
+                               "justif_parti": [jp[0], jp[1]] if jp else None}
         out[slug] = d
     return out
 
@@ -577,7 +586,7 @@ document.getElementById("recherche").addEventListener("input", function () {{
     return page("Candidats", "Candidats", contenu, 1, meta)
 
 
-def fiche_candidat(p, themes, votes_cles, etats, nuances, groupes_par_vote, groupe_du_candidat, equiv_senat, meta):
+def fiche_candidat(p, themes, votes_cles, etats, nuances, justifs_groupes, groupes_par_vote, groupe_du_candidat, equiv_senat, meta):
     declaration = (f"le {date_fr(p['date_declaration'])}" if p["date_declaration"]
                    else "(date non fournie par la source)")
     statut = "Candidature déclarée" if p["statut"] == "declaree" else "En lice pour une primaire"
@@ -651,6 +660,11 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                     "Son parti n'avait pas de groupe à l'Assemblée sur cette législature : "
                     "aucun décompte officiel de groupe n'existe pour ce scrutin.")
                 groupe_html = f'<p class="ligne-groupe ligne-groupe-absente">{e(explication)}</p>'
+            # Justification sourcée du groupe du candidat (le « pourquoi » du parti).
+            jp = justifs_groupes.get((v["id"], abrege)) if abrege else None
+            justif_parti_html = (
+                f'<p class="groupe-justif">Pourquoi son groupe a voté ainsi : {e(jp[0])} '
+                f'(<a href="{e(jp[1])}" rel="noopener">source</a>)</p>' if jp else "")
             senat_html = senat_fiche(v["id"], p["slug"], equiv_senat)
             a_vote_perso = etat_v in ("pour", "contre", "abstention", "absent")
             # Au PE, une carte sans vote personnel ET sans position de parti
@@ -690,6 +704,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 <p class="ap-titre">{e(v['titre'])} {provenance}</p>
 {meta_html}
 {groupe_html}
+{justif_parti_html}
 {senat_sec}
 <p class="ap-resume">{e(v['resume'])} <a href="{e(v['source_resume'])}" rel="noopener">Scrutin officiel \u2192</a></p>
 {nuance_html}
@@ -797,7 +812,7 @@ La sélection suit la <a href="../methode/">grille de critères publiée</a>, id
     return page("Thèmes", "Thèmes", contenu, 1, meta)
 
 
-def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, equiv_senat, meta):
+def page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_par_vote, equiv_senat, meta):
     par_slug = {c["slug"]: c["nom"] for c in candidats}
     blocs = ""
     for v in votes_t:
@@ -821,13 +836,26 @@ def page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, equiv_se
                                    f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</li>')
         nuances_html = (f'<p class="titre-nuances">Justifications (position déclarée, rapportée et sourcée) :</p>'
                         f'<ul class="nuances">{lignes_nuances}</ul>') if lignes_nuances else ""
-        # Décomptes officiels par groupe parlementaire, repliés par défaut.
+        # Décomptes officiels par groupe parlementaire, repliés par défaut ;
+        # chaque groupe porte, si elle existe, sa justification sourcée.
         groupes_v = groupes_par_vote.get(v["id"], [])
         groupes_html = ""
         if groupes_v:
-            lignes_g = "".join(f"<li>{chip_groupe(g, v['est_censure'])}</li>" for g in groupes_v)
+            lignes_g = ""
+            n_just = 0
+            for g in groupes_v:
+                j = justifs_groupes.get((v["id"], g["abrege"]))
+                if j:
+                    n_just += 1
+                    just_html = (f'<p class="groupe-justif">{e(j[0])} '
+                                 f'(<a href="{e(j[1])}" rel="noopener">source</a>)</p>')
+                else:
+                    just_html = ""
+                lignes_g += f"<li>{chip_groupe(g, v['est_censure'])}{just_html}</li>"
+            sous_titre = (" · pourquoi, pour les groupes qui l'ont expliqué"
+                          if n_just else "")
             groupes_html = (f'<details class="groupes-votes"><summary>Comment ont voté les groupes '
-                            f'({len(groupes_v)})</summary><ul>{lignes_g}</ul></details>')
+                            f'({len(groupes_v)}){sous_titre}</summary><ul>{lignes_g}</ul></details>')
         res_txt = resultat_texte(v) or "\u2014"
         blocs += f"""<article class="vote-carte vote-carte-theme">
 <div class="ap-rail rail-neutre rail-resultat"><span class="pos-res">{e(res_txt)}</span></div>
@@ -903,9 +931,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
   function nuanceDe(slug, vid, surnom) {
     var e = (d.positions[slug] || {})[vid] || {};
-    if (!e.nuance) return "";
-    return '<p class="cmp-nuance"><strong>' + surnom + '</strong> — ' + e.nuance[0]
-      + ' (<a href="' + e.nuance[1] + '" rel="noopener">source</a>)</p>';
+    // En mode « perso » : la nuance personnelle ; en mode « parti » : la
+    // justification sourcée du groupe du candidat.
+    var j = (mode === "perso") ? e.nuance : e.justif_parti;
+    if (!j) return "";
+    var etiq = (mode === "perso") ? surnom : (surnom + " — son groupe");
+    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + j[0]
+      + ' (<a href="' + j[1] + '" rel="noopener">source</a>)</p>';
   }
   var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
   function banniere(surnom, p) {
@@ -1033,6 +1065,11 @@ jamais une explication inventée. Certaines formations en publient beaucoup (fic
 très peu : la couverture est donc, à ce stade, <strong>inégale selon les partis</strong> — un reflet de ce qui est
 publiquement disponible, pas un choix éditorial. Pour un vote au Parlement européen où le candidat ne siégeait pas,
 la justification affichée est celle de sa <strong>délégation</strong>, indiquée comme telle.</p>
+<p>Deux niveaux de justification coexistent : celle d'une <strong>personne</strong> (rare, réservée aux votes
+contre-intuitifs) et celle d'un <strong>groupe parlementaire</strong> — pourquoi tel parti a voté pour ou contre.
+Cette dernière figure sous « Comment ont voté les groupes » (page d'un thème) et sur la fiche d'un candidat, sous
+la position de son parti. Elle vise en priorité les lois où les familles politiques <strong>divergent nettement</strong>,
+et couvre, quand la source existe, plusieurs partis — pas seulement les deux qui s'opposent le plus.</p>
 <h2>Votes clés : la grille avant les votes</h2>
 <p>Aucun vote clé commenté n'est affiché tant que la grille de sélection (critères objectifs, publics,
 appliqués identiquement à tous) n'est pas publiée ici. Les résumés seront descriptifs et neutres,
@@ -1070,7 +1107,7 @@ photographie librement réutilisable sont représentés par leurs initiales.</p>
 # ── Génération ───────────────────────────────────────────────────────────────
 
 def generer(base):
-    (candidats, themes, votes_cles, etats, nuances,
+    (candidats, themes, votes_cles, etats, nuances, justifs_groupes,
      groupes_par_vote, groupe_du_candidat, equiv_senat, meta) = charger(base)
     # Ordre stratégique : candidats principaux en tête (se propage à l'accueil,
     # à la liste et au comparateur, qui consomment tous cette liste ordonnée).
@@ -1087,7 +1124,7 @@ def generer(base):
         dossier = WEB / "candidats" / p["slug"]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            fiche_candidat(p, themes, votes_cles, etats, nuances,
+            fiche_candidat(p, themes, votes_cles, etats, nuances, justifs_groupes,
                            groupes_par_vote, groupe_du_candidat, equiv_senat, meta), encoding="utf-8")
     (WEB / "themes" / "index.html").write_text(
         page_themes_index(themes, votes_cles, meta), encoding="utf-8")
@@ -1096,7 +1133,7 @@ def generer(base):
         dossier = WEB / "themes" / THEME_SLUGS[t["libelle"]]
         dossier.mkdir(exist_ok=True)
         (dossier / "index.html").write_text(
-            page_theme(t, votes_t, candidats, etats, nuances, groupes_par_vote, equiv_senat, meta), encoding="utf-8")
+            page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_par_vote, equiv_senat, meta), encoding="utf-8")
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(
         page_methode(meta, {c["slug"]: c["nom"] for c in candidats}), encoding="utf-8")
@@ -1110,7 +1147,7 @@ def generer(base):
                    "theme": libelles_themes[v["thematique_id"]],
                    "chambre": CHAMBRE_LABEL.get(v["chambre"], v["chambre"]),
                    "date": v["date"]} for v in votes_cles],
-        "positions": positions_comparaison(candidats, votes_cles, etats, nuances, equiv_senat,
+        "positions": positions_comparaison(candidats, votes_cles, etats, nuances, justifs_groupes, equiv_senat,
                                            groupes_par_vote, groupe_du_candidat),
         "libelles": {"pour": ["Pour", "badge-pour"], "contre": ["Contre", "badge-contre"],
                      "abstention": ["Abstention", "badge-abstention"]},

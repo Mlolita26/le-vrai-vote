@@ -73,6 +73,17 @@ SOURCES = {
     "ps_immigration_2023": ("https://www.parti-socialiste.paris/communique_loi_immigration_2023",
                             "Parti socialiste — communiqué contre la loi immigration 2023 : refus de « sombrer "
                             "dans le populisme de la droite et de l'extrême droite »"),
+    "rn_ecologie_punitive": ("https://rassemblementnational.fr/communiques/mondial-de-lauto-2024-le-rassemblement-national-se-tient-aux-cotes-des-automobilistes-et-constructeurs-automobiles-francais-victimes-expiatoires-de-lecologie-punitive",
+                             "rassemblementnational.fr — communiqué RN (oct. 2024) : opposition à « l'écologie "
+                             "punitive », défense des automobilistes et de l'industrie face à la fin du thermique"),
+    "lm_rn_climat": ("https://www.lemonde.fr/politique/article/2024/11/24/l-inaction-climatique-ligne-de-conduite-assumee-du-rassemblement-national",
+                     "Le Monde, 24/11/2024 — « L'inaction climatique, ligne de conduite assumée du Rassemblement national »"),
+    "hayer_greendeal": ("https://www.touteleurope.eu/vie-politique-des-etats-membres/elections-europeennes-2024-le-programme-de-valerie-hayer-et-de-renaissance/",
+                        "Touteleurope.eu — programme de Valérie Hayer (Renaissance) : compléter le Pacte vert, "
+                        "cap sur la neutralité carbone en 2050"),
+    "toussaint_nature": ("https://www.marietoussaint.eu/actualites/vote-loi-restauration-nature",
+                         "marietoussaint.eu, 27/02/2024 — Marie Toussaint (Les Écologistes) : « une victoire pour "
+                         "le vivant » malgré les tentatives de sabotage de l'extrême droite"),
 }
 
 # Justifications de délégation réutilisées pour tous les candidats du même parti.
@@ -96,6 +107,8 @@ TXT_LFI_IMMIG23 = ("Le groupe LFI a voté contre, dénonçant une loi de « xén
 TXT_PS_IMMIG23 = ("Le groupe socialiste a voté contre, refusant de « sombrer dans le populisme de la droite et "
                   "de l'extrême droite » et jugeant le texte contraire à l'accueil des personnes forcées de fuir. "
                   "(Position du groupe.)")
+TXT_RE_CLIMAT = ("La délégation Renew (Renaissance, Valérie Hayer) a voté pour, défendant le Pacte vert et "
+                 "l'objectif de neutralité carbone en 2050 comme feuille de route de l'Union. (Position du groupe.)")
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
 NUANCES = [
@@ -221,6 +234,21 @@ NUANCES = [
     ("philippe-brun", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
     ("karim-bouamrane", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
     ("segolene-royal", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
+    # ── Climat (fiches stratégiques) : RN, Renew, Verts ───────────────────────
+    ("marine-le-pen", "PE-HTV-152544",
+     "Le RN a voté contre, refusant une « écologie punitive » qui ferait des automobilistes et de l'industrie "
+     "automobile française des « victimes expiatoires » ; il met en avant le pouvoir d'achat et l'emploi. "
+     "(Position du groupe : Marine Le Pen n'y siégeait pas.)", "rn_ecologie_punitive"),
+    ("marine-le-pen", "PE-HTV-118521",
+     "Le RN a voté contre : il assume une opposition aux objectifs climatiques contraignants de l'Union, jugés "
+     "coûteux pour les ménages et attentatoires à la souveraineté nationale. "
+     "(Position du groupe : Marine Le Pen n'y siégeait pas.)", "lm_rn_climat"),
+    ("gabriel-attal", "PE-HTV-118521", TXT_RE_CLIMAT, "hayer_greendeal"),
+    ("edouard-philippe", "PE-HTV-118521", TXT_RE_CLIMAT, "hayer_greendeal"),
+    ("marine-tondelier", "PE-HTV-164499",
+     "Les Écologistes (Marie Toussaint) ont voté pour, saluant « une victoire pour le vivant » et dénonçant les "
+     "tentatives de « sabotage » du texte par l'extrême droite. "
+     "(Position du groupe : Marine Tondelier n'y siégeait pas.)", "toussaint_nature"),
 ]
 
 

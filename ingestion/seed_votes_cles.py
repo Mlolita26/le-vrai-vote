@@ -243,6 +243,35 @@ VOTES = [
     ("PE-HTV-184178", "ecologie-agriculture", "Cadre pour la neutralité climatique — objectif 2040 (2026)",
      "Fixe un objectif intermédiaire de réduction des émissions de gaz à effet de serre de l'Union à l'horizon 2040, sur la trajectoire vers la neutralité carbone en 2050, et en précise le rythme et les moyens (dont d'éventuelles souplesses réclamées par certains secteurs). L'enjeu : la vitesse de la transition climatique d'ici 2040, entre ambition environnementale et coût pour l'économie et les ménages.",
      "Vote sur le cadre pour la neutralité climatique (objectif 2040), février 2026 (10e législature)."),
+
+    # ── Extension : lois où LFI et RN divergent nettement (ajout 25/07/2026) ────
+    # Sélectionnées pour éclairer les différences d'orientation entre familles
+    # politiques ; chaque groupe porte une justification déclarée, sourcée
+    # (table justifications_groupes, seed dédié).
+    ("VTANR5L16V1533", "ecologie-agriculture", "Relance du nucléaire (2023)",
+     "Accélère et simplifie les procédures administratives pour construire de nouveaux réacteurs nucléaires à proximité de centrales existantes : délais raccourcis, autorisations facilitées. L'enjeu : permettre une relance rapide de la construction nucléaire pour produire une électricité bas-carbone, mis en balance avec les questions de sûreté, de gestion des déchets et le choix, de long terme, de miser sur cette énergie.",
+     "Vote sur le texte issu de la commission mixte paritaire. Adopté largement ; seuls les groupes LFI et Écologiste ont voté contre, les Socialistes s'abstenant."),
+    ("VTANR5L16V2721", "ecologie-agriculture", "Loi industrie verte (2023)",
+     "Vise à accélérer l'implantation d'usines en France, en particulier dans les technologies de la transition (batteries, panneaux solaires, pompes à chaleur) : procédures raccourcies, sites « clés en main », commande publique et financements orientés vers les produits plus vertueux. L'enjeu : réindustrialiser tout en verdissant la production, le débat portant sur l'ampleur réelle des moyens et sur l'équilibre entre rapidité des projets et exigences environnementales.",
+     "Vote sur le texte issu de la commission mixte paritaire. LFI et les Écologistes ont voté contre, jugeant les moyens insuffisants ; le RN a voté pour."),
+    ("VTANR5L17V6184", "pouvoir-achat-fiscalite", "Simplification de la vie économique (2026)",
+     "Allège des obligations administratives pesant sur les entreprises, accélère certains projets industriels et supprime les zones à faibles émissions (ZFE) — ces périmètres urbains où les véhicules les plus polluants sont progressivement interdits. L'enjeu : réduire les contraintes sur l'activité économique, mis en balance avec les objectifs de qualité de l'air et de protection de l'environnement.",
+     "Vote sur le texte issu de la commission mixte paritaire. Fait notable : une partie du groupe macroniste (EPR) a voté contre le texte final, après le maintien de la suppression des ZFE ; le RN a voté pour, LFI contre. Le Conseil constitutionnel a ensuite censuré la suppression des ZFE (2026)."),
+    ("VTANR5L17V1624", "securite-justice", "Justice des mineurs — loi Attal (2025)",
+     "Durcit la réponse pénale à la délinquance des mineurs : comparution immédiate possible dès 16 ans, atténuation plus limitée de la peine du fait de la minorité (l'« excuse de minorité »), et amende civile pour les parents ne répondant pas aux convocations du juge. L'enjeu : sanctionner plus vite et plus fermement les mineurs délinquants, mis en balance avec un principe propre à la justice des mineurs — la primauté de l'éducation sur la répression.",
+     "Texte porté par Gabriel Attal, adopté sur le texte de la commission mixte paritaire. Toute la gauche a voté contre, le RN pour. Le Conseil constitutionnel a ensuite censuré plusieurs de ces mesures (juin 2025)."),
+    ("VTANR5L16V3045", "societe", "Société du bien vieillir (2023)",
+     "Mesures sur le grand âge : repérage des personnes âgées fragiles et isolées, lutte contre la maltraitance, création d'une carte professionnelle pour les aides à domicile — sans la « loi grand âge » ni le financement de l'autonomie longtemps annoncés. L'enjeu : améliorer l'accompagnement du vieillissement, la critique portant sur l'absence de moyens jugés à la hauteur du défi démographique.",
+     "Première lecture. LFI et le groupe GDR (dont le PCF) ont voté contre, jugeant le texte insuffisant ; le RN a voté pour ; le groupe Les Républicains n'a pas pris part au vote."),
+    ("VTANR5L17V7454", "institutions", "Autonomie de la Corse (2026)",
+     "Révision de la Constitution inscrivant un statut d'autonomie pour la Corse au sein de la République : l'île pourrait adapter certaines lois et règlements à ses spécificités, dans des domaines et des limites définis. L'enjeu : reconnaître les particularités corses par une forme de pouvoir normatif propre, une question qui touche au caractère unitaire de la République et à l'égalité entre les territoires.",
+     "Première lecture. Une révision constitutionnelle doit ensuite être votée dans les mêmes termes par le Sénat, puis approuvée par le Congrès ou par référendum. Les positions habituelles s'y sont inversées : LFI a voté pour, le RN contre."),
+    ("VTANR5L16V3725", "institutions", "Corps électoral en Nouvelle-Calédonie (2024)",
+     "Révision de la Constitution élargissant le corps électoral pour les élections provinciales de Nouvelle-Calédonie : les résidents installés depuis au moins dix ans pourraient voter, alors que la liste électorale était « gelée » depuis 2007 aux personnes présentes avant cette date. L'enjeu : faire voter des habitants aujourd'hui écartés de ces scrutins, mis en balance avec l'équilibre politique issu des accords sur l'avenir de l'archipel entre indépendantistes et non-indépendantistes.",
+     "Première lecture. Le RN a voté pour, LFI contre. Le processus a ensuite été suspendu à la suite des tensions survenues sur l'archipel."),
+    ("VTANR5L17V1303", "institutions", "Parité dans les petites communes (2025)",
+     "Étend le scrutin de liste — à la proportionnelle et paritaire (autant de femmes que d'hommes) — aux communes de moins de 1 000 habitants, qui élisaient jusqu'ici leurs conseillers au scrutin majoritaire, sans obligation de parité. L'enjeu : renforcer la représentation des femmes dans les conseils municipaux des petites communes, la question débattue étant la difficulté à constituer des listes complètes et paritaires dans les villages.",
+     "Adoptée en première lecture, 206 voix contre 181, puis promulguée le 21 mai 2025 pour les municipales de 2026. Les positions habituelles s'y sont inversées : la gauche (dont LFI) a voté pour, le RN contre."),
 ]
 
 
