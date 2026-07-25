@@ -51,6 +51,8 @@ THEME_SLUGS = {
     "Institutions et vie démocratique": "institutions",
     "Santé": "sante",
     "Éducation": "education",
+    "Taxe et impôts": "taxe-impots",
+    "Travail": "travail",
 }
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {
@@ -921,12 +923,24 @@ lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
 <script>
 fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
   var selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
+  // Desktop : tout est deplie (details ouverts) ; mobile : replies.
+  var wideCmp = window.matchMedia("(min-width:641px)");
+  function syncCmpOpen() {
+    document.querySelectorAll(".cmp-det").forEach(function (dd) {
+      if (wideCmp.matches) dd.setAttribute("open", ""); else dd.removeAttribute("open");
+    });
+  }
+  if (wideCmp.addEventListener) wideCmp.addEventListener("change", syncCmpOpen);
+  [selA, selB].forEach(function (s) {
+    var ph = document.createElement("option");
+    ph.value = ""; ph.textContent = "— Choisir un candidat —";
+    s.appendChild(ph);
+  });
   d.candidats.forEach(function (c) {
     var o = document.createElement("option");
     o.value = c.slug; o.textContent = c.nom;
     selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
   });
-  selB.selectedIndex = Math.min(1, selB.options.length - 1);
   var filtre = "comparable";
   function brancher(sel, set) {
     var bs = document.querySelectorAll(sel + " button");
@@ -982,6 +996,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       + "sinon la position majoritaire de son groupe (marquée « position du parti »). "
       + "« Aucune donnée » = ni vote personnel ni parti rattaché pour ce scrutin.";
     res.textContent = "";
+    if (!a || !b) { res.textContent = "Choisissez deux candidats à comparer."; return; }
     if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
     var objA = d.candidats.find(function (c) { return c.slug === a; });
     var objB = d.candidats.find(function (c) { return c.slug === b; });
@@ -1012,7 +1027,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
-          + '<details class="cmp-det"><summary>Description du vote</summary>'
+          + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
           + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
           + justifDe(surA, ia) + justifDe(surB, ib)
           + '</details>'

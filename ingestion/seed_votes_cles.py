@@ -29,6 +29,8 @@ THEMES = [
     ("institutions", "Institutions et vie démocratique"),
     ("sante", "Santé"),
     ("education", "Éducation"),
+    ("taxe-impots", "Taxe et impôts"),
+    ("travail", "Travail"),
 ]
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -52,16 +54,16 @@ VOTES = [
      "Texte soutenu par la FNSEA et la Coordination rurale, combattu par la Confédération paysanne, les apiculteurs et des associations de santé et d'environnement. Une pétition record (plus de deux millions de signatures) a demandé son abrogation, et le Conseil constitutionnel a censuré la réintroduction de l'acétamipride en août 2025 — après ce scrutin."),
 
     # ── Pouvoir d'achat et fiscalité ─────────────────────────────────────────
-    ("VTANR5L16V186", "pouvoir-achat-fiscalite", "Mesures d'urgence pouvoir d'achat (2022)",
+    ("VTANR5L16V186", "travail", "Mesures d'urgence pouvoir d'achat (2022)",
      "Ensemble de mesures adoptées face à la forte inflation de 2022 : revalorisation anticipée des retraites et de plusieurs prestations sociales, plafonnement temporaire de la hausse des loyers, et primes exonérées de cotisations que les employeurs peuvent verser à leurs salariés. L'enjeu : soutenir rapidement le pouvoir d'achat des ménages, le débat portant sur l'ampleur de ces mesures et leur coût pour les finances publiques.",
      "Vote sur le texte issu de la commission mixte paritaire."),
-    ("VTANR5L16V1240", "pouvoir-achat-fiscalite", "Réforme des retraites : motion de censure (2023)",
+    ("VTANR5L16V1240", "travail", "Réforme des retraites : motion de censure (2023)",
      "Motion de censure déposée par plusieurs groupes après que le Gouvernement a engagé sa responsabilité (article 49.3) pour faire adopter, sans vote des députés, la réforme repoussant l'âge légal de départ à la retraite de 62 à 64 ans. Dans ce cas, la motion de censure est le seul moyen de rejeter le texte : si elle est adoptée, le Gouvernement tombe et la loi est abandonnée. L'enjeu affiché était l'équilibre financier des retraites, face à l'allongement de la durée de travail.",
      "La réforme n'a pas fait l'objet d'un vote direct à l'Assemblée. Voter pour la motion revenait à s'opposer à l'adoption du texte ; son rejet, à neuf voix près, a entraîné l'adoption définitive de la réforme. La position affichée est le vote sur la motion de censure."),
-    ("VTANR5L17V881", "pouvoir-achat-fiscalite", "Impôt plancher sur les très hauts patrimoines (2025)",
+    ("VTANR5L17V881", "taxe-impots", "Impôt plancher sur les très hauts patrimoines (2025)",
      "Crée un impôt minimum : les foyers dont le patrimoine dépasse 100 millions d'euros devraient payer chaque année au moins 2 % de ce patrimoine en impôt (proposition dite « taxe Zucman », du nom de l'économiste). L'idée de départ est que certaines très grandes fortunes paient aujourd'hui, en proportion, moins d'impôt que le reste de la population. L'enjeu : de nouvelles recettes et davantage de progressivité de l'impôt, mis en regard du risque d'exil fiscal et de la difficulté à taxer un patrimoine qui n'a pas été vendu.",
      "Proposition d'origine parlementaire, adoptée en première lecture à l'Assemblée ; elle n'était pas devenue loi à la date de mise à jour du site."),
-    ("VTANR5L17V6319", "pouvoir-achat-fiscalite", "Lutte contre les fraudes sociales et fiscales (2026)",
+    ("VTANR5L17V6319", "taxe-impots", "Lutte contre les fraudes sociales et fiscales (2026)",
      "Renforce les contrôles et les sanctions contre deux types de fraude : la fraude aux prestations sociales (aides perçues indûment) et la fraude fiscale (impôts non payés). L'enjeu : récupérer des sommes dues à la collectivité et faire respecter l'égalité devant l'impôt et les aides, le débat portant sur les moyens consacrés à chacune de ces deux fraudes et sur l'étendue des contrôles.",
      "Vote sur le texte issu de la commission mixte paritaire."),
 
@@ -128,10 +130,10 @@ VOTES = [
     ("VTANR5L14V1070", "societe", "Fin de vie : loi Claeys-Leonetti (2015)",
      "Crée un droit à la « sédation profonde et continue » jusqu'au décès pour les malades en phase terminale dont les souffrances ne peuvent être soulagées, et rend contraignantes les « directives anticipées » (les volontés écrites à l'avance sur sa propre fin de vie, que les médecins doivent alors respecter). Le texte n'autorise ni l'euthanasie ni le suicide assisté. L'enjeu : mieux accompagner la fin de vie sans légaliser l'aide active à mourir.",
      "Première lecture ; le texte a été définitivement adopté début 2016. C'est le cadre que la loi sur l'aide à mourir de 2026 est venue compléter."),
-    ("VTANR5L14V726", "pouvoir-achat-fiscalite", "Réforme des retraites Touraine (2013)",
+    ("VTANR5L14V726", "travail", "Réforme des retraites Touraine (2013)",
      "Allonge progressivement la durée de cotisation nécessaire pour une retraite à taux plein, jusqu'à 43 ans (172 trimestres) pour les générations nées à partir de 1973, et crée un compte permettant de partir plus tôt après un métier pénible. L'enjeu : équilibrer le financement des retraites en faisant cotiser plus longtemps, sans toucher à l'âge légal (alors 62 ans).",
      "Nouvelle lecture du 26 novembre 2013 — dernier scrutin public d'ensemble à l'Assemblée sur ce texte."),
-    ("VTANR5L14V1270", "pouvoir-achat-fiscalite", "Loi travail (El Khomri) : motion de censure (2016)",
+    ("VTANR5L14V1270", "travail", "Loi travail (El Khomri) : motion de censure (2016)",
      "Motion de censure déposée après que le Gouvernement a engagé sa responsabilité (article 49.3) pour adopter, sans vote, la « loi travail ». Celle-ci faisait notamment primer les accords d'entreprise sur les accords de branche (les règles négociées entreprise par entreprise pouvant être moins favorables que celles du secteur) et assouplissait le licenciement économique. Voter la motion revenait à s'opposer à la loi. L'enjeu : la flexibilité du marché du travail face aux protections des salariés.",
      "Comme pour les retraites en 2023, le texte n'a pas fait l'objet d'un vote direct : voter pour la motion revenait à s'opposer à son adoption ; son rejet a permis l'adoption de la loi."),
     ("VTANR5L14V1109", "securite-justice", "Loi renseignement (2015)",
@@ -160,7 +162,7 @@ VOTES = [
     # Pour la plupart des candidats, aucun vote personnel n'est disponible (mandat
     # européen achevé avant 2019) : c'est la position de la DÉLÉGATION de leur parti
     # qui s'affiche, clairement étiquetée « n'y siégeait pas ». Sélection symétrique.
-    ("PE-HTV-147342", "pouvoir-achat-fiscalite", "Salaire minimum européen (2022)",
+    ("PE-HTV-147342", "travail", "Salaire minimum européen (2022)",
      "Directive fixant un cadre pour des salaires minimaux « adéquats » dans l'Union : les États dotés d'un salaire minimum légal doivent le fixer selon des critères communs (niveau de vie, salaires médians) et la négociation collective est encouragée, sans montant unique imposé à l'échelle européenne. L'enjeu : relever le niveau des bas salaires en Europe tout en laissant chaque pays fixer son propre montant.",
      "Vote d'ensemble au Parlement européen, septembre 2022 (9e législature)."),
     ("PE-HTV-152544", "ecologie-agriculture", "Fin des voitures thermiques neuves en 2035 (2023)",
@@ -189,7 +191,7 @@ VOTES = [
     ("PE-HTV-154173", "ecologie-agriculture", "Réforme du marché carbone européen (2023)",
      "Renforce le « marché carbone » de l'Union : les industries et les producteurs d'électricité doivent acheter des quotas pour leurs émissions de CO₂, dont le nombre total diminue chaque année. La réforme accélère cette baisse, étend le système (transport maritime notamment) et supprime progressivement les quotas gratuits accordés à l'industrie. L'enjeu : renchérir les émissions pour les faire baisser plus vite, la question débattue étant le coût pour les entreprises et son effet sur les prix.",
      "Pièce maîtresse du paquet climat « Fit for 55 », vote d'avril 2023."),
-    ("PE-HTV-154076", "pouvoir-achat-fiscalite", "Transparence des salaires (2023)",
+    ("PE-HTV-154076", "travail", "Transparence des salaires (2023)",
      "Directive obligeant les entreprises à plus de transparence sur les rémunérations pour réduire l'écart de salaire entre femmes et hommes : indication des salaires dès l'offre d'emploi, droit pour un salarié de connaître les rémunérations moyennes à poste équivalent, et publication par les grandes entreprises de leurs écarts de salaire. L'enjeu : rendre visibles, et corriger, les inégalités de salaire à travail égal.",
      "Directive sur la transparence des rémunérations, vote de mars 2023."),
     ("PE-HTV-167334", "pouvoir-achat-fiscalite", "Réforme du marché de l'électricité (2024)",
@@ -317,6 +319,37 @@ VOTES = [
     ("VTANR5L17V5845", "education", "Enseignement de la défense nationale à l'école (2026)",
      "Renforce l'enseignement des enjeux de défense nationale dans le « parcours de citoyenneté » des collégiens et lycéens (lien armée-Nation, connaissance des menaces). L'enjeu : sensibiliser les jeunes aux questions de défense, un contenu jugé par ses opposants trop orienté vers l'« esprit de défense ».",
      None),
+
+    # ── Taxe et impôts (thème créé le 25/07/2026) ────────────────────────────
+    ("VTANR5L15V272", "taxe-impots", "Budget 2018 : fin de l'ISF et « flat tax » (2017)",
+     "Premier budget du quinquennat Macron : il remplace l'impôt de solidarité sur la fortune (ISF) par un impôt limité au seul patrimoine immobilier (IFI) et instaure un prélèvement forfaitaire unique — la « flat tax » de 30 % — sur les revenus du capital. L'enjeu : alléger la fiscalité du capital, présenté par ses promoteurs comme un encouragement à l'investissement et par ses opposants comme un avantage fiscal aux plus fortunés.",
+     None),
+    ("VTANR5L15V1536", "taxe-impots", "Taxe carbone et « gilets jaunes » — déclaration (2018)",
+     "Déclaration du Gouvernement, en plein mouvement des « gilets jaunes », sur la fiscalité écologique — dont la taxe carbone sur les carburants — et ses conséquences sur le pouvoir d'achat ; voter pour revenait à soutenir la position du Gouvernement. L'enjeu : concilier le signal-prix climatique et le pouvoir d'achat des ménages, la hausse de la taxe carbone ayant déclenché la contestation.",
+     None),
+    ("PE-HTV-143328", "taxe-impots", "Impôt minimum mondial de 15 % (UE, 2022)",
+     "Transposition dans l'Union de l'accord international (OCDE) instaurant un taux d'imposition minimum de 15 % sur les bénéfices des grandes multinationales, pour limiter l'évitement fiscal. L'enjeu : réduire la concurrence fiscale entre pays et faire contribuer les groupes qui délocalisent leurs profits.",
+     "Vote d'ensemble au Parlement européen. Les six délégations françaises ont voté pour."),
+    ("PE-HTV-147044", "taxe-impots", "Blocages nationaux de l'impôt mondial (UE, 2022)",
+     "Résolution du Parlement européen critiquant les États membres qui, par leur véto (l'unanimité étant requise en matière fiscale dans l'Union), bloquent la mise en œuvre de l'impôt minimum mondial de 15 %. L'enjeu : passer outre les blocages nationaux pour appliquer l'accord fiscal international — ce qui touche à la souveraineté fiscale des États.",
+     "Résolution ; seule la délégation du RN a voté contre."),
+
+    # ── Travail (thème créé le 25/07/2026) ───────────────────────────────────
+    ("VTANR5L15V106", "travail", "Réforme du code du travail par ordonnances (2017)",
+     "Autorise le Gouvernement à réformer le code du travail par ordonnances : plafonnement des indemnités prud'homales en cas de licenciement jugé abusif, fusion des instances représentatives du personnel (comité social et économique), place accrue des accords d'entreprise. L'enjeu : assouplir le droit du travail pour, selon le Gouvernement, favoriser l'embauche — au prix, pour ses opposants, d'une baisse des protections des salariés.",
+     None),
+    ("VTANR5L16V236", "travail", "Réforme de l'assurance chômage (2022)",
+     "Permet de moduler les règles de l'assurance chômage selon la conjoncture (durée d'indemnisation réduite quand le chômage est bas). L'enjeu : inciter au retour à l'emploi lorsque le marché est favorable, une logique contestée comme une baisse des droits des demandeurs d'emploi.",
+     None),
+    ("VTANR5L16V2965", "travail", "France Travail — RSA sous condition d'activité (2023)",
+     "Crée France Travail (en remplacement de Pôle emploi) et conditionne le versement du RSA à 15 à 20 heures hebdomadaires d'activité ou d'accompagnement. L'enjeu : favoriser le retour à l'emploi des allocataires, une mesure jugée par ses opposants comme une contrainte pénalisant les plus précaires.",
+     "Vote sur le texte issu de la commission mixte paritaire."),
+    ("VTANR5L16V2112", "travail", "Partage de la valeur en entreprise (ANI, 2023)",
+     "Transpose un accord entre syndicats et patronat pour développer l'intéressement, la participation et les primes dans les entreprises, y compris les plus petites. L'enjeu : mieux associer les salariés aux résultats de leur entreprise, la critique portant sur le choix de primes ponctuelles plutôt que de hausses de salaire.",
+     None),
+    ("PE-HTV-155946", "travail", "Stages de qualité dans l'Union (2023)",
+     "Position du Parlement européen pour un cadre garantissant des stages de qualité : lutte contre les stages non ou mal rémunérés et contre les stages répétés se substituant à un véritable emploi. L'enjeu : protéger les jeunes en stage contre la précarité, la question débattue étant le degré de contrainte imposé aux employeurs.",
+     "Position adoptée au Parlement européen ; la délégation du RN a voté contre."),
 ]
 
 
@@ -513,6 +546,26 @@ SENS = {
                       "refuser cette prolongation"),
     "VTANR5L17V5845": ("renforcer l'enseignement de la défense nationale à l'école",
                        "s'y opposer"),
+    # ── Taxe et impôts ──
+    "VTANR5L15V272": ("adopter le budget 2018 (suppression de l'ISF, « flat tax » sur les revenus du capital)",
+                      "rejeter ce budget"),
+    "VTANR5L15V1536": ("soutenir la position du Gouvernement sur la fiscalité écologique (taxe carbone)",
+                       "désapprouver cette position"),
+    "PE-HTV-143328": ("instaurer un impôt minimum de 15 % sur les bénéfices des multinationales",
+                      "s'y opposer"),
+    "PE-HTV-147044": ("dénoncer les vétos nationaux et pousser à appliquer l'impôt mondial de 15 %",
+                      "défendre le droit de véto national en matière fiscale"),
+    # ── Travail ──
+    "VTANR5L15V106": ("autoriser la réforme du code du travail par ordonnances (plafonnement prud'hommes, fusion des instances)",
+                      "refuser cette réforme"),
+    "VTANR5L16V236": ("permettre de moduler l'assurance chômage selon la conjoncture",
+                      "s'opposer à cette modulation"),
+    "VTANR5L16V2965": ("créer France Travail et conditionner le RSA à 15-20 h d'activité",
+                       "s'y opposer"),
+    "VTANR5L16V2112": ("développer l'intéressement, la participation et les primes en entreprise",
+                       "s'y opposer"),
+    "PE-HTV-155946": ("soutenir un encadrement des stages contre la précarité",
+                      "s'y opposer"),
 }
 
 
@@ -542,7 +595,7 @@ def seed(base: Path) -> None:
     for tid, mx in cur.execute("SELECT thematique_id, MAX(ordre) FROM votes_cles GROUP BY thematique_id"):
         ordre_par_theme[tid] = mx or 0
 
-    ajout = 0
+    ajout = deplaces = 0
     for uid, theme, titre, resume, contexte in VOTES:
         scrutin = cur.execute(
             "SELECT id, legislature, numero, chambre FROM scrutins WHERE uid_officiel = ?",
@@ -550,8 +603,15 @@ def seed(base: Path) -> None:
         if scrutin is None:
             sys.exit(f"Scrutin {uid} introuvable en base — la sélection doit pointer des scrutins importés.")
         sid, leg, numero, chambre = scrutin
-        if cur.execute("SELECT 1 FROM votes_cles WHERE scrutin_id=?", (sid,)).fetchone():
-            continue  # déjà en base
+        tid = ids_theme[theme]
+        deja = cur.execute("SELECT id, thematique_id FROM votes_cles WHERE scrutin_id=?", (sid,)).fetchone()
+        if deja:
+            # Déjà en base : on autorise le DÉPLACEMENT d'un vote vers un autre
+            # thème (la liste VOTES fait foi). Idempotent.
+            if deja[1] != tid:
+                cur.execute("UPDATE votes_cles SET thematique_id=? WHERE scrutin_id=?", (tid, sid))
+                deplaces += 1
+            continue
         if chambre == "congres":
             url = URL_CONGRES_IVG
         elif chambre == "pe":
@@ -587,8 +647,8 @@ def seed(base: Path) -> None:
     n = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     sans_sens = cur.execute("SELECT COUNT(*) FROM votes_cles WHERE sens_pour IS NULL").fetchone()[0]
     couv = cur.execute("SELECT COUNT(*) FROM couverture").fetchone()[0]
-    print(f"Semé : {len(THEMES)} thématiques, +{ajout} vote(s) clé(s) ajouté(s) ({n} au total) ; "
-          f"sens (pour/contre) sur {maj_sens} vote(s), {sans_sens} sans sens. "
+    print(f"Semé : {len(THEMES)} thématiques, +{ajout} vote(s) clé(s) ajouté(s) ({n} au total), "
+          f"{deplaces} déplacé(s) de thème ; sens (pour/contre) sur {maj_sens} vote(s), {sans_sens} sans sens. "
           f"Vue couverture : {couv} états calculés.")
     con.close()
 

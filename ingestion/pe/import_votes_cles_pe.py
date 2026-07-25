@@ -65,6 +65,10 @@ VOTES_CLES_PE = {
     "adaptation_climat": 126261,
     "protection_civile": 117083,
     "neutralite_2040": 184178,
+    # Fiscalité et travail (thèmes Taxe/impôts et Travail, ajout 25/07/2026).
+    "impot_minimum_mondial": 143328,
+    "vetos_accord_fiscal": 147044,
+    "stages_qualite": 155946,
 }
 
 # « Voix 2 » = la DÉLÉGATION FRANÇAISE du groupe européen où siège le parti du
