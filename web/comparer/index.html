@@ -6,12 +6,14 @@
 <title>Comparer — Le Vrai Vote</title>
 <link rel="stylesheet" href="../styles.css">
 <script src="../theme.js" defer></script>
+<script src="../config.js"></script>
+<script src="../communaute.js" defer></script>
 </head>
 <body>
 <div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
 <header class="entete-nav">
   <a class="marque" href=".././">Le Vrai Vote</a>
-  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../comparer/" aria-current="page">Comparer</a><a href="../methode/">Méthode</a></nav>
+  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../comparer/" aria-current="page">Comparer</a><a href="../communaute/">Communauté</a><a href="../methode/">Méthode</a></nav>
 </header>
 <main>
 
@@ -194,7 +196,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
           + v.sens_contre + '</span></p>'
         : '';
-      var html = '<article class="cmp-vote ' + etat + '">'
+      var html = '<article class="cmp-vote ' + etat + '" data-vote-id="' + (v.uid || '') + '">'
         + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
         + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
         + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'

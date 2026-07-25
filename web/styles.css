@@ -693,3 +693,43 @@ img, svg, table { max-width:100%; }
 .cmp-posture-vide{ display:flex; flex-direction:column; gap:.2rem; }
 .posture-none{ color:var(--mute); font-size:.85rem; }
 @media (max-width:520px){ .cmp-posture-paire{ grid-template-columns:1fr; } }
+
+/* ============================================================
+   Communauté : ampoule « m'a aidé à décider » + classement
+   ============================================================ */
+.lvv-bulb {
+  display:inline-flex; align-items:center; gap:.35rem; margin:.5rem 0 0;
+  font:inherit; font-size:.8rem; cursor:pointer;
+  background:var(--faint); color:var(--encre-douce);
+  border:1px solid var(--lisere); border-radius:999px; padding:.2rem .6rem;
+  transition:background .15s, border-color .15s, color .15s;
+}
+.lvv-bulb:hover { border-color:var(--accent); color:var(--accent); }
+.lvv-bulb .lvv-ico { filter:grayscale(1) opacity(.7); transition:filter .15s; }
+.lvv-bulb .lvv-n { font-weight:700; font-variant-numeric:tabular-nums; }
+.lvv-bulb.has-count .lvv-n::before { content:"· "; color:var(--mute); font-weight:400; }
+.lvv-bulb.voted { background:var(--b-abst-bg); color:var(--b-abst-fg); border-color:transparent; }
+.lvv-bulb.voted .lvv-ico { filter:none; }
+.lvv-bulb.lvv-soon { opacity:.7; cursor:default; }
+.lvv-flash { position:absolute; margin-left:.4rem; background:var(--panneau); color:#fff;
+  font-size:.72rem; padding:.15rem .5rem; border-radius:6px; white-space:nowrap; }
+
+.lvv-classement { margin-top:.6rem; }
+.lvv-vide { color:var(--encre-douce); font-size:.92rem; }
+.lvv-rang { list-style:none; counter-reset:lvv; padding:0; margin:0; display:grid; gap:.7rem; }
+.lvv-rang li { counter-increment:lvv; background:var(--carte); border:1px solid var(--lisere);
+  border-radius:11px; padding:.6rem .8rem .7rem; }
+.lvv-rang-tete { display:flex; align-items:baseline; gap:.6rem; }
+.lvv-rang-titre { font-weight:600; }
+.lvv-rang-titre::before { content:counter(lvv) ". "; color:var(--mute); font-weight:700; }
+.lvv-rang-n { margin-left:auto; font-weight:700; font-variant-numeric:tabular-nums; color:var(--accent); white-space:nowrap; }
+.lvv-rang-theme { font-size:.8rem; color:var(--encre-douce); margin:.1rem 0 .4rem; }
+.lvv-jauge { height:6px; background:var(--faint); border-radius:999px; overflow:hidden; }
+.lvv-jauge span { display:block; height:100%; background:var(--accent); border-radius:999px; }
+
+/* Page Communauté */
+.communaute-intro { max-width:60ch; color:var(--encre-douce); }
+.communaute-bloc { margin-top:2rem; }
+.communaute-sous { color:var(--encre-douce); font-size:.92rem; max-width:60ch; margin:.2rem 0 .8rem; }
+.communaute-actions { display:flex; flex-wrap:wrap; gap:.6rem; margin:.6rem 0 .8rem; }
+.communaute-note { color:var(--encre-douce); font-size:.88rem; max-width:60ch; }

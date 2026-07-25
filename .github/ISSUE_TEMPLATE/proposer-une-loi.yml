@@ -1,0 +1,53 @@
+name: "Proposer une loi clé"
+description: "Suggérer un vote (Assemblée, Sénat ou Parlement européen) à ajouter au comparateur."
+title: "[Proposition de loi] "
+labels: ["proposition-de-loi"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de contribuer. Les propositions sont **publiques** et **relues** avant tout ajout :
+        une loi n'est retenue que si elle passe la [grille de sélection](https://mlolita26.github.io/le-vrai-vote/methode/)
+        (critères objectifs, identiques pour tous). On ne juge pas la loi — on décrit ce qu'elle fait.
+  - type: input
+    id: intitule
+    attributes:
+      label: Intitulé de la loi ou du scrutin
+      placeholder: "Ex. : Loi sur la programmation militaire 2024-2030"
+    validations:
+      required: true
+  - type: dropdown
+    id: chambre
+    attributes:
+      label: Où a eu lieu le vote ?
+      options: ["Assemblée nationale", "Sénat", "Parlement européen", "Je ne sais pas"]
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Thème le plus proche
+      options:
+        - "Écologie et agriculture"
+        - "Pouvoir d'achat et fiscalité"
+        - "Sécurité et justice"
+        - "Immigration"
+        - "Questions de société"
+        - "Europe et international"
+        - "Institutions et vie démocratique"
+    validations:
+      required: true
+  - type: textarea
+    id: pourquoi
+    attributes:
+      label: En quoi ce vote aide-t-il à départager les candidats ?
+      placeholder: "Ex. : les partis se sont clairement opposés sur ce texte ; il éclaire un choix de société."
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Lien officiel (facultatif)
+      placeholder: "Page du scrutin (assemblee-nationale.fr, senat.fr, howtheyvote.eu…)"
+    validations:
+      required: false

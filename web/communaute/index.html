@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Communauté — Le Vrai Vote</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="../theme.js" defer></script>
+<script src="../config.js"></script>
+<script src="../communaute.js" defer></script>
+</head>
+<body>
+<div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
+<header class="entete-nav">
+  <a class="marque" href=".././">Le Vrai Vote</a>
+  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../comparer/">Comparer</a><a href="../communaute/" aria-current="page">Communauté</a><a href="../methode/">Méthode</a></nav>
+</header>
+<main>
+
+<h1>Communauté</h1>
+<p class="communaute-intro">Ce site montre comment les candidats ont voté. À vous d'indiquer
+quels votes vous aident vraiment à vous décider. À côté de chaque vote clé, une ampoule
+<span aria-hidden="true">💡</span> « m'a aidé à décider » : cliquez dessus quand un vote éclaire
+votre choix. Les votes les plus signalés remontent dans le classement ci-dessous.</p>
+
+<section class="communaute-bloc" aria-labelledby="titre-classement">
+  <h2 id="titre-classement">Les votes que les visiteurs jugent les plus utiles</h2>
+  <p class="communaute-sous">Un vote par appareil, réversible. Ce classement est un signal
+  indicatif de ce qui aide à choisir — il ne mesure ni la popularité d'un candidat ni l'opinion
+  générale, et n'est pas représentatif.</p>
+  <div id="lvv-classement" aria-live="polite"></div>
+</section>
+
+<section class="communaute-bloc" aria-labelledby="titre-participer">
+  <h2 id="titre-participer">Participer</h2>
+  <p>Un vote important manque ? Une donnée vous paraît fausse ? Tout se fait au grand jour, sur le
+  dépôt public du projet ; les propositions sont relues et n'entrent qu'après vérification contre
+  la source officielle.</p>
+  <div class="communaute-actions">
+    <a class="bouton" href="https://github.com/Mlolita26/le-vrai-vote/issues/new?template=proposer-une-loi.yml" rel="noopener">Proposer une loi à ajouter</a>
+    <a class="bouton bouton-second" href="https://github.com/Mlolita26/le-vrai-vote/issues/new?labels=correction&title=%5BCorrection%5D+&body=Page+concern%C3%A9e+%3A%0ASource+officielle+%3A%0AErreur+constat%C3%A9e+%3A" rel="noopener">Signaler une erreur</a>
+  </div>
+  <p class="communaute-note">Une proposition n'est retenue que si elle passe la
+  <a href="../methode/">grille de sélection</a> — les mêmes critères objectifs pour tous les
+  candidats. On décrit ce que fait un texte ; on ne le juge pas.</p>
+</section>
+</main>
+<footer class="pied">
+<p>Données parlementaires : licence ouverte (Assemblée nationale). Contenu : CC BY 4.0. <a href="https://github.com/Mlolita26/le-vrai-vote">Code source</a>.</p>
+</footer>
+</body>
+</html>

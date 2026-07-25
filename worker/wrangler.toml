@@ -1,0 +1,9 @@
+name = "levraivote-communaute"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Base D1 : créée par « wrangler d1 create levraivote » (colle l'id renvoyé ici).
+[[d1_databases]]
+binding = "DB"
+database_name = "levraivote"
+database_id = "A_REMPLACER_APRES_wrangler_d1_create"

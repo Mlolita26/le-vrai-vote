@@ -6,100 +6,52 @@
 <title>Méthode — Le Vrai Vote</title>
 <link rel="stylesheet" href="../styles.css">
 <script src="../theme.js" defer></script>
+<script src="../config.js"></script>
+<script src="../communaute.js" defer></script>
 </head>
 <body>
 <div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
 <header class="entete-nav">
   <a class="marque" href=".././">Le Vrai Vote</a>
-  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../comparer/">Comparer</a><a href="../methode/" aria-current="page">Méthode</a></nav>
+  <nav aria-label="Navigation principale"><a href=".././">Accueil</a><a href="../candidats/">Candidats</a><a href="../comparer/">Comparer</a><a href="../communaute/">Communauté</a><a href="../methode/" aria-current="page">Méthode</a></nav>
 </header>
 <main>
 
 <h1>Méthode</h1>
-<h2>Trois principes non négociables</h2>
-<p>Sur un site qui parle de personnes réelles en campagne, la crédibilité est la seule valeur. Ces règles priment sur tout le reste.</p>
-<ul class="methode-liste">
-<li><strong>Sources — tout est sourcé.</strong> Chaque fait renvoie à un document officiel vérifiable en un clic. Un fait sans source ne s'affiche pas.</li>
-<li><strong>Neutralité — aucune éditorialisation.</strong> Méthodologie publique et identique pour tous. « A voté contre », jamais « a trahi ».</li>
-<li><strong>Honnêteté sur les manques.</strong> Des états d'affichage clairs — jamais de vide ambigu, jamais de supposition.</li>
-</ul>
-<h2>D'où viennent les données</h2>
-<ul class="methode-liste">
-<li><strong>Scrutins et positions de vote</strong> : dumps officiels de
-<a href="https://data.assemblee-nationale.fr">data.assemblee-nationale.fr</a> (licence ouverte),
-législatures 14 à 17 (juillet 2012 → juillet 2026), y compris le Congrès de Versailles.
-Chaque fichier est archivé avec son empreinte avant transformation ; chaque import est journalisé.</li>
-<li><strong>Identités et mandats</strong> : référentiel officiel « acteurs, mandats, organes » de
-l'Assemblée nationale (précision au jour), complété par les déclarations HATVP pour les fonctions
-non couvertes. Appariement par nom, prénom et date de naissance — jamais par le nom seul.</li>
-<li><strong>Candidatures</strong> : déclarations publiques recensées par la presse, recoupées entre
-plusieurs sources, chacune datée et reliée à sa source. La liste officielle n'existera qu'après
-validation des parrainages par le Conseil constitutionnel (mars 2027).</li>
-<li><strong>Sénat et Parlement européen</strong> : à importer — indiqué comme tel sur les fiches concernées.</li>
-</ul>
-<h2>Les quatre états d'affichage</h2>
-<p>Chaque case affiche toujours l'un de ces états — jamais un vide ambigu, jamais une valeur supposée :</p>
-<ul class="methode-liste">
-<li><strong>Position connue</strong> : pour / contre / abstention / non-votant, telle que publiée au scrutin officiel.</li>
-<li><strong>Non concerné</strong> : la personne n'était pas en poste dans la chambre à la date du scrutin.</li>
-<li><strong>Indisponible</strong> : la personne n'a jamais été parlementaire — il n'existe pas de vote à afficher.</li>
-<li><strong>À importer</strong> : la donnée existe mais n'est pas encore chargée.</li>
-</ul>
-<h2>Les pastilles des candidats</h2>
-<p>Tous les candidats n'ont pas le même historique traçable — un député cumule des milliers de scrutins, un maire n'en a aucun. Sur chaque fiche, une pastille dit d'emblée ce que l'on peut montrer :</p>
-<ul class="methode-liste">
-<li><span class="pastille pastille-ok">Votes disponibles</span> — le candidat était en poste et a voté : ses positions réelles sont consultables.</li>
-<li><span class="pastille pastille-partiel">Couverture partielle</span> — mandats hors de la période couverte, ou chambre pas encore importée (Sénat, Parlement européen).</li>
-<li><span class="pastille pastille-decl">Positions déclaratives</span> — jamais parlementaire : ses positions viendront de ses déclarations publiques, clairement identifiées comme telles.</li>
-</ul>
-<h2>Ce que veulent dire « absent » et « non-votant »</h2>
-<p>L'Assemblée nationale ne publie jamais la liste des absents : un élu est compté <strong>absent (déduit)</strong>
-si son mandat était actif à la date du scrutin et qu'il n'apparaît dans aucune liste de votants.
-Cette déduction est désactivée sur les scrutins dont les totaux publiés présentent un écart avec les
-listes nominatives, et sur la partie des scrutins ordinaires de la 14e législature (2012-2017) où
-l'Assemblée ne publiait que la position de chaque groupe et les votes dissidents — on importe alors
-ces positions explicites, mais on ne déduit ni « suivi du groupe » ni absence. <strong>Non-votant</strong> signifie présent sans prendre part au vote
-(par exemple la présidence de séance) — ce n'est pas une absence.</p>
-<h2>La position du parti d'un candidat</h2>
-<p>Pour chaque vote clé, le site affiche aussi comment a voté le <strong>groupe parlementaire du parti</strong>
-du candidat — utile quand le candidat lui-même n'était pas en poste ou n'a pas voté. Cette position n'est
-jamais un « oui/non » décrété : c'est la répartition réelle des voix du groupe (pour, contre, abstention),
-extraite du même scrutin officiel, avec la tendance majoritaire mise en avant — « partagé » en cas d'égalité.
-Cas particulier des motions de censure : l'Assemblée n'enregistre que les voix pour ; ne pas voter est la
-manière de ne pas soutenir la censure. On affiche donc le nombre de voix apportées par chaque groupe, et
-aucune absence individuelle n'est déduite de ces scrutins.
-Le rattachement candidat → groupe suit une table publiée dans le code source (parti → groupe, par
-législature) qui ne couvre que les cas nets ; un candidat dont le parti n'a pas de groupe à l'Assemblée
-est affiché comme tel, avec l'explication : ainsi le RN, avec 8 députés élus en 2017 — sous le minimum
-de 15 requis pour former un groupe —, n'a aucun décompte officiel de groupe sur la législature 2017-2022,
-et Horizons n'existait pas avant octobre 2021. Au Congrès de Versailles, les groupes du Sénat ne sont pas encore identifiés dans
-notre référentiel et apparaissent comme « non identifiés ».</p>
+<p>Ce site rassemble, pour chaque candidat à l'élection présidentielle, ses prises de position parlementaires réelles, sa présence et son parcours, à partir de données publiques officielles. La présente note décrit comment ces données sont collectées, traitées et affichées. Elle vise la reproductibilité : toute information présentée doit pouvoir être retrouvée à sa source, et l'intégralité du code de traitement est publique.</p>
+
+<h2>Principes</h2>
+<p>Trois règles priment sur toute autre considération. La première est la <strong>traçabilité</strong> : chaque fait renvoie à un document officiel vérifiable, et une donnée dépourvue de source n'est pas affichée. La deuxième est la <strong>neutralité</strong> : la méthode est publique et identique pour tous les candidats, et les libellés décrivent sans juger — « a voté contre », et non « s'est opposé » ou « a trahi ». La troisième est l'<strong>honnêteté sur les manques</strong> : lorsqu'une information est absente, elle est signalée comme telle par un état explicite, sans jamais être comblée par une valeur plausible mais supposée.</p>
+
+<h2>Sources des données</h2>
+<p>Les scrutins et les positions de vote individuelles proviennent des jeux de données ouverts de l'Assemblée nationale (<a href="https://data.assemblee-nationale.fr" rel="noopener">data.assemblee-nationale.fr</a>, sous Licence ouverte), pour les législatures 14 à 17 (de juillet 2012 à juillet 2026), y compris le vote du Parlement réuni en Congrès à Versailles. Les votes au Parlement européen sont repris de <a href="https://howtheyvote.eu" rel="noopener">HowTheyVote.eu</a> (licence ODbL), qui republie les scrutins officiels du Parlement. L'identité des personnes et leurs mandats sont établis à partir du référentiel officiel « acteurs, mandats et organes » de l'Assemblée, complété, pour les fonctions qu'il ne couvre pas, par les déclarations déposées auprès de la <a href="https://www.hatvp.fr" rel="noopener">Haute Autorité pour la transparence de la vie publique</a>. Les candidatures, enfin, sont recensées à partir de déclarations publiques recoupées entre plusieurs sources de presse, chacune datée et reliée à son origine ; la liste officielle des candidats n'existera qu'après validation des parrainages par le Conseil constitutionnel, au printemps 2027.</p>
+
+<h2>Traitement et reproductibilité</h2>
+<p>Chaque fichier source est archivé, horodaté et empreint avant toute transformation, et chaque import est journalisé, de sorte qu'un résultat puisse être reconstruit à l'identique. L'appariement d'une personne à ses votes repose sur la combinaison du nom, du prénom et de la date de naissance, et jamais sur le seul nom, afin d'écarter les homonymes. Le Parlement européen est intégré selon ce même procédé ; le Sénat est en cours d'intégration et signalé comme tel sur les fiches concernées.</p>
+
+<h2>États d'affichage</h2>
+<p>Pour un scrutin donné, la position d'un candidat prend toujours l'un de quatre états, et jamais un vide ambigu. La <strong>position connue</strong> — pour, contre, abstention ou non-votant — est celle publiée au scrutin officiel. La mention « <strong>non concerné</strong> » indique que la personne n'était pas en poste dans la chambre à la date du vote ; « <strong>indisponible</strong> », qu'elle n'a jamais été parlementaire, de sorte qu'aucun vote n'existe ; « <strong>à importer</strong> », qu'une donnée existe mais n'est pas encore chargée. À l'échelle d'un candidat, les historiques étant très inégaux — un député cumule des milliers de scrutins, un maire n'en a aucun —, une pastille résume d'emblée ce que l'on peut montrer : <em>votes disponibles</em> lorsque la personne a effectivement voté, <em>couverture partielle</em> lorsque ses mandats sortent de la période couverte ou relèvent d'une chambre non encore intégrée, et <em>positions déclaratives</em> lorsqu'elle n'a jamais siégé — ses prises de position ne pouvant alors provenir que de déclarations publiques, identifiées comme telles.</p>
+
+<h2>Interprétation de l'absence et du non-vote</h2>
+<p>L'Assemblée nationale ne publie jamais la liste des absents. Un élu est donc compté <strong>absent (déduit)</strong> lorsque son mandat était actif à la date du scrutin et qu'il n'apparaît sur aucune liste de votants. Cette déduction est neutralisée dans deux situations : lorsque les totaux officiels présentent un écart avec les listes nominatives, et pour la part des scrutins ordinaires de la 14e législature (2012-2017) où seules la position de chaque groupe et les voix dissidentes étaient publiées — on importe alors ces positions explicites, sans déduire ni « suivi du groupe » ni absence. Le <strong>non-votant</strong>, quant à lui, est présent sans prendre part au vote, par exemple lorsqu'il préside la séance : il ne s'agit pas d'une absence.</p>
+
+<h2>Position du groupe parlementaire</h2>
+<p>À côté du vote personnel, chaque vote clé indique comment a voté le groupe parlementaire du parti du candidat, information utile lorsque l'intéressé n'était pas en poste ou n'a pas pris part au scrutin. Cette position n'est pas décrétée : elle correspond à la répartition réelle des voix du groupe — pour, contre, abstention — extraite du même scrutin officiel, la tendance majoritaire étant mise en avant et qualifiée de « partagé » en cas d'égalité. Les motions de censure constituent une exception : l'Assemblée n'y enregistre que les voix « pour », ne pas voter étant la façon de ne pas soutenir la censure ; on affiche alors le nombre de voix apportées par chaque groupe, sans déduire d'absence individuelle. Le rattachement d'un candidat à un groupe suit une table publiée dans le code, établie par législature et limitée aux cas nets ; lorsqu'un parti ne dispose pas d'un groupe constitué, cela est indiqué explicitement plutôt que comblé — ainsi le Rassemblement national, avec huit députés en 2017, sous le seuil de quinze requis, n'a pas de décompte de groupe sur la législature 2017-2022, et le parti Horizons n'existait pas avant octobre 2021. Au Congrès de Versailles, les groupes du Sénat, absents de notre référentiel, apparaissent comme « non identifiés ».</p>
+
 <h2>Justifications de vote</h2>
-<p>Sous certains votes clés figure une <strong>justification</strong> : l'explication du vote telle qu'elle a été
-<strong>déclarée et publiée</strong> par l'intéressé ou son groupe (explication de vote officielle, communiqué,
-compte rendu de séance, presse). Elle est toujours <strong>reliée à sa source</strong> ; le site la rapporte
-sans la juger ni l'endosser. Quand aucune justification publique n'est trouvée, <strong>aucune n'est affichée</strong> —
-jamais une explication inventée. Certaines formations en publient beaucoup (fiches de vote détaillées), d'autres
-très peu : la couverture est donc, à ce stade, <strong>inégale selon les partis</strong> — un reflet de ce qui est
-publiquement disponible, pas un choix éditorial. Pour un vote au Parlement européen où le candidat ne siégeait pas,
-la justification affichée est celle de sa <strong>délégation</strong>, indiquée comme telle.</p>
-<p>Deux niveaux de justification coexistent : celle d'une <strong>personne</strong> (rare, réservée aux votes
-contre-intuitifs) et celle d'un <strong>groupe parlementaire</strong> — pourquoi tel parti a voté pour ou contre.
-Cette dernière figure sous « Comment ont voté les groupes » (page d'un thème) et sur la fiche d'un candidat, sous
-la position de son parti. Elle vise en priorité les lois où les familles politiques <strong>divergent nettement</strong>,
-et couvre, quand la source existe, plusieurs partis — pas seulement les deux qui s'opposent le plus.</p>
-<h2>Votes clés : la grille avant les votes</h2>
-<p>Aucun vote clé commenté n'est affiché tant que la grille de sélection (critères objectifs, publics,
-appliqués identiquement à tous) n'est pas publiée ici. Les résumés seront descriptifs et neutres,
-chacun relié au dossier législatif officiel.</p>
+<p>Sous certains votes figure une justification, c'est-à-dire l'explication du vote telle qu'elle a été déclarée et publiée par l'intéressé ou par son groupe — explication de vote en séance, communiqué, compte rendu, article de presse. Elle est toujours reliée à sa source et rapportée sans être jugée ni endossée ; lorsqu'aucune justification publique n'est trouvée, aucune n'est affichée, et rien n'est inventé. Deux niveaux coexistent : la justification d'une personne, rare et réservée aux votes contre-intuitifs, et celle d'un groupe parlementaire, qui explique pourquoi tel parti a voté pour ou contre. La couverture demeure, à ce stade, inégale selon les partis : elle reflète ce qui est publiquement disponible, et non un choix éditorial, et vise en priorité les textes sur lesquels les familles politiques divergent nettement. Pour un vote au Parlement européen où le candidat ne siégeait pas, la justification affichée est celle de sa délégation, indiquée comme telle.</p>
+
+<h2>Sélection des votes clés</h2>
+<p>Tous les scrutins n'ont pas le même poids : le site n'en retient qu'un nombre restreint, jugés structurants, regroupés par thème. Chaque vote clé pointe un scrutin réellement importé et renvoie à sa page officielle ; son résumé est descriptif et neutre, sans reprendre le vocabulaire des promoteurs ni celui des opposants du texte. La sélection applique des critères objectifs, identiques pour tous les candidats, et demeure ouverte : elle s'enrichit à mesure que de nouveaux scrutins sont intégrés puis vérifiés un à un contre les données officielles.</p>
+
 <h2>Volet judiciaire</h2>
-<p>Renseigné manuellement, fait par fait, uniquement à partir de documents publics sourcés, avec mention
-systématique de la présomption d'innocence pour toute procédure en cours. Aucun croisement automatique
-de bases judiciaires (les décisions en open data sont pseudonymisées ; ce croisement serait illégal).</p>
-<h2>Corrections</h2>
-<p>Une donnée vous semble fausse ? Ouvrez un signalement sur
-<a href="https://github.com/Mlolita26/le-vrai-vote/issues">le dépôt public</a> avec le lien de la source :
-toute correction est tracée.</p>
+<p>Ce volet est renseigné manuellement, fait par fait, uniquement à partir de documents publics sourcés, et avec la mention systématique de la présomption d'innocence pour toute procédure en cours. Aucun croisement automatique de bases judiciaires n'est effectué : les décisions publiées en open data sont pseudonymisées, et un tel croisement serait illégal.</p>
+
+<h2>Corrections et code source</h2>
+<p>La méthode comme le code de traitement sont publics. Une donnée vous semble erronée ? Un signalement peut être ouvert sur le <a href="https://github.com/Mlolita26/le-vrai-vote" rel="noopener">dépôt public du projet</a>, avec le lien de la source : toute correction est tracée.</p>
+
+<h2>Sources et références</h2>
+<p>Assemblée nationale, données ouvertes — scrutins, acteurs, mandats et organes, sous Licence ouverte (<a href="https://data.assemblee-nationale.fr" rel="noopener">data.assemblee-nationale.fr</a>). Parlement européen, scrutins republiés sous licence ODbL (<a href="https://howtheyvote.eu" rel="noopener">HowTheyVote.eu</a>). Déclarations d'intérêts et de patrimoine des responsables publics (<a href="https://www.hatvp.fr" rel="noopener">HATVP</a>). Sénat, intégration en cours (<a href="https://data.senat.fr" rel="noopener">data.senat.fr</a>). Code source et journal des corrections (<a href="https://github.com/Mlolita26/le-vrai-vote" rel="noopener">github.com/Mlolita26/le-vrai-vote</a>).</p>
 <h2>Crédits des portraits</h2>
 <p>Les portraits proviennent de Wikimedia Commons, sous licence libre ; les candidats sans
 photographie librement réutilisable sont représentés par leurs initiales.</p>
