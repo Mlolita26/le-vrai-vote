@@ -322,7 +322,7 @@ VOTES = [
 
     # ── Taxe et impôts (thème créé le 25/07/2026) ────────────────────────────
     ("VTANR5L15V272", "taxe-impots", "Budget 2018 : fin de l'ISF et « flat tax » (2017)",
-     "Premier budget du quinquennat Macron : il remplace l'impôt de solidarité sur la fortune (ISF) par un impôt limité au seul patrimoine immobilier (IFI) et instaure un prélèvement forfaitaire unique — la « flat tax » de 30 % — sur les revenus du capital. L'enjeu : alléger la fiscalité du capital, présenté par ses promoteurs comme un encouragement à l'investissement et par ses opposants comme un avantage fiscal aux plus fortunés.",
+     "Premier budget du quinquennat Macron. Il supprime l'impôt de solidarité sur la fortune (ISF) — l'impôt annuel qui frappait l'ensemble du patrimoine (biens immobiliers, placements financiers, etc.) au-delà d'environ 1,3 million d'euros — et le remplace par l'impôt sur la fortune immobilière (IFI), limité au seul patrimoine immobilier : les placements financiers ne sont donc plus taxés. Il instaure aussi un prélèvement forfaitaire unique — la « flat tax » de 30 % — sur les revenus du capital (dividendes, intérêts). L'enjeu : alléger la fiscalité du capital, présenté par ses promoteurs comme un encouragement à l'investissement et par ses opposants comme un avantage fiscal aux plus fortunés.",
      None),
     ("VTANR5L15V1536", "taxe-impots", "Taxe carbone et « gilets jaunes » — déclaration (2018)",
      "Déclaration du Gouvernement, en plein mouvement des « gilets jaunes », sur la fiscalité écologique — dont la taxe carbone sur les carburants — et ses conséquences sur le pouvoir d'achat ; voter pour revenait à soutenir la position du Gouvernement. L'enjeu : concilier le signal-prix climatique et le pouvoir d'achat des ménages, la hausse de la taxe carbone ayant déclenché la contestation.",
@@ -549,8 +549,8 @@ SENS = {
     # ── Taxe et impôts ──
     "VTANR5L15V272": ("adopter le budget 2018 (suppression de l'ISF, « flat tax » sur les revenus du capital)",
                       "rejeter ce budget"),
-    "VTANR5L15V1536": ("soutenir la position du Gouvernement sur la fiscalité écologique (taxe carbone)",
-                       "désapprouver cette position"),
+    "VTANR5L15V1536": ("soutenir la position du Gouvernement, c'est-à-dire défendre la taxe carbone sur les carburants",
+                       "désavouer le Gouvernement — dans le sens des « gilets jaunes », qui contestaient la hausse de la taxe carbone"),
     "PE-HTV-143328": ("instaurer un impôt minimum de 15 % sur les bénéfices des multinationales",
                       "s'y opposer"),
     "PE-HTV-147044": ("dénoncer les vétos nationaux et pousser à appliquer l'impôt mondial de 15 %",
@@ -604,21 +604,22 @@ def seed(base: Path) -> None:
             sys.exit(f"Scrutin {uid} introuvable en base — la sélection doit pointer des scrutins importés.")
         sid, leg, numero, chambre = scrutin
         tid = ids_theme[theme]
-        deja = cur.execute("SELECT id, thematique_id FROM votes_cles WHERE scrutin_id=?", (sid,)).fetchone()
-        if deja:
-            # Déjà en base : on autorise le DÉPLACEMENT d'un vote vers un autre
-            # thème (la liste VOTES fait foi). Idempotent.
-            if deja[1] != tid:
-                cur.execute("UPDATE votes_cles SET thematique_id=? WHERE scrutin_id=?", (tid, sid))
-                deplaces += 1
-            continue
         if chambre == "congres":
             url = URL_CONGRES_IVG
         elif chambre == "pe":
             url = f"https://howtheyvote.eu/votes/{numero}"
         else:
             url = f"https://www.assemblee-nationale.fr/dyn/{leg}/scrutins/{numero}"
-        tid = ids_theme[theme]
+        deja = cur.execute("SELECT id, thematique_id FROM votes_cles WHERE scrutin_id=?", (sid,)).fetchone()
+        if deja:
+            # Déjà en base : la liste VOTES fait foi — on synchronise thème,
+            # titre, résumé, source et contexte (permet de déplacer un vote ou
+            # de corriger un libellé). Idempotent.
+            if deja[1] != tid:
+                deplaces += 1
+            cur.execute("UPDATE votes_cles SET thematique_id=?, titre=?, resume=?, source_resume=?, "
+                        "contexte=? WHERE scrutin_id=?", (tid, titre, resume, url, contexte, sid))
+            continue
         ordre_par_theme[tid] = ordre_par_theme.get(tid, 0) + 1
         sid_senat = None
         if uid in EQUIV_SENAT:
