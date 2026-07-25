@@ -697,7 +697,8 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             rail_cls, rail_mot, rail_sous, rail_from_senat = rail_perso(
                 p, v, etat_v, equiv_senat, est_pe, a_vote_perso)
             senat_sec = "" if rail_from_senat else senat_html
-            provenance = '<span class="provenance-pe">Parlement europ\u00e9en</span>' if est_pe else ''
+            provenance = (f'<span class="provenance provenance-{v["chambre"]}">'
+                          f'{e(CHAMBRE_LABEL.get(v["chambre"], v["chambre"]))}</span>')
             meta_html = f'<p class="ap-meta">{e(resultat_txt)}</p>' if resultat_txt else ''
             # Banni\u00e8re : quand la personne n'a pas vot\u00e9 elle-m\u00eame (mandat europ\u00e9en
             # qu'elle n'avait pas, ou pas en poste \u00e0 l'Assembl\u00e9e/au Congr\u00e8s \u00e0 la date)
@@ -952,9 +953,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   // vote personnel s'il a voté, sinon position de son groupe (étiquetée).
   function infoDe(slug, vid) {
     var e = (d.positions[slug] || {})[vid] || {};
-    if (e.perso) return { pos: e.perso, niveau: "perso", just: e.nuance || null };
-    if (e.parti) return { pos: e.parti, niveau: "parti", just: e.justif_parti || null };
-    return { pos: null, niveau: null, just: null };
+    var pos = e.perso || e.parti || null;
+    var niveau = e.perso ? "perso" : (e.parti ? "parti" : null);
+    // Justification visible dans tous les cas : la nuance personnelle si elle
+    // existe, sinon celle du parti (même quand on affiche le vote personnel).
+    var just = e.nuance || e.justif_parti || null;
+    var justParti = (!e.nuance && !!e.justif_parti);
+    return { pos: pos, niveau: niveau, just: just, justParti: justParti };
   }
   var RAILCLS = { pour: "rail-pour", contre: "rail-contre", abstention: "rail-abst" };
   function banniere(surnom, info) {
@@ -966,7 +971,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
   function justifDe(surnom, info) {
     if (!info.just) return "";
-    var etiq = (info.niveau === "parti") ? (surnom + " — son parti") : surnom;
+    var etiq = info.justParti ? (surnom + " — son parti") : surnom;
     return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + info.just[0]
       + ' (<a href="' + info.just[1] + '" rel="noopener">source</a>)</p>';
   }
@@ -996,9 +1001,9 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         var diverge = comparable && pa !== pb;
         if (comparable) { comp++; if (pa === pb) acc++; }
         if (filtre === "comparable" && !pa && !pb) return;
+        // Classe d'etat conservee pour la teinte de la carte, mais sans libelle
+        // texte : la concordance pour/contre des deux bannieres suffit (redondant).
         var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
-        var marque = comparable ? '<span class="cmp-marque ' + etat + '">'
-          + (diverge ? "Divergence" : "Même position") + '</span>' : '';
         var sens = (v.sens_pour && v.sens_contre)
           ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
             + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
@@ -1010,7 +1015,6 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '<p class="cmp-desc-texte">' + v.resume + '</p>'
           + sens
           + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
-          + marque
           + justifDe(surA, ia) + justifDe(surB, ib)
           + '</article>';
       });

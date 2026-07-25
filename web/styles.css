@@ -348,10 +348,16 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
    POSITION DU PARTI/délégation (badge en contour). L'info n'est jamais codée
    par la seule couleur (RGAA) : le texte du chip et les rubans restent explicites. */
 .badge-contour { background:transparent; border:1.5px solid currentColor; }
-.provenance-pe { display:inline-block; font-size:0.7rem; font-weight:600;
+/* Mention de la chambre (Assemblée, Sénat, Parlement européen, Congrès) —
+   affichée sur chaque carte de vote pour lever toute ambiguïté. */
+.provenance, .provenance-pe { display:inline-block; font-size:0.7rem; font-weight:600;
   letter-spacing:0.03em; text-transform:uppercase; color:var(--encre-douce);
   background:var(--faint); border:1px solid var(--lisere); border-radius:999px;
-  padding:0.06rem 0.5rem; vertical-align:middle; }
+  padding:0.06rem 0.5rem; vertical-align:middle; white-space:nowrap; }
+/* Léger repère de couleur par chambre (le texte reste l'information — RGAA). */
+.provenance-pe { border-color:#9cc0e8; }
+.provenance-senat { border-color:#e5b567; }
+.provenance-congres { border-color:#b58fd8; }
 .mention-absente { font-style:italic; color:var(--mute); font-size:0.9rem; }
 .ligne-pe { font-size:0.86rem; color:var(--encre-douce); margin:0.4rem 0 0.1rem;
   padding-left:0.6rem; border-left:3px solid var(--lisere); }
