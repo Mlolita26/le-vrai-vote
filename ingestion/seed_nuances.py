@@ -49,6 +49,10 @@ SOURCES = {
                         "lafranceinsoumise.fr, 11/04/2024 — le groupe LFI/The Left explique son opposition à la "
                         "réforme du marché de l'électricité (fin des tarifs réglementés, indexation sur le gaz, "
                         "risque de privatisation)"),
+    "rn_pacte_migration": ("https://rassemblementnational.fr/communiques/communique-de-presse-de-jordan-bardella",
+                           "rassemblementnational.fr — communiqué de Jordan Bardella (RN), avril 2024 : opposition "
+                           "au « pacte de submersion », dénonciation du mécanisme « accueil ou contribution » et "
+                           "d'un « appel d'air » migratoire"),
 }
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
@@ -149,6 +153,13 @@ NUANCES = [
      "privatisation ; elle défendait un contrôle public des prix de l'énergie. "
      "(Position du groupe : Jean-Luc Mélenchon n'y siégeait pas.)",
      "lfi_electricite"),
+    # Justification RN sur le pacte migration (communiqué officiel de Bardella).
+    ("marine-le-pen", "PE-HTV-167531",
+     "La délégation RN, menée par Jordan Bardella, a voté contre, qualifiant le texte de « pacte de "
+     "submersion » : elle dénonçait le mécanisme de répartition des demandeurs (« accueil ou contribution "
+     "financière ») comme « la submersion ou la punition », et y voyait un « appel d'air » migratoire "
+     "plutôt qu'une régulation. (Position du groupe : Marine Le Pen n'y siégeait pas.)",
+     "rn_pacte_migration"),
 ]
 
 
