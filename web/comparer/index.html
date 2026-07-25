@@ -33,6 +33,14 @@ lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
 <script>
 fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
   var selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
+  // Desktop : tout est deplie (details ouverts) ; mobile : replies.
+  var wideCmp = window.matchMedia("(min-width:641px)");
+  function syncCmpOpen() {
+    document.querySelectorAll(".cmp-det").forEach(function (dd) {
+      if (wideCmp.matches) dd.setAttribute("open", ""); else dd.removeAttribute("open");
+    });
+  }
+  if (wideCmp.addEventListener) wideCmp.addEventListener("change", syncCmpOpen);
   [selA, selB].forEach(function (s) {
     var ph = document.createElement("option");
     ph.value = ""; ph.textContent = "— Choisir un candidat —";
@@ -129,7 +137,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
-          + '<details class="cmp-det"><summary>Description du vote</summary>'
+          + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
           + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
           + justifDe(surA, ia) + justifDe(surB, ib)
           + '</details>'
