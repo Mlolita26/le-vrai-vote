@@ -53,7 +53,37 @@ SOURCES = {
                            "rassemblementnational.fr — communiqué de Jordan Bardella (RN), avril 2024 : opposition "
                            "au « pacte de submersion », dénonciation du mécanisme « accueil ou contribution » et "
                            "d'un « appel d'air » migratoire"),
+    "bellamy_co2_2035": ("https://www.fxbellamy.fr/2023/02/14/ppe-contre-l-interdiction-de-la-vente-de-vehicules-a-moteurs-thermiques-en-2035/",
+                         "fxbellamy.fr, 14/02/2023 — F.-X. Bellamy (LR/PPE) explique le vote contre la fin des "
+                         "moteurs thermiques en 2035 : « erreur historique », « désastreuse pour l'industrie », "
+                         "« la grande gagnante est la Chine »"),
+    "hayer_pacte": ("https://www.lopinion.fr/international/avec-le-pacte-asile-et-migration-leurope-a-repondu-presente-par-valerie-hayer",
+                    "L'Opinion — tribune de Valérie Hayer (Renaissance/Renew) défendant le vote pour le pacte "
+                    "asile-migration : « fermeté, humanité et efficacité », maîtrise des frontières"),
+    "toussaint_pacte": ("https://www.marietoussaint.eu/actualites/pacte-asile-migration",
+                        "marietoussaint.eu — communiqué de Marie Toussaint (Les Écologistes/Verts) sur le vote "
+                        "contre le pacte : « les pires idées de l'extrême droite », détention et fichage, recul "
+                        "des droits fondamentaux"),
+    "glucksmann_pacte": ("https://www.franceinfo.fr/elections/europeennes/pacte-europeen-sur-la-migration-et-l-asile-je-vais-voter-contre-la-majorite-des-textes-previent-raphael-glucksmann_6455306.html",
+                         "franceinfo — Raphaël Glucksmann (PS/Place publique) annonce voter contre la majorité "
+                         "des textes du pacte, jugé « pas assez équilibré »"),
 }
+
+# Justifications de délégation réutilisées pour tous les candidats du même parti.
+TXT_LR_CO2 = ("La délégation LR (groupe PPE, menée par François-Xavier Bellamy) a voté contre, y voyant une "
+              "« erreur historique » : une mesure jugée « désastreuse pour l'industrie européenne » et coûteuse "
+              "pour les citoyens, dont « la grande gagnante est la Chine ». (Position du groupe.)")
+TXT_RE_PACTE = ("La délégation Renew (Renaissance / Besoin d'Europe, menée par Valérie Hayer) a voté pour, "
+                "défendant un pacte fondé sur « fermeté, humanité et efficacité » : une réponse européenne "
+                "coordonnée, une maîtrise accrue des frontières et une lutte contre l'immigration illégale. "
+                "(Position du groupe.)")
+TXT_VERT_PACTE = ("La délégation Les Écologistes (groupe Verts/ALE, Marie Toussaint) a voté contre, dénonçant "
+                  "un pacte qui « consacre les pires idées de l'extrême droite » : détention généralisée aux "
+                  "frontières, fichage dès six ans et recul des droits fondamentaux des personnes exilées. "
+                  "(Position du groupe.)")
+TXT_PS_PACTE = ("La délégation socialiste (groupe S&D, Raphaël Glucksmann) a voté contre la majorité des textes "
+                "du pacte, jugé « pas assez équilibré » et insuffisant sur la protection des droits. "
+                "(Position du groupe.)")
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
 NUANCES = [
@@ -160,6 +190,19 @@ NUANCES = [
      "financière ») comme « la submersion ou la punition », et y voyait un « appel d'air » migratoire "
      "plutôt qu'une régulation. (Position du groupe : Marine Le Pen n'y siégeait pas.)",
      "rn_pacte_migration"),
+    # LR (groupe PPE) — fin des thermiques 2035 : vote contre (Bellamy).
+    ("bruno-retailleau", "PE-HTV-152544", TXT_LR_CO2, "bellamy_co2_2035"),
+    ("david-lisnard", "PE-HTV-152544", TXT_LR_CO2, "bellamy_co2_2035"),
+    # Renew (Renaissance / Besoin d'Europe) — pacte migration : vote pour (Hayer).
+    ("gabriel-attal", "PE-HTV-167531", TXT_RE_PACTE, "hayer_pacte"),
+    ("edouard-philippe", "PE-HTV-167531", TXT_RE_PACTE, "hayer_pacte"),
+    # Les Écologistes (Verts/ALE) — pacte migration : vote contre (Toussaint).
+    ("marine-tondelier", "PE-HTV-167531", TXT_VERT_PACTE, "toussaint_pacte"),
+    # PS (groupe S&D) — pacte migration : vote contre (Glucksmann).
+    ("karim-bouamrane", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
+    ("jerome-guedj", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
+    ("philippe-brun", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
+    ("segolene-royal", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
 ]
 
 
