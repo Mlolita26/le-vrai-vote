@@ -34,7 +34,7 @@
   }
 
   ready(function () {
-    var nav = document.querySelector('.entete-nav nav') || document.querySelector('.entete-nav');
+    var nav = document.querySelector('.entete-nav') || document.querySelector('.entete-nav nav');
     if (!nav) return;
     var btn = document.createElement('button');
     btn.type = 'button';

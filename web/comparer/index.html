@@ -123,10 +123,11 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         cartes += '<article class="cmp-vote ' + etat + '">'
           + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
-          + '<p class="cmp-desc-texte">' + v.resume + '</p>'
-          + sens
           + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
+          + '<details class="cmp-det"><summary>Description du vote</summary>'
+          + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
           + justifDe(surA, ia) + justifDe(surB, ib)
+          + '</details>'
           + '</article>';
       });
       totComp += comp; totAcc += acc;

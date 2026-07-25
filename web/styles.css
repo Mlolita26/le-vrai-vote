@@ -601,3 +601,31 @@ img, svg, table { max-width:100%; }
   .vote-carte.collapsible.open > .ap-corps > .ap-titre::after{ content:" ⌄  replier"; }
   .vote-carte.collapsible:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 }
+
+/* ============================================================
+   Comparateur : description repliée par défaut (toutes tailles).
+   Visible = titre + bannières pour/contre ; le reste (sens du vote,
+   description, justifications) se déplie au clic. <details> natif.
+   ============================================================ */
+.cmp-det{ margin:.6rem 0 0; }
+.cmp-det > summary{ cursor:pointer; color:var(--accent); font-weight:600;
+  font-size:.85rem; list-style:none; display:inline-flex; align-items:center; padding:.15rem 0; }
+.cmp-det > summary::-webkit-details-marker{ display:none; }
+.cmp-det > summary::before{ content:"▸"; margin-right:.4rem; font-size:.8em; }
+.cmp-det[open] > summary::before{ content:"▾"; }
+.cmp-det > summary:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:4px; }
+.cmp-det > *:not(summary){ margin-top:.5rem; }
+
+/* ============================================================
+   En-tête mobile (≤640px) : ligne 1 = marque + bascule thème ;
+   ligne 2 = les 4 liens de menu répartis proprement (fini le
+   retour à la ligne bancal).
+   ============================================================ */
+@media (max-width:640px){
+  .entete-nav{ padding:.5rem .9rem; gap:.35rem .5rem; align-items:center; }
+  .marque{ order:1; font-size:1.1rem; }
+  .bascule-theme{ order:2; margin-left:auto; }
+  .entete-nav nav{ order:3; width:100%; margin-left:0;
+    justify-content:space-between; gap:.1rem; flex-wrap:nowrap; }
+  .entete-nav nav a{ padding:.5rem .3rem; font-size:.88rem; }
+}
