@@ -92,6 +92,37 @@ SOURCES = {
                         "lafranceinsoumise.fr, 02/07/2025 — LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme"),
     "lcp_antisem_sup": ("https://lcp.fr/actualites/lutte-contre-l-antisemitisme-dans-l-enseignement-superieur-l-examen-d-une-proposition-de",
                         "LCP, 2025 — examen de la PPL antisémitisme dans l'enseignement supérieur, positions des groupes"),
+    # Santé — lot de justifications (recherche 25/07/2026)
+    "vp_sante_touraine": ("https://www.vie-publique.fr/loi/20733-loi-de-modernisation-de-notre-systeme-de-sante-tiers-payant-medecin-t",
+                          "vie-publique.fr — loi de modernisation du système de santé (2016) : tiers payant généralisé, mesure phare"),
+    "wiki_sante_touraine": ("https://fr.wikipedia.org/wiki/Loi_de_modernisation_du_syst%C3%A8me_de_sant%C3%A9",
+                            "Wikipédia — loi de modernisation du système de santé : opposition de la droite et des syndicats de médecins au tiers payant généralisé"),
+    "lcp_deserts": ("https://lcp.fr/actualites/deserts-medicaux-l-assemblee-nationale-vote-en-faveur-d-une-regulation-de-l-installation",
+                    "LCP, mai 2025 — l'Assemblée vote la régulation de l'installation des médecins (loi Garot)"),
+    "medscape_ratios": ("https://francais.medscape.com/voirarticle/3612430",
+                        "Medscape, janvier 2025 — adoption de la loi ratios soignants/patients : abstentions du RN (Serge Muller) et d'Ensemble (Annie Vidal)"),
+    "ps_ratios": ("https://www.publicsenat.fr/actualites/sante/hopital-adoption-definitive-de-la-proposition-de-loi-pour-un-nombre-minimal-de-soignants-par-patients",
+                  "Public Sénat, janvier 2025 — adoption définitive des ratios de soignants par patient, soutien unanime de la gauche"),
+    "qdm_hopital2020": ("https://www.lequotidiendumedecin.fr/actus-medicales/politique-de-sante/lassemblee-rejette-une-proposition-de-loi-communiste-visant-financer-les-hopitaux-et-les-ehpad-pour",
+                        "Le Quotidien du médecin, juin 2020 — rejet de la PPL communiste de programmation pour l'hôpital public ; la majorité renvoie au Ségur"),
+    "lcp_ivg14": ("https://lcp.fr/actualites/allongement-des-delais-de-l-ivg-apres-un-parcours-seme-d-embuches-la-loi-definitivement",
+                  "LCP, février 2022 — adoption définitive de l'allongement du délai d'IVG, opposition de Les Républicains"),
+    "gouv_ore": ("https://www.enseignementsup-recherche.gouv.fr/fr/la-loi-ore-en-bref-49643",
+                 "enseignementsup-recherche.gouv.fr — loi ORE : orientation, « attendus » et fin du tirage au sort à l'université"),
+    "politis_parcoursup": ("https://www.politis.fr/articles/2018/04/parcoursup-et-loi-ore-une-mauvaise-reponse-a-un-vrai-probleme-38717/",
+                           "Politis, avril 2018 — critique de la sélection instaurée par Parcoursup / la loi ORE"),
+    "lfi_lpr": ("https://lafranceinsoumise.fr/2020/09/23/loi-programmation-recherche-autre-projet-est-possible/",
+                "lafranceinsoumise.fr, 23/09/2020 — LFI dénonce une loi recherche qui « institutionnalise la précarité »"),
+    "wiki_lpr": ("https://fr.wikipedia.org/wiki/Loi_de_programmation_de_la_recherche_pour_les_ann%C3%A9es_2021_%C3%A0_2030",
+                 "Wikipédia — loi de programmation de la recherche 2021-2030 : trajectoire budgétaire et débats"),
+    "lcp_defense_ecole": ("https://lcp.fr/actualites/vote-sur-la-defense-nationale-a-l-assemblee-ce-qu-il-faut-retenir-du-debat-en-6-points",
+                          "LCP, mars 2026 — vote sur l'enseignement de la défense nationale à l'école, clivages entre groupes"),
+    "lfi_ecole_inclusive": ("https://lafranceinsoumise.fr/2025/05/06/projet-de-loi-relatif-a-lecole-inclusive/",
+                            "lafranceinsoumise.fr, 06/05/2025 — LFI vote contre : amendement gouvernemental sur les « pôles d'appui », précarisation des AESH"),
+    "an_inclusif": ("https://www.assemblee-nationale.fr/dyn/actualites-accueil-hub/renforcer-le-parcours-inclusif-des-eleves-en-situation-de-handicap-adoption-de-la-proposition-de-loi",
+                    "Assemblée nationale — adoption de la PPL renforçant le parcours inclusif des élèves en situation de handicap"),
+    "lcp_egalite_chances": ("https://lcp.fr/actualites/egalite-des-chances-les-deputes-se-prononcent-en-faveur-de-la-prolongation-du-dispositif",
+                            "LCP, février 2025 — prolongation du « concours Talents » ; opposition du RN (Bryan Masson) à la « discrimination positive »"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -321,6 +352,101 @@ JUSTIFS = [
     ("VTANR5L17V2880", "RN",
      "A voté pour, avec la majorité et la droite, en soutien au renforcement des mesures contre l'antisémitisme à l'université.",
      "lcp_antisem_sup"),
+
+    # ── Santé : modernisation du système de santé — loi Touraine, 2016 (L14) ──
+    ("VTANR5L14V1200", "SRC",
+     "A voté pour : le groupe socialiste défendait un meilleur accès aux soins, notamment via la généralisation du tiers payant (ne plus avancer les frais chez le médecin).",
+     "vp_sante_touraine"),
+    ("VTANR5L14V1200", "Les Républicains",
+     "A voté contre, dénonçant surtout la généralisation du tiers payant — combattue par les syndicats de médecins (bureaucratisation, « étatisation » de la médecine).",
+     "wiki_sante_touraine"),
+    ("VTANR5L14V1200", "UDI",
+     "A voté contre, pour les mêmes raisons que la droite : rejet du tiers payant généralisé.",
+     "wiki_sante_touraine"),
+
+    # ── Santé : déserts médicaux — loi Garot, 2025 (L17) ─────────────────────
+    ("VTANR5L17V1607", "LFI-NFP",
+     "A voté pour la régulation de l'installation des médecins pour combattre les déserts médicaux.",
+     "lcp_deserts"),
+    ("VTANR5L17V1607", "SOC",
+     "A voté pour, en soutien à une meilleure répartition des médecins sur le territoire.",
+     "lcp_deserts"),
+
+    # ── Santé : ratios de soignants par patient, 2025 (L17) ──────────────────
+    ("VTANR5L17V600", "LFI-NFP",
+     "A voté pour, avec l'ensemble de la gauche, pour garantir un niveau minimum de personnel au chevet des patients.",
+     "ps_ratios"),
+    ("VTANR5L17V600", "SOC",
+     "A voté pour, en soutien à des ratios protégeant patients et soignants.",
+     "ps_ratios"),
+    ("VTANR5L17V600", "RN",
+     "S'est abstenu : le RN juge le texte « pas fondé sur des bases scientifiques solides » et « loin d'être suffisant », réclamant surtout une revalorisation des métiers (Serge Muller).",
+     "medscape_ratios"),
+    ("VTANR5L17V600", "EPR",
+     "S'est abstenu : la députée Annie Vidal jugeait le texte « inapplicable » et a tenté, en vain, d'en réduire la portée.",
+     "medscape_ratios"),
+
+    # ── Santé : programmation pour l'hôpital public, 2020 (L15) — rejetée ─────
+    ("VTANR5L15V2760", "GDR",
+     "A voté pour cette proposition, d'origine communiste, prévoyant un plan pluriannuel d'investissement et d'embauches pour l'hôpital public et les EHPAD.",
+     "qdm_hopital2020"),
+    ("VTANR5L15V2760", "FI",
+     "A voté pour ce plan d'investissement pour l'hôpital public.",
+     "qdm_hopital2020"),
+    ("VTANR5L15V2760", "SOC",
+     "A voté pour cette programmation pour l'hôpital public.",
+     "qdm_hopital2020"),
+    ("VTANR5L15V2760", "LaREM",
+     "A voté contre : la majorité a renvoyé au « Ségur de la santé », alors en cours, présenté comme la réponse du Gouvernement.",
+     "qdm_hopital2020"),
+
+    # ── Santé : allongement du délai d'IVG à 14 semaines, 2022 (L15) ─────────
+    ("VTANR5L15V4414", "LR",
+     "A voté contre, invoquant des objections médicales (avis de l'Académie de médecine et du Collège des gynécologues) et craignant que moins de médecins acceptent un acte plus tardif (Fabien Di Filippo).",
+     "lcp_ivg14"),
+    ("VTANR5L15V4414", "LaREM",
+     "A voté pour, pour garantir l'accès effectif à l'IVG aux femmes hors délai, contraintes jusque-là de se rendre à l'étranger.",
+     "lcp_ivg14"),
+
+    # ── Éducation : Parcoursup / loi ORE, 2018 (L15) ─────────────────────────
+    ("VTANR5L15V351", "LaREM",
+     "A voté pour, présentant Parcoursup comme un moyen de mieux orienter et de lutter contre l'échec en licence (fin du tirage au sort).",
+     "gouv_ore"),
+    ("VTANR5L15V351", "FI",
+     "A voté contre, dénonçant l'instauration d'une sélection à l'entrée de l'université.",
+     "politis_parcoursup"),
+
+    # ── Éducation : programmation de la recherche (LPR), 2020 (L15) ──────────
+    ("VTANR5L15V3188", "FI",
+     "A voté contre, dénonçant une loi qui « institutionnalise la précarité » dans la recherche (contrats précaires, « chaires de professeur junior ») au lieu de créer des postes pérennes.",
+     "lfi_lpr"),
+    ("VTANR5L15V3188", "LaREM",
+     "A voté pour, défendant une trajectoire budgétaire pluriannuelle en hausse pour la recherche jusqu'en 2030.",
+     "wiki_lpr"),
+
+    # ── Éducation : défense nationale à l'école, 2026 (L17) ──────────────────
+    ("VTANR5L17V5845", "LFI-NFP",
+     "A voté contre : LFI juge le texte sans moyens (environ 1 000 enseignants seraient nécessaires, alors que le budget 2026 supprime des milliers de postes) et alourdissant des emplois du temps déjà chargés (Louis Boyard).",
+     "lcp_defense_ecole"),
+    ("VTANR5L17V5845", "RN",
+     "A voté pour, tout en réclamant « plus d'ambition » pour renforcer le lien entre l'armée et la Nation.",
+     "lcp_defense_ecole"),
+
+    # ── Éducation : scolarisation des élèves handicapés, 2025 (L17) ──────────
+    ("VTANR5L17V1550", "LFI-NFP",
+     "A voté contre : texte jugé loin des enjeux (rien sur la précarité des AESH), et un amendement gouvernemental de dernière minute généralisant les « pôles d'appui à la scolarité », « imposé sans concertation », affaiblirait les MDPH et précariserait les accompagnants (Murielle Lepvraud).",
+     "lfi_ecole_inclusive"),
+    ("VTANR5L17V1550", "RN",
+     "A voté pour en première lecture, en soutien au renforcement de la scolarisation des élèves en situation de handicap.",
+     "an_inclusif"),
+
+    # ── Éducation : égalité des chances / écoles de service public, 2025 (L17)
+    ("VTANR5L17V840", "RN",
+     "A voté contre : Bryan Masson y voit une « discrimination positive » risquant de « rompre l'égalité d'accès à l'emploi public au détriment de tous les Français », et défend la « méritocratie ».",
+     "lcp_egalite_chances"),
+    ("VTANR5L17V840", "EPR",
+     "A voté pour, en soutien à un dispositif diversifiant le recrutement de la haute fonction publique.",
+     "lcp_egalite_chances"),
 ]
 
 
