@@ -619,8 +619,9 @@ img, svg, table { max-width:100%; }
    ne sert que sur téléphone). On masque le résumé-bouton et on force
    l'affichage du contenu même quand le <details> est fermé. */
 @media (min-width:641px){
-  .cmp-det > summary{ display:none; }
-  .cmp-det > *:not(summary){ display:block; margin-top:.5rem; }
+  .cmp-det > summary{ display:none !important; }
+  /* !important pour battre la règle navigateur details:not([open]) */
+  .cmp-det > *:not(summary){ display:block !important; margin-top:.5rem; }
 }
 
 /* ============================================================
