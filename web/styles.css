@@ -300,8 +300,11 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .groupes-votes summary { cursor:pointer; color:var(--accent); font-weight:600; font-size:0.88rem; }
 .groupes-votes ul { list-style:none; padding:0.55rem 0 0; margin:0; display:grid; gap:0.4rem; }
 /* Justification sourcée d'un groupe : « pourquoi » du parti, en note discrète. */
-.groupe-justif { font-size:0.82rem; color:var(--encre-douce); margin:0.3rem 0 0;
-  padding-left:0.6rem; border-left:2px solid var(--accent); line-height:1.45; }
+/* Justification de groupe : même encadré gris que la nuance personnelle,
+   pour que toutes les justifications se voient de la même façon. */
+.groupe-justif { font-size:0.83rem; color:var(--encre-douce); background:var(--faint);
+  border-radius:10px; padding:0.45rem 0.7rem; margin:0.35rem 0;
+  border-left:3px solid var(--accent); line-height:1.45; }
 .groupe-justif a { white-space:nowrap; }
 
 /* Résultat officiel du scrutin + nuances plus visibles */
