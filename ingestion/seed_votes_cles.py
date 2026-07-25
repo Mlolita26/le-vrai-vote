@@ -288,10 +288,173 @@ EQUIV_SENAT = {
 }
 
 
+# Sens concret du vote : {uid : (ce que voter POUR signifie, ce que voter CONTRE signifie)}.
+# Formulations neutres, à la 3e personne implicite (« … »), décrivant l'effet du vote —
+# jamais le motif (le motif relève des nuances/justifications). Pour les motions de
+# censure, « pour » = adopter la censure ; « contre » = ne pas censurer.
+SENS = {
+    # ── Écologie et agriculture ──
+    "VTANR5L14V1120": ("adopter ces objectifs : ramener le nucléaire à 50 % de l'électricité, diviser par deux la consommation d'énergie, développer les renouvelables",
+                       "rejeter cette trajectoire énergétique"),
+    "VTANR5L15V139": ("interdire progressivement, d'ici 2040, la recherche et l'extraction de pétrole et de gaz en France",
+                      "ne pas interdire cette exploitation"),
+    "PE-HTV-110615": ("déclarer l'« urgence climatique » et en faire une priorité de l'action de l'Union",
+                      "refuser cette déclaration d'urgence"),
+    "PE-HTV-117083": ("renforcer les moyens européens communs (avions bombardiers d'eau, matériel) face aux catastrophes",
+                      "s'opposer à ce renforcement"),
+    "PE-HTV-118521": ("rendre juridiquement contraignant l'objectif de neutralité carbone en 2050",
+                      "refuser des objectifs climatiques contraignants"),
+    "PE-HTV-126261": ("préparer les territoires aux effets du changement climatique (canicules, inondations, incendies)",
+                      "s'opposer à cette stratégie d'adaptation"),
+    "VTANR5L15V3738": ("adopter la loi Climat (rénovation des logements, zones à faibles émissions, frein à la bétonisation)",
+                       "rejeter le texte"),
+    "VTANR5L16V823": ("faciliter et accélérer l'installation d'éoliennes et de panneaux solaires",
+                      "rejeter le texte"),
+    "PE-HTV-152544": ("interdire la vente de voitures neuves à moteur thermique à partir de 2035",
+                      "refuser cette interdiction"),
+    "PE-HTV-154173": ("renforcer le marché carbone (quotas d'émission payants, baisse accélérée, fin des quotas gratuits)",
+                      "rejeter cette réforme"),
+    "VTANR5L16V1533": ("accélérer et faciliter la construction de nouveaux réacteurs nucléaires",
+                       "s'opposer à cette relance du nucléaire"),
+    "VTANR5L16V2721": ("adopter la loi (accélérer l'implantation d'usines, dont les technologies de la transition)",
+                       "rejeter le texte"),
+    "PE-HTV-164499": ("imposer aux États des objectifs de restauration des milieux naturels dégradés",
+                      "refuser ces objectifs"),
+    "VTANR5L17V2957": ("adopter la loi (réautoriser l'acétamipride, faciliter réserves d'eau et agrandissements d'élevages)",
+                       "rejeter le texte"),
+    "PE-HTV-184178": ("fixer l'objectif européen de réduction des émissions à l'horizon 2040",
+                      "refuser cet objectif intermédiaire"),
+    # ── Pouvoir d'achat et fiscalité ──
+    "VTANR5L14V726": ("allonger la durée de cotisation nécessaire (jusqu'à 43 ans) pour une retraite à taux plein",
+                      "refuser cet allongement"),
+    "VTANR5L14V1270": ("voter la censure : s'opposer à la loi travail et faire tomber le Gouvernement",
+                       "ne pas censurer : laisser la loi travail être adoptée"),
+    "VTANR5L16V186": ("adopter le paquet pouvoir d'achat (revalorisations, plafond des loyers, primes)",
+                      "rejeter le texte"),
+    "PE-HTV-147342": ("établir un cadre européen pour des salaires minimaux « adéquats »",
+                      "s'opposer à ce cadre"),
+    "VTANR5L16V1240": ("voter la censure : rejeter la réforme des retraites (64 ans) et faire tomber le Gouvernement",
+                       "ne pas censurer : laisser la réforme des retraites s'appliquer"),
+    "PE-HTV-154076": ("obliger les entreprises à la transparence sur les salaires (écarts femmes-hommes)",
+                      "s'opposer à cette obligation"),
+    "PE-HTV-167334": ("adopter la réforme du marché européen de l'électricité",
+                      "rejeter cette réforme"),
+    "VTANR5L17V881": ("instaurer un impôt minimum de 2 % par an sur les patrimoines de plus de 100 millions d'euros",
+                      "refuser cet impôt plancher"),
+    "VTANR5L17V6184": ("adopter la loi (alléger les normes des entreprises, supprimer les zones à faibles émissions)",
+                       "rejeter le texte"),
+    "VTANR5L17V6319": ("renforcer les contrôles et sanctions contre les fraudes sociales et fiscales",
+                       "rejeter le texte"),
+    # ── Sécurité et justice ──
+    "VTANR5L14V1109": ("autoriser des techniques de surveillance élargies pour les services de renseignement",
+                       "s'y opposer"),
+    "VTANR5L14V1191": ("prolonger l'état d'urgence et renforcer ses mesures (perquisitions administratives, assignations)",
+                       "refuser la prolongation"),
+    "VTANR5L15V138": ("faire entrer dans le droit ordinaire des pouvoirs jusque-là réservés à l'état d'urgence",
+                      "s'y opposer"),
+    "VTANR5L15V3254": ("adopter la loi « sécurité globale » (pouvoirs de police, vidéosurveillance, drones, délit d'images)",
+                       "rejeter le texte"),
+    "PE-HTV-150367": ("encadrer strictement les logiciels espions et enquêter sur leurs abus",
+                      "s'opposer à ces recommandations"),
+    "PE-HTV-155918": ("permettre l'accès direct, d'un pays à l'autre de l'Union, aux preuves numériques",
+                      "s'y opposer"),
+    "PE-HTV-168301": ("renforcer le contrôle du commerce des armes à feu civiles",
+                      "s'y opposer"),
+    "VTANR5L17V1473": ("adopter la loi (parquet spécialisé, prisons de haute sécurité, pouvoirs d'enquête élargis)",
+                       "rejeter le texte"),
+    "VTANR5L17V1624": ("durcir la réponse pénale aux mineurs délinquants (comparution immédiate dès 16 ans, excuse de minorité limitée)",
+                       "s'opposer à ce durcissement"),
+    "VTANR5L17V7987": ("instaurer une présomption de légitime défense pour les policiers et gendarmes qui font usage de leur arme",
+                       "refuser cette présomption"),
+    # ── Immigration ──
+    "VTANR5L14V994": ("adopter la réforme de l'asile (procédures accélérées, recours suspensif, hébergement dirigé)",
+                      "rejeter le texte"),
+    "VTANR5L14V1237": ("adopter la révision (inscrire l'état d'urgence dans la Constitution, permettre la déchéance de nationalité pour terrorisme)",
+                       "rejeter la révision"),
+    "VTANR5L15V578": ("adopter la loi (délais d'asile raccourcis, rétention doublée, éloignements facilités)",
+                      "rejeter le texte"),
+    "VTANR5L16V3213": ("adopter la loi immigration (durcissements et régularisation des métiers en tension)",
+                       "rejeter le texte"),
+    "PE-HTV-167531": ("adopter le règlement (répartition des demandeurs, mécanisme « accueil ou contribution »)",
+                      "rejeter le texte"),
+    "PE-HTV-166929": ("étendre le fichier européen d'empreintes des migrants (Eurodac)",
+                      "s'y opposer"),
+    "PE-HTV-166904": ("instaurer un filtrage obligatoire (identité, sécurité, santé) aux frontières extérieures",
+                      "s'y opposer"),
+    "VTANR5L17V1308": ("durcir les conditions d'accès à la nationalité française",
+                       "refuser ce durcissement"),
+    "VTANR5L17V7405": ("allonger et élargir la rétention administrative avant expulsion",
+                       "s'y opposer"),
+    # ── Questions de société ──
+    "VTANR5L14V511": ("ouvrir le mariage civil et l'adoption aux couples de même sexe",
+                      "s'y opposer"),
+    "VTANR5L14V1070": ("créer la sédation profonde en fin de vie et rendre les directives anticipées contraignantes",
+                       "s'y opposer"),
+    "VTANR5L15V2146": ("ouvrir la PMA aux couples de femmes et aux femmes seules",
+                       "s'y opposer"),
+    "PE-HTV-155091": ("approuver l'adhésion de l'Union à la Convention d'Istanbul (violences faites aux femmes)",
+                      "s'y opposer"),
+    "VTANR5L16V3045": ("adopter la loi « bien vieillir » (repérage des fragilités, lutte contre la maltraitance, carte des aides à domicile)",
+                       "rejeter le texte"),
+    "PE-HTV-164215": ("soutenir la stratégie européenne pour l'égalité des personnes LGBTIQ",
+                      "s'y opposer"),
+    "VTCGR5L16V1": ("inscrire dans la Constitution la liberté de recourir à l'avortement (IVG)",
+                    "s'y opposer"),
+    "PE-HTV-168054": ("demander l'inscription du droit à l'avortement dans la Charte des droits fondamentaux de l'Union",
+                      "s'y opposer"),
+    "PE-HTV-168573": ("adopter la directive de lutte contre les violences faites aux femmes",
+                      "s'y opposer"),
+    "VTANR5L17V5728": ("adopter la loi garantissant l'accès aux soins palliatifs partout sur le territoire",
+                       "rejeter le texte"),
+    "VTANR5L17V8280": ("créer un droit, très encadré, à l'aide à mourir",
+                       "s'y opposer"),
+    # ── Europe et international ──
+    "VTANR5L14V30": ("ratifier le traité budgétaire européen (TSCG, « règle d'or » des déficits)",
+                     "refuser la ratification"),
+    "VTANR5L15V2059": ("ratifier l'accord de libre-échange entre l'Union et le Canada (CETA)",
+                       "refuser la ratification"),
+    "VTANR5L16V652": ("affirmer le soutien de la France à l'Ukraine et condamner l'invasion russe",
+                      "refuser d'adopter cette résolution"),
+    "PE-HTV-164536": ("accorder à l'Ukraine 50 milliards d'euros d'aide européenne sur 2024-2027",
+                      "s'y opposer"),
+    "PE-HTV-169362": ("appeler à maintenir et renforcer le soutien de l'Union à l'Ukraine",
+                      "s'y opposer"),
+    "VTANR5L17V456": ("approuver l'opposition de la France à l'accord UE-Mercosur en l'état",
+                      "ne pas s'associer à ce refus de l'accord"),
+    "VTANR5L17V988": ("renforcer le soutien à l'Ukraine (avoirs russes gelés, adhésion à l'Union)",
+                      "s'y opposer"),
+    "PE-HTV-186518": ("soutenir l'élargissement de l'Union (Ukraine, Moldavie, Balkans) sous condition de réformes",
+                      "s'y opposer"),
+    # ── Institutions et vie démocratique ──
+    "VTANR5L14V594": ("créer la Haute Autorité pour la transparence (HATVP) et obliger les élus à déclarer patrimoine et intérêts",
+                      "s'y opposer"),
+    "PE-HTV-166183": ("adopter le règlement protégeant l'indépendance et le pluralisme des médias",
+                      "s'y opposer"),
+    "PE-HTV-166051": ("adopter le cadre européen encadrant l'intelligence artificielle (« AI Act »)",
+                      "s'y opposer"),
+    "PE-HTV-168862": ("poursuivre la procédure de l'article 7 contre la Hongrie (atteintes à l'État de droit)",
+                      "s'y opposer"),
+    "VTANR5L16V3725": ("élargir le corps électoral : laisser voter les résidents installés depuis au moins dix ans",
+                       "maintenir la liste électorale gelée depuis 2007"),
+    "VTANR5L17V1303": ("étendre le scrutin de liste paritaire (autant de femmes que d'hommes) aux communes de moins de 1 000 habitants",
+                       "conserver le mode de scrutin actuel, sans parité obligatoire, dans ces communes"),
+    "VTANR5L17V7454": ("inscrire dans la Constitution un statut d'autonomie pour la Corse au sein de la République",
+                       "refuser ce statut d'autonomie"),
+}
+
+
 def seed(base: Path) -> None:
     con = sqlite3.connect(base)
     con.execute("PRAGMA foreign_keys = ON")
     cur = con.cursor()
+
+    # Colonnes sens_pour / sens_contre ajoutées après coup : les créer si la base
+    # a été initialisée avant leur ajout au schéma (ALTER TABLE idempotent maison).
+    cols = {r[1] for r in cur.execute("PRAGMA table_info(votes_cles)")}
+    if "sens_pour" not in cols:
+        cur.execute("ALTER TABLE votes_cles ADD COLUMN sens_pour TEXT")
+    if "sens_contre" not in cols:
+        cur.execute("ALTER TABLE votes_cles ADD COLUMN sens_contre TEXT")
 
     # Idempotent : thématiques créées à la demande (libellé unique), votes clés
     # ajoutés seulement s'ils n'existent pas déjà (permet d'ajouter le PE après coup).
@@ -336,10 +499,23 @@ def seed(base: Path) -> None:
             (sid, tid, titre, resume, url, contexte, ordre_par_theme[tid], sid_senat))
         ajout += 1
 
+    # Sens concret du vote (pour / contre) : appliqué à TOUS les votes de SENS,
+    # y compris ceux déjà en base — idempotent, réexécutable pour corriger un libellé.
+    maj_sens = 0
+    for uid, (spour, scontre) in SENS.items():
+        r = cur.execute("SELECT id FROM scrutins WHERE uid_officiel=?", (uid,)).fetchone()
+        if r is None:
+            continue
+        maj_sens += cur.execute(
+            "UPDATE votes_cles SET sens_pour=?, sens_contre=? WHERE scrutin_id=?",
+            (spour, scontre, r[0])).rowcount
+
     con.commit()
     n = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
+    sans_sens = cur.execute("SELECT COUNT(*) FROM votes_cles WHERE sens_pour IS NULL").fetchone()[0]
     couv = cur.execute("SELECT COUNT(*) FROM couverture").fetchone()[0]
-    print(f"Semé : {len(THEMES)} thématiques, +{ajout} vote(s) clé(s) ajouté(s) ({n} au total). "
+    print(f"Semé : {len(THEMES)} thématiques, +{ajout} vote(s) clé(s) ajouté(s) ({n} au total) ; "
+          f"sens (pour/contre) sur {maj_sens} vote(s), {sans_sens} sans sens. "
           f"Vue couverture : {couv} états calculés.")
     con.close()
 

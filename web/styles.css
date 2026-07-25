@@ -307,6 +307,19 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   border-left:3px solid var(--accent); line-height:1.45; }
 .groupe-justif a { white-space:nowrap; }
 
+/* Sens du vote : ce que « pour » et « contre » signifient concrètement.
+   Deux blocs côte à côte (empilés sur mobile). Le mot Pour/Contre porte le
+   sens (couleur = renfort, jamais information seule — RGAA). */
+.sens-vote { display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.55rem 0 0;
+  font-size:0.84rem; line-height:1.4; }
+.sens-part { flex:1 1 15rem; background:var(--faint); border-radius:9px;
+  padding:0.4rem 0.65rem; border-left:3px solid var(--lisere); color:var(--encre-douce); }
+.sens-p { border-left-color:var(--b-pour-fg); }
+.sens-c { border-left-color:var(--b-contre-fg); }
+.sens-mot { font-weight:700; letter-spacing:0.01em; }
+.sens-p .sens-mot { color:var(--b-pour-fg); }
+.sens-c .sens-mot { color:var(--b-contre-fg); }
+
 /* Résultat officiel du scrutin + nuances plus visibles */
 .chip-resultat { display:inline-block; border-radius:999px; padding:0.14rem 0.65rem;
   font-size:0.78rem; font-weight:600; background:var(--faint); color:var(--encre-douce);

@@ -259,6 +259,9 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
+        verifier("chaque vote clé explicite le sens du vote (pour / contre)",
+                 cur.execute("SELECT COUNT(*) FROM votes_cles WHERE sens_pour IS NULL OR sens_pour='' "
+                             "OR sens_contre IS NULL OR sens_contre=''").fetchone()[0] == 0)
         n_pers = cur.execute("SELECT COUNT(*) FROM personnes").fetchone()[0]
         verifier("couverture complète : un état par personne et par vote clé",
                  cur.execute("SELECT COUNT(*) FROM couverture").fetchone()[0] == n_pers * n_vc)

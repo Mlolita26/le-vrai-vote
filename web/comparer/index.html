@@ -107,10 +107,16 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
         var marque = comparable ? '<span class="cmp-marque ' + etat + '">'
           + (diverge ? "Divergence" : "Même position") + '</span>' : '';
+        var sens = (v.sens_pour && v.sens_contre)
+          ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
+            + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
+            + v.sens_contre + '</span></p>'
+          : '';
         cartes += '<article class="cmp-vote ' + etat + '">'
           + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<p class="cmp-desc-texte">' + v.resume + '</p>'
+          + sens
           + '<div class="cmp-bannieres">' + banniere(surA, pa) + banniere(surB, pb) + '</div>'
           + marque
           + nuanceDe(a, v.id, surA) + nuanceDe(b, v.id, surB)

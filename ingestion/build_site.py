@@ -162,6 +162,18 @@ def resultat_texte(v):
     return f"{lib} {v['total_pour']}\u2013{v['total_contre']}"
 
 
+def sens_html(v):
+    """Ligne « Pour = … · Contre = … » : ce que le vote signifie concrètement.
+    Le mot « Pour »/« Contre » porte le sens (jamais la couleur seule — RGAA)."""
+    sp, sc = v.get("sens_pour"), v.get("sens_contre")
+    if not sp or not sc:
+        return ""
+    return (f'<p class="sens-vote">'
+            f'<span class="sens-part sens-p"><span class="sens-mot">Pour</span> = {e(sp)}</span>'
+            f'<span class="sens-part sens-c"><span class="sens-mot">Contre</span> = {e(sc)}</span>'
+            f'</p>')
+
+
 def senat_fiche(vc_id, slug, equiv_senat):
     """Ligne \u00ab Au S\u00e9nat \u00bb sur la fiche : position du candidat sur le texte \u00e9quivalent."""
     eq = equiv_senat.get(vc_id)
@@ -252,7 +264,8 @@ def charger(base):
         "SELECT id, libelle, ordre FROM thematiques ORDER BY ordre")]
     votes_cles = [dict(v) for v in cur.execute(
         "SELECT vc.id, vc.thematique_id, vc.titre, vc.resume, vc.source_resume, "
-        "vc.contexte, s.date, s.chambre, s.legislature, s.objet, s.sort, s.total_pour, "
+        "vc.contexte, vc.sens_pour, vc.sens_contre, s.date, s.chambre, s.legislature, "
+        "s.objet, s.sort, s.total_pour, "
         "s.total_contre, s.total_abstention, s.suffrages_requis, vc.scrutin_id FROM votes_cles vc "
         "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, s.date")]
     for v in votes_cles:
@@ -703,6 +716,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 <div class="ap-corps">
 <p class="ap-titre">{e(v['titre'])} {provenance}</p>
 {meta_html}
+{sens_html(v)}
 {groupe_html}
 {justif_parti_html}
 {senat_sec}
@@ -862,6 +876,7 @@ def page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_p
 <div class="ap-corps">
 <h2 class="ap-titre">{e(v['titre'])}</h2>
 <p class="ap-resume">{e(v['resume'])} <a href="{e(v['source_resume'])}" rel="noopener">Scrutin officiel \u2192</a></p>
+{sens_html(v)}
 {f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 <ul class="groupes-etat">{lignes_groupes}</ul>
 {senat_theme(v["id"], equiv_senat, par_slug)}
@@ -974,10 +989,16 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
         var marque = comparable ? '<span class="cmp-marque ' + etat + '">'
           + (diverge ? "Divergence" : "M\u00eame position") + '</span>' : '';
+        var sens = (v.sens_pour && v.sens_contre)
+          ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
+            + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
+            + v.sens_contre + '</span></p>'
+          : '';
         cartes += '<article class="cmp-vote ' + etat + '">'
           + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
           + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
           + '<p class="cmp-desc-texte">' + v.resume + '</p>'
+          + sens
           + '<div class="cmp-bannieres">' + banniere(surA, pa) + banniere(surB, pb) + '</div>'
           + marque
           + nuanceDe(a, v.id, surA) + nuanceDe(b, v.id, surB)
@@ -1146,6 +1167,7 @@ def generer(base):
         "votes": [{"id": str(v["id"]), "titre": v["titre"], "resume": v["resume"],
                    "theme": libelles_themes[v["thematique_id"]],
                    "chambre": CHAMBRE_LABEL.get(v["chambre"], v["chambre"]),
+                   "sens_pour": v.get("sens_pour"), "sens_contre": v.get("sens_contre"),
                    "date": v["date"]} for v in votes_cles],
         "positions": positions_comparaison(candidats, votes_cles, etats, nuances, justifs_groupes, equiv_senat,
                                            groupes_par_vote, groupe_du_candidat),

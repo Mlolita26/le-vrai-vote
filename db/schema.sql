@@ -136,6 +136,11 @@ CREATE TABLE IF NOT EXISTS votes_cles (
     resume        TEXT NOT NULL,       -- phrase neutre : décrit, ne juge pas
     source_resume TEXT NOT NULL,       -- URL de la page officielle du scrutin ou du dossier
     contexte      TEXT,
+    -- Sens concret du vote : ce que « pour » et « contre » signifient réellement
+    -- (indispensable quand l'intitulé ne le dit pas : révisions constitutionnelles,
+    -- motions de censure, résolutions, déclarations du Gouvernement). Éditorial, neutre.
+    sens_pour     TEXT,
+    sens_contre   TEXT,
     ordre         INTEGER NOT NULL DEFAULT 0,
     -- Scrutin équivalent au Sénat sur le MÊME texte (autre chambre) : permet
     -- d'afficher la position d'un sénateur (Retailleau) sur une loi clé sans
