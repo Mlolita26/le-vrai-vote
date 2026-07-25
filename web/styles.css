@@ -733,3 +733,24 @@ img, svg, table { max-width:100%; }
 .communaute-sous { color:var(--encre-douce); font-size:.92rem; max-width:60ch; margin:.2rem 0 .8rem; }
 .communaute-actions { display:flex; flex-wrap:wrap; gap:.6rem; margin:.6rem 0 .8rem; }
 .communaute-note { color:var(--encre-douce); font-size:.88rem; max-width:60ch; }
+
+/* Aperçu « top votes » sur la page d'accueil */
+.accueil-top { margin:1.6rem 0; }
+.accueil-top:empty { display:none; }
+.accueil-top-tete { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:.7rem; }
+.accueil-top-tete h2 { margin:0; }
+.accueil-top-lien { font-size:.9rem; white-space:nowrap; }
+.lvv-rang-accueil li { padding:.5rem .7rem .6rem; }
+@media (min-width:640px) { .lvv-rang-accueil { grid-template-columns:1fr 1fr; } }
+
+/* Ligne de classement cliquable → page détail du vote */
+.lvv-rang-lien { display:block; text-decoration:none; color:inherit; }
+.lvv-rang-lien:hover .lvv-rang-titre, .lvv-rang-lien:focus-visible .lvv-rang-titre { color:var(--accent); text-decoration:underline; }
+
+/* Page détail d'un vote (/votes/{slug}/) */
+.vote-detail { max-width:72ch; }
+.vote-detail-prov { font-size:.85rem; color:var(--encre-douce); margin:0 0 .2rem; }
+.vote-detail-res { margin:.5rem 0 0; }
+.vote-detail h2 { margin-top:1.9rem; }
+.groupes-liste-detail { list-style:none; padding:0; margin:.5rem 0 0; display:grid; gap:.6rem; }
+.groupes-liste-detail > li { background:var(--carte); border:1px solid var(--lisere); border-radius:10px; padding:.55rem .7rem; }

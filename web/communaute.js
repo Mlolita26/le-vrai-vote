@@ -111,8 +111,9 @@
     ]).then(function (res) {
       var data = res[0], c = res[1] || {};
       if (!data || !data.votes) { box.innerHTML = '<p class="lvv-vide">Classement momentanément indisponible.</p>'; return; }
+      var votesBase = box.getAttribute("data-votes") || "";
       var rows = data.votes.map(function (v) {
-        return { uid: v.uid, titre: v.titre, theme: v.theme, n: c[v.uid] || 0 };
+        return { slug: v.slug, uid: v.uid, titre: v.titre, theme: v.theme, n: c[v.uid] || 0 };
       }).filter(function (r) { return r.n > 0; })
         .sort(function (a, b) { return b.n - a.n; });
       if (!rows.length) {
@@ -120,26 +121,63 @@
           'Soyez le premier : cliquez sur l\'ampoule 💡 à côté d\'un vote clé.</p>';
         return;
       }
-      var max = rows[0].n;
-      var html = '<ol class="lvv-rang">';
-      rows.slice(0, 25).forEach(function (r) {
-        var pct = Math.round(100 * r.n / max);
-        html += '<li><div class="lvv-rang-tete"><span class="lvv-rang-titre">' + esc(r.titre) +
-          '</span><span class="lvv-rang-n">' + fmt(r.n) + '</span></div>' +
-          '<div class="lvv-rang-theme">' + esc(r.theme || "") + '</div>' +
-          '<div class="lvv-jauge"><span style="width:' + pct + '%"></span></div></li>';
-      });
-      html += '</ol>';
-      box.innerHTML = html;
+      box.innerHTML = rangHtml(rows, 25, votesBase);
     });
   }
   function esc(s) { var d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+
+  // Construit le <ol> du classement. Chaque ligne devient un lien vers la page
+  // détail du vote (votesBase + slug) quand ces infos sont disponibles.
+  function rangHtml(rows, limit, votesBase, extraClass) {
+    var max = rows[0].n;
+    var out = '<ol class="lvv-rang' + (extraClass ? " " + extraClass : "") + '">';
+    rows.slice(0, limit).forEach(function (r) {
+      var pct = Math.round(100 * r.n / max);
+      var inner = '<div class="lvv-rang-tete"><span class="lvv-rang-titre">' + esc(r.titre) +
+        '</span><span class="lvv-rang-n">' + fmt(r.n) + '</span></div>' +
+        '<div class="lvv-rang-theme">' + esc(r.theme || "") + '</div>' +
+        '<div class="lvv-jauge"><span style="width:' + pct + '%"></span></div>';
+      var href = (votesBase && r.slug) ? (votesBase + r.slug + "/") : null;
+      out += "<li>" + (href ? '<a class="lvv-rang-lien" href="' + href + '">' + inner + "</a>" : inner) + "</li>";
+    });
+    return out + "</ol>";
+  }
+
+  // ── Aperçu « top votes » (page d'accueil) ────────────────────────────────────
+  function renderAccueil() {
+    var box = document.getElementById("lvv-accueil");
+    if (!box) return;
+    if (!API) { box.style.display = "none"; return; } // service non branché : rien sur l'accueil
+    var src = box.getAttribute("data-src") || "data.json";
+    var lien = box.getAttribute("data-lien") || "communaute/";
+    var tete = '<div class="accueil-top-tete"><h2>Les votes qui aident le plus à se décider</h2>' +
+      '<a class="accueil-top-lien" href="' + lien + '">Voir le classement complet →</a></div>';
+    Promise.all([
+      fetch(src).then(function (r) { return r.json(); }).catch(function () { return null; }),
+      fetch(API + "/counts").then(function (r) { return r.json(); }).catch(function () { return {}; }),
+    ]).then(function (res) {
+      var data = res[0], c = res[1] || {};
+      if (!data || !data.votes) { box.style.display = "none"; return; } // data.json injoignable : on masque
+      var votesBase = box.getAttribute("data-votes") || "";
+      var rows = data.votes.map(function (v) {
+        return { slug: v.slug, titre: v.titre, theme: v.theme, n: c[v.uid] || 0 };
+      }).filter(function (r) { return r.n > 0; })
+        .sort(function (a, b) { return b.n - a.n; }).slice(0, 10);
+      if (!rows.length) {
+        box.innerHTML = tete + '<p class="lvv-vide">Personne n\'a encore signalé de vote utile. ' +
+          'Cliquez sur l\'ampoule 💡 « m\'a aidé à décider » à côté d\'un vote pour lancer le classement.</p>';
+        return;
+      }
+      box.innerHTML = tete + rangHtml(rows, 10, votesBase, "lvv-rang-accueil");
+    });
+  }
 
   // ── Init ─────────────────────────────────────────────────────────────────────
   function init() {
     scan(document);
     loadCounts();
     renderClassement();
+    renderAccueil();
     // Cartes ajoutées dynamiquement (comparateur) : on pose les ampoules à la volée.
     if (window.MutationObserver) {
       var mo = new MutationObserver(function (muts) {

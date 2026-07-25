@@ -15,8 +15,10 @@ Usage : python ingestion/build_site.py [chemin_base]
 """
 import html
 import json
+import re
 import sqlite3
 import sys
+import unicodedata
 from datetime import date
 from itertools import combinations
 from pathlib import Path
@@ -105,6 +107,13 @@ ORDRE_ETATS = ["pour", "contre", "abstention", "non_votant", "absent",
                "a_importer", "non_concerne", "indisponible"]
 
 e = html.escape
+
+
+def slugify(texte):
+    """Slug lisible et stable pour une URL : minuscules, sans accents, tirets."""
+    t = unicodedata.normalize("NFKD", texte or "").encode("ascii", "ignore").decode("ascii")
+    t = re.sub(r"[^a-zA-Z0-9]+", "-", t).strip("-").lower()
+    return t or "vote"
 
 
 def badge_etat(etat):
@@ -311,6 +320,12 @@ def charger(base):
         "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, vc.axe_budget, s.date")]
     for v in votes_cles:
         v["est_censure"] = "motion de censure" in (v["objet"] or "").lower()
+    # Slug d'URL stable par vote clé (/votes/{slug}/), dédoublonné dans l'ordre.
+    vus = {}
+    for v in votes_cles:
+        base = slugify(v["titre"])[:60].strip("-") or "vote"
+        vus[base] = vus.get(base, 0) + 1
+        v["slug"] = base if vus[base] == 1 else f"{base}-{vus[base]}"
     # Décomptes officiels par groupe parlementaire, par vote clé.
     groupes_par_vote = {}
     for vid, abrege, libelle, pour, contre, abst, nonvot in cur.execute(
@@ -637,6 +652,8 @@ sa présence et son parcours — à partir des données publiques officielles, c
 <div class="step"><div class="step-num">3</div><h3>Comparez deux candidats</h3><p>Mettez deux candidats côte à côte sur les mêmes votes clés et voyez, thème par thème, où ils se rejoignent et où ils s'opposent.</p></div>
 </div>
 </section>
+
+<div id="lvv-accueil" class="accueil-top" data-src="data.json" data-lien="communaute/" data-votes="votes/"></div>
 
 <section class="bloc" id="candidats">
 <h2>Les candidats</h2>
@@ -1085,6 +1102,73 @@ mandat actif mais aucune mention au scrutin ; « à importer » : donnée pas en
     return page(t["libelle"], "Thèmes", contenu, 2, meta)
 
 
+def page_vote(v, candidats, etats, nuances, justifs_groupes, groupes_par_vote, equiv_senat, meta):
+    """Page détail d'un vote clé : description de la loi, position de chaque candidat
+    (vote personnel), position de chaque parti/groupe, et justifications sourcées.
+    Réutilise la logique de la fiche et de l'ancienne page thème (aucune donnée nouvelle)."""
+    par_slug = {c["slug"]: c["nom"] for c in candidats}
+    # Candidats regroupés par position personnelle (vote réel / couverture à 3 états).
+    groupes = {}
+    for c in candidats:
+        etat_v = etats.get((c["slug"], v["id"]), "a_importer")
+        groupes.setdefault(etat_v, []).append(c["slug"])
+    lignes_candidats = ""
+    for etat_v in ORDRE_ETATS:
+        if etat_v not in groupes:
+            continue
+        noms = ", ".join(
+            f'<a href="../../candidats/{s}/">{e(par_slug[s])}</a>' for s in groupes[etat_v])
+        lignes_candidats += f"<li>{badge_etat(etat_v)} {noms}</li>"
+    # Justifications personnelles sourcées (rares, votes contre-intuitifs).
+    lignes_nuances = ""
+    for c in candidats:
+        nuance = nuances.get((c["slug"], v["id"]))
+        if nuance:
+            lignes_nuances += (f'<li><strong>{e(par_slug[c["slug"]])}</strong> — {e(nuance[0])} '
+                               f'(<a href="{e(nuance[1])}" rel="noopener">source</a>)</li>')
+    nuances_html = (f'<h2>Justifications personnelles</h2>'
+                    f'<p class="note-methode">Position déclarée par l\'intéressé, rapportée et sourcée.</p>'
+                    f'<ul class="nuances">{lignes_nuances}</ul>') if lignes_nuances else ""
+    # Partis / groupes parlementaires (décompte officiel) + justifications de groupe.
+    groupes_v = groupes_par_vote.get(v["id"], [])
+    groupes_html = ""
+    if groupes_v:
+        lignes_g = ""
+        for g in groupes_v:
+            j = justifs_groupes.get((v["id"], g["abrege"]))
+            just_html = (f'<p class="groupe-justif">{e(j[0])} '
+                         f'(<a href="{e(j[1])}" rel="noopener">source</a>)</p>') if j else ""
+            lignes_g += f"<li>{chip_groupe(g, v['est_censure'])}{just_html}</li>"
+        groupes_html = (f'<h2>Comment ont voté les partis</h2>'
+                        f'<p class="note-methode">Décompte réel des voix du groupe au scrutin officiel ; '
+                        f'la position mise en avant est la tendance majoritaire.</p>'
+                        f'<ul class="groupes-liste-detail">{lignes_g}</ul>')
+    prov = CHAMBRE_LABEL.get(v["chambre"], v["chambre"])
+    res = chip_resultat(v)
+    date_txt = f' · {e(v["date"])}' if v.get("date") else ""
+    contexte_html = f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v["contexte"] else ""
+    res_html = f'<p class="vote-detail-res">{res}</p>' if res else ""
+    contenu = f"""
+<nav class="fil"><a href="../../communaute/">← Classement communauté</a></nav>
+<article class="vote-detail" data-vote-id="{e(v['uid'] or '')}">
+<p class="vote-detail-prov">{e(prov)}{date_txt}</p>
+<h1>{e(v['titre'])}</h1>
+<p class="ap-resume">{e(v['resume'])} <a href="{e(v['source_resume'])}" rel="noopener">Scrutin officiel →</a></p>
+{sens_html(v)}
+{contexte_html}
+{res_html}
+<h2>Comment se positionnent les candidats</h2>
+<p class="note-methode">Vote personnel issu des scrutins officiels. « Non concerné » : pas en poste à la
+date du scrutin ; « indisponible » : jamais parlementaire ; « à importer » : donnée pas encore chargée.
+La position d'un parti n'est pas le vote personnel d'un candidat — voir la section suivante.</p>
+<ul class="groupes-etat">{lignes_candidats}</ul>
+{senat_theme(v["id"], equiv_senat, par_slug)}
+{groupes_html}
+{nuances_html}
+</article>"""
+    return page(v["titre"], "Communauté", contenu, 2, meta)
+
+
 def page_comparer(meta):
     # JS en chaîne simple (pas d'f-string) : les accolades sont littérales.
     contenu = """
@@ -1445,7 +1529,7 @@ votre choix. Les votes les plus signalés remontent dans le classement ci-dessou
   <p class="communaute-sous">Un vote par appareil, réversible. Ce classement est un signal
   indicatif de ce qui aide à choisir — il ne mesure ni la popularité d'un candidat ni l'opinion
   générale, et n'est pas représentatif.</p>
-  <div id="lvv-classement" aria-live="polite"></div>
+  <div id="lvv-classement" aria-live="polite" data-votes="../votes/"></div>
 </section>
 
 <section class="communaute-bloc" aria-labelledby="titre-participer">
@@ -1476,6 +1560,7 @@ def generer(base):
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
     (WEB / "comparer").mkdir(exist_ok=True)
     (WEB / "communaute").mkdir(exist_ok=True)
+    (WEB / "votes").mkdir(exist_ok=True)
     (WEB / "methode").mkdir(exist_ok=True)
 
     (WEB / "index.html").write_text(page_accueil(candidats, meta), encoding="utf-8")
@@ -1493,6 +1578,12 @@ def generer(base):
     # conservées (non appelées) au cas où.
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "communaute" / "index.html").write_text(page_communaute(meta), encoding="utf-8")
+    for v in votes_cles:
+        dossier = WEB / "votes" / v["slug"]
+        dossier.mkdir(exist_ok=True)
+        (dossier / "index.html").write_text(
+            page_vote(v, candidats, etats, nuances, justifs_groupes,
+                      groupes_par_vote, equiv_senat, meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(
         page_methode(meta, {c["slug"]: c["nom"] for c in candidats}), encoding="utf-8")
 
@@ -1501,7 +1592,8 @@ def generer(base):
         "candidats": [{"slug": c["slug"], "nom": c["nom"], "nom_famille": c["nom_famille"]}
                       for c in candidats],
         "themes": [t["libelle"] for t in themes],
-        "votes": [{"id": str(v["id"]), "uid": v["uid"], "titre": v["titre"], "resume": v["resume"],
+        "votes": [{"id": str(v["id"]), "uid": v["uid"], "slug": v["slug"],
+                   "titre": v["titre"], "resume": v["resume"],
                    "theme": libelles_themes[v["thematique_id"]],
                    "chambre": CHAMBRE_LABEL.get(v["chambre"], v["chambre"]),
                    "sens_pour": v.get("sens_pour"), "sens_contre": v.get("sens_contre"),
