@@ -67,6 +67,12 @@ SOURCES = {
     "glucksmann_pacte": ("https://www.franceinfo.fr/elections/europeennes/pacte-europeen-sur-la-migration-et-l-asile-je-vais-voter-contre-la-majorite-des-textes-previent-raphael-glucksmann_6455306.html",
                          "franceinfo — Raphaël Glucksmann (PS/Place publique) annonce voter contre la majorité "
                          "des textes du pacte, jugé « pas assez équilibré »"),
+    "lfi_immigration_2023": ("https://lafranceinsoumise.fr/2023/12/15/stop-a-la-loi-immigration/",
+                             "lafranceinsoumise.fr, 15/12/2023 — le groupe LFI appelle à rejeter la loi "
+                             "immigration (« xénophobie et racisme ») ; il saisira ensuite le Conseil constitutionnel"),
+    "ps_immigration_2023": ("https://www.parti-socialiste.paris/communique_loi_immigration_2023",
+                            "Parti socialiste — communiqué contre la loi immigration 2023 : refus de « sombrer "
+                            "dans le populisme de la droite et de l'extrême droite »"),
 }
 
 # Justifications de délégation réutilisées pour tous les candidats du même parti.
@@ -84,6 +90,12 @@ TXT_VERT_PACTE = ("La délégation Les Écologistes (groupe Verts/ALE, Marie Tou
 TXT_PS_PACTE = ("La délégation socialiste (groupe S&D, Raphaël Glucksmann) a voté contre la majorité des textes "
                 "du pacte, jugé « pas assez équilibré » et insuffisant sur la protection des droits. "
                 "(Position du groupe.)")
+TXT_LFI_IMMIG23 = ("Le groupe LFI a voté contre, dénonçant une loi de « xénophobie et de racisme » et une "
+                   "atteinte aux droits ; il a ensuite saisi le Conseil constitutionnel, qui a censuré une large "
+                   "partie du texte. (Position du groupe.)")
+TXT_PS_IMMIG23 = ("Le groupe socialiste a voté contre, refusant de « sombrer dans le populisme de la droite et "
+                  "de l'extrême droite » et jugeant le texte contraire à l'accueil des personnes forcées de fuir. "
+                  "(Position du groupe.)")
 
 # (slug personne, uid scrutin, texte de la nuance, clé source)
 NUANCES = [
@@ -203,6 +215,12 @@ NUANCES = [
     ("jerome-guedj", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
     ("philippe-brun", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
     ("segolene-royal", "PE-HTV-167531", TXT_PS_PACTE, "glucksmann_pacte"),
+    # ── Assemblée nationale — loi immigration 2023 : justifier plus de partis ──
+    ("jean-luc-melenchon", "VTANR5L16V3213", TXT_LFI_IMMIG23, "lfi_immigration_2023"),
+    ("jerome-guedj", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
+    ("philippe-brun", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
+    ("karim-bouamrane", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
+    ("segolene-royal", "VTANR5L16V3213", TXT_PS_IMMIG23, "ps_immigration_2023"),
 ]
 
 
