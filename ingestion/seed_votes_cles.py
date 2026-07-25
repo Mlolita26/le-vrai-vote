@@ -32,6 +32,8 @@ THEMES = [
     ("taxe-impots", "Taxe et impôts"),
     ("travail", "Travail"),
     ("transports", "Transports"),
+    ("logement", "Logement"),
+    ("defense", "Défense"),
 ]
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -371,6 +373,38 @@ VOTES = [
     ("VTANR5L15V2865", "travail", "Emploi des personnes handicapées (2020)",
      "Réforme l'obligation d'emploi des travailleurs handicapés (OETH) qui s'impose aux entreprises : simplification des déclarations, valorisation de l'emploi direct, accompagnement renforcé. L'enjeu : améliorer l'accès à l'emploi des personnes en situation de handicap, encore très éloignées du marché du travail.",
      None),
+
+    # ── Ajouts issus de l'étude de la base AN (26/07/2026) ───────────────────
+    ("VTANR5L15V3421", "securite-justice", "Loi contre le séparatisme — principes de la République (2021)",
+     "Renforce le contrôle de l'État sur les associations et les lieux de culte (subventions conditionnées à un « contrat d'engagement républicain », fermetures administratives facilitées), encadre strictement l'instruction en famille (désormais soumise à autorisation) et étend l'obligation de neutralité religieuse aux salariés chargés d'une mission de service public. L'enjeu : lutter contre l'islamisme radical et le « séparatisme », mis en balance avec le risque d'atteinte aux libertés d'association, de culte et d'enseignement.",
+     "Projet de loi présenté après l'assassinat de Samuel Paty ; adopté en première lecture le 16 février 2021. Il a été critiqué à la fois par une partie de la gauche (atteinte aux libertés) et par la droite et l'extrême droite (jugé insuffisant)."),
+    ("VTANR5L16V1305", "securite-justice", "JO 2024 : vidéosurveillance algorithmique (2023)",
+     "Loi d'organisation des Jeux olympiques et paralympiques de Paris 2024, dont la mesure la plus débattue autorise, à titre expérimental, la vidéosurveillance « algorithmique » : des caméras couplées à une intelligence artificielle qui repère automatiquement des situations à risque (mouvements de foule, bagage abandonné…) dans l'espace public. C'est la première fois qu'un tel dispositif est légalisé en France. L'enjeu : sécuriser un événement de masse, mis en balance avec le risque d'une surveillance généralisée.",
+     "Première lecture, 28 mars 2023. Le recours à la reconnaissance faciale a été explicitement exclu du texte."),
+    ("VTANR5L16V2796", "institutions", "Loi SREN — réguler l'espace numérique (2023)",
+     "Encadre plusieurs usages d'internet : vérification de l'âge sur les sites pornographiques, peine de « bannissement » des réseaux sociaux pour les auteurs de cyberharcèlement, filtre « anti-arnaque » dans les navigateurs, et nouvelles obligations pour les grandes plateformes et l'hébergement de données. L'enjeu : mieux protéger les internautes, en particulier les mineurs, face aux craintes pour l'anonymat en ligne et la liberté d'expression.",
+     "Première lecture, 17 octobre 2023. Plusieurs dispositions ont été ajustées pour rester compatibles avec le règlement européen sur les services numériques (DSA)."),
+    ("VTANR5L15V1209", "pouvoir-achat-fiscalite", "Loi PACTE — entreprises et privatisations (2018)",
+     "Vaste loi sur les entreprises : elle simplifie leur création et leur croissance, réforme l'épargne salariale et l'épargne-retraite, et autorise la privatisation d'Aéroports de Paris (ADP) et de la Française des jeux (FDJ) ainsi que la réduction de la participation de l'État dans Engie. L'enjeu : faciliter le financement et l'investissement des entreprises, la privatisation d'actifs publics stratégiques étant, elle, très contestée.",
+     "Première lecture, 9 octobre 2018. La privatisation d'Aéroports de Paris a déclenché une tentative de référendum d'initiative partagée (RIP), qui n'a pas réuni assez de soutiens ; ce projet de privatisation a finalement été abandonné."),
+    ("VTANR5L15V729", "ecologie-agriculture", "Loi EGalim — revenu agricole et alimentation (2018)",
+     "Cherche à mieux rémunérer les agriculteurs : les prix payés aux producteurs doivent davantage tenir compte de leurs coûts de production, les promotions en supermarché sont encadrées et le seuil de revente à perte est relevé. Le texte comporte aussi des mesures sur l'alimentation (produits bio et locaux dans les cantines, bien-être animal). L'enjeu : le revenu paysan, alors que l'effet réel de la loi sur les prix a été jugé décevant.",
+     "Première lecture, 30 mai 2018 (loi « pour l'équilibre des relations commerciales dans le secteur agricole et alimentaire et une alimentation saine et durable », dite EGalim)."),
+    ("VTANR5L14V981", "europe-international", "Reconnaissance de l'État de Palestine (résolution, 2014)",
+     "Résolution — un texte qui exprime une position solennelle de l'Assemblée, sans valeur juridique contraignante — invitant le gouvernement français à reconnaître l'État de Palestine, dans la perspective d'un règlement du conflit israélo-palestinien fondé sur la coexistence de deux États. L'enjeu : un geste diplomatique symbolique, sujet redevenu très sensible depuis la guerre déclenchée en 2023.",
+     "Adoptée le 2 décembre 2014. Une résolution n'engage pas juridiquement le gouvernement, seul compétent pour reconnaître un État."),
+    ("VTANR5L16V1361", "logement", "Loi anti-squat — occupation illicite des logements (2023)",
+     "Triple les peines encourues pour le squat d'un logement et accélère les procédures d'expulsion — y compris pour les locataires qui cessent de payer leur loyer, dont le bail peut être résilié plus rapidement. L'enjeu : mieux protéger les propriétaires face aux occupations illégales et aux impayés, mis en balance avec la protection des locataires en difficulté et le droit au logement.",
+     "Deuxième lecture, 4 avril 2023 (proposition de loi dite « Kasbarian-Bergé »). Des associations de lutte contre le mal-logement ont dénoncé un texte fragilisant les locataires modestes."),
+    ("VTANR5L15V928", "logement", "Loi ELAN — logement et urbanisme (2018)",
+     "Réforme du logement visant à « construire plus, plus vite et moins cher » : allègement de normes (la part de logements neufs devant être accessibles aux personnes handicapées passe de 100 % à 20 %, le reste devant être « évolutif »), encadrement des locations touristiques de courte durée (type Airbnb) et réorganisation du logement social. L'enjeu : relancer la construction, le recul des normes d'accessibilité ayant été vivement critiqué par les associations de personnes handicapées.",
+     "Première lecture, 12 juin 2018 (loi portant évolution du logement, de l'aménagement et du numérique)."),
+    ("VTANR5L17V2262", "logement", "Encadrement des loyers (2025)",
+     "Prolonge et élargit l'expérimentation qui plafonne les loyers dans les zones les plus tendues (déjà appliquée à Paris, Lille, Lyon…), avec un volet spécifique à l'outre-mer : dans ces zones, un loyer ne peut pas dépasser un plafond de référence fixé par l'État. L'enjeu : freiner la hausse des loyers pour les locataires, face au risque de décourager la mise en location et de réduire l'offre de logements.",
+     "Première lecture, 5 juin 2025 (proposition de loi expérimentant l'encadrement des loyers et améliorant l'habitat en outre-mer)."),
+    ("VTANR5L16V2256", "defense", "Loi de programmation militaire 2024-2030 (2023)",
+     "Fixe le budget et les priorités des armées pour 2024-2030 : 413 milliards d'euros, en forte hausse, pour moderniser la dissuasion nucléaire, les drones, le cyber et le renseignement, et reconstituer les stocks de munitions, dans le contexte de la guerre en Ukraine. L'enjeu : le réarmement et la souveraineté de défense de la France, mis en regard du poids de cet effort pour les finances publiques.",
+     "Texte issu de la commission mixte paritaire, adopté le 12 juillet 2023."),
 ]
 
 
@@ -600,6 +634,27 @@ SENS = {
                        "s'y opposer"),
     "VTANR5L15V2865": ("réformer l'obligation d'emploi des travailleurs handicapés dans les entreprises",
                        "s'y opposer"),
+    # ── Ajouts (étude base AN, 26/07/2026) ──
+    "VTANR5L15V3421": ("adopter la loi (contrôle renforcé des associations et des cultes, encadrement de l'instruction en famille, neutralité des services publics)",
+                       "rejeter le texte"),
+    "VTANR5L16V1305": ("adopter la loi et autoriser, à titre expérimental, la vidéosurveillance algorithmique pour les JO 2024",
+                       "rejeter le texte / refuser cette surveillance"),
+    "VTANR5L16V2796": ("adopter la loi (vérification d'âge sur les sites pornographiques, bannissement des cyberharceleurs, filtre anti-arnaque)",
+                       "rejeter le texte"),
+    "VTANR5L15V1209": ("adopter la loi PACTE (simplifications pour les entreprises, épargne, privatisations d'ADP et de la FDJ)",
+                       "rejeter le texte / s'opposer aux privatisations"),
+    "VTANR5L15V729": ("adopter la loi EGalim (meilleure rémunération des agriculteurs, encadrement des promotions, alimentation durable)",
+                      "rejeter le texte"),
+    "VTANR5L14V981": ("inviter la France à reconnaître l'État de Palestine",
+                      "s'opposer à cette reconnaissance"),
+    "VTANR5L16V1361": ("adopter la loi (sanctions accrues contre le squat, expulsions facilitées, y compris pour impayés)",
+                       "rejeter le texte"),
+    "VTANR5L15V928": ("adopter la loi ELAN (faciliter la construction, encadrer les locations touristiques, réformer le logement social)",
+                      "rejeter le texte"),
+    "VTANR5L17V2262": ("prolonger et étendre le plafonnement des loyers dans les zones tendues",
+                       "s'opposer à cet encadrement"),
+    "VTANR5L16V2256": ("adopter la programmation militaire 2024-2030 (413 Md€, hausse du budget des armées)",
+                       "rejeter le texte"),
 }
 
 

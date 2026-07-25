@@ -54,6 +54,8 @@ THEME_SLUGS = {
     "Taxe et impôts": "taxe-impots",
     "Travail": "travail",
     "Transports": "transports",
+    "Logement": "logement",
+    "Défense": "defense",
 }
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {
