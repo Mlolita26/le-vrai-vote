@@ -512,3 +512,62 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   padding-left:.55rem; border-left:2px solid var(--lisere); }
 .cmp-nuance strong { font-style:normal; color:var(--encre); }
 @media (max-width:520px){ .cmp-bannieres { grid-template-columns:1fr; } }
+
+/* ============================================================
+   Confort mobile (≤640px) — CLAUDE.md « mobile-first, ~380px »
+   Objectif : une bonne vue d'ensemble, compacte et lisible — pas de
+   texte surdimensionné ni de scroll à outrance. Bloc additif placé en
+   fin de feuille : il prime sans modifier les règles ci-dessus.
+   On n'agit que sur l'espace, la densité et le tactile ; l'information
+   n'est jamais portée par la seule couleur (RGAA).
+   ============================================================ */
+@media (max-width:640px){
+  /* Marges d'écran : un peu plus de largeur utile pour lire */
+  main { padding-left:1rem; padding-right:1rem; }
+
+  /* Rythme vertical resserré : moins de scroll, meilleure vue d'ensemble */
+  h1 { margin:1rem 0 .5rem; }
+  h2 { margin:1.6rem 0 .5rem; }
+  h3 { margin:1.1rem 0 .4rem; }
+  .hero { padding-top:1rem; }
+  .hero h1 { font-size:2rem; }
+  .bloc { padding-top:1.8rem; }
+  .stats { margin-top:1.6rem; padding-top:1.2rem; }
+  .grand-chiffre { font-size:2.4rem; }
+
+  /* Grilles en une colonne : supprime tout débordement horizontal <300px */
+  .grille-cartes, .cand-grille, .steps, .principes, .etats-grid { grid-template-columns:1fr; }
+  .stats { grid-template-columns:repeat(2,1fr); }   /* chiffres-clés : 2 par ligne */
+
+  /* Cartes plus compactes + descriptions un poil plus denses */
+  .vote-cle, .cmp-vote, .step, .carte-candidat, .cand-carte { padding:.8rem .9rem; }
+  .ap-corps { padding:.65rem .8rem; }
+  .ap-resume, .vote-resume, .cmp-desc-texte { line-height:1.45; }
+  .etats-panel { padding:1.5rem 1.15rem; }
+  .resultat-comparaison { padding:1.1rem 1.15rem; }
+  .vote-cle-page { padding:1.1rem; }
+
+  /* Cibles tactiles ≥44px (iOS/Android) sans grossir le texte */
+  .entete-nav nav a, .filtre-chip, .mode-compare button, .bascule-theme,
+  .votes-replies > summary, .groupes-votes summary, .cmp-desc summary {
+    min-height:44px; display:inline-flex; align-items:center;
+  }
+  .entete-nav nav a, .filtre-chip { padding-top:.5rem; padding-bottom:.5rem; }
+
+  /* Une seule barre collante : les filtres de thème passent en statique
+     (sinon ils chevauchent la nav qui s'enroule sur petit écran) */
+  .filtres-themes { position:static; top:auto; }
+
+  /* Comparateur : sélecteurs pleine largeur, faciles à toucher */
+  .comparateur { flex-direction:column; gap:.8rem; }
+  .comparateur label { width:100%; }
+  .comparateur select { min-width:0; width:100%; }
+
+  /* Liens de source : retour à la ligne plutôt que débordement dans les
+     colonnes étroites des cartes de vote */
+  .ap-resume a, .vote-resume a { white-space:normal; }
+  .ap-corps, .cmp-vote, .vote-cle { overflow-wrap:break-word; }
+}
+
+/* Médias fluides (toutes tailles) — filet anti-débordement */
+img, svg, table { max-width:100%; }
