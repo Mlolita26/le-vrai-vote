@@ -226,6 +226,23 @@ VOTES = [
     ("PE-HTV-166051", "institutions", "Règlement européen sur l'intelligence artificielle (2024)",
      "Premier cadre juridique complet au monde sur l'intelligence artificielle : classe les usages selon leur niveau de risque, interdit certaines pratiques (notation sociale, manipulation) et impose des obligations renforcées aux systèmes « à haut risque » (santé, justice, emploi…). L'enjeu : encadrer l'IA pour protéger les droits sans freiner l'innovation, l'équilibre entre les deux étant au cœur des débats.",
      "Règlement sur l'intelligence artificielle (« AI Act »), vote d'adoption de mars 2024."),
+
+    # ── Urgence climatique et événements extrêmes (canicules, incendies…) ──────
+    ("PE-HTV-110615", "ecologie-agriculture", "Déclaration d'urgence climatique (2019)",
+     "Résolution par laquelle le Parlement européen déclare l'« urgence climatique et environnementale » et appelle l'Union et les États à aligner leurs politiques sur l'objectif de limiter le réchauffement à 1,5 °C. Une résolution exprime une position politique solennelle, sans effet juridique contraignant en soi. L'enjeu : reconnaître officiellement l'urgence climatique et en faire une priorité de l'action publique.",
+     "Résolution du 28 novembre 2019, à la veille de la conférence climat de Madrid (COP25)."),
+    ("PE-HTV-118521", "ecologie-agriculture", "Loi européenne sur le climat (2020)",
+     "Inscrit dans la loi l'objectif de neutralité carbone de l'Union en 2050 — ne plus émettre plus de gaz à effet de serre que ce que l'on peut absorber — et rehausse l'objectif intermédiaire de réduction des émissions d'ici 2030, avec un suivi régulier des progrès des États. L'enjeu : rendre juridiquement contraignante la trajectoire de baisse des émissions, le débat portant sur l'ampleur des objectifs et leur coût.",
+     "Position du Parlement sur la loi européenne sur le climat, octobre 2020."),
+    ("PE-HTV-126261", "ecologie-agriculture", "Stratégie d'adaptation au changement climatique (2020)",
+     "Position du Parlement sur la stratégie européenne d'adaptation au changement climatique : préparer les territoires aux effets déjà en cours et à venir — canicules, sécheresses, inondations, montée des eaux, incendies — par la prévention des risques, l'aménagement, l'agriculture et la protection des populations. L'enjeu : réduire les dégâts humains et matériels des événements climatiques extrêmes, en complément de la baisse des émissions.",
+     "Résolution sur la stratégie d'adaptation au changement climatique, décembre 2020."),
+    ("PE-HTV-117083", "ecologie-agriculture", "Mécanisme de protection civile de l'UE (2020)",
+     "Renforce le mécanisme européen de protection civile (rescEU) : réserves communes de moyens (avions bombardiers d'eau, matériel médical, abris…) et coordination de l'aide entre États lors de catastrophes — incendies de forêt, inondations, séismes, épidémies. L'enjeu : mieux répondre ensemble à des catastrophes de plus en plus fréquentes, la question débattue étant le degré de mutualisation des moyens et le budget.",
+     "Position du Parlement sur la révision du mécanisme de protection civile de l'Union, septembre 2020."),
+    ("PE-HTV-184178", "ecologie-agriculture", "Cadre pour la neutralité climatique — objectif 2040 (2026)",
+     "Fixe un objectif intermédiaire de réduction des émissions de gaz à effet de serre de l'Union à l'horizon 2040, sur la trajectoire vers la neutralité carbone en 2050, et en précise le rythme et les moyens (dont d'éventuelles souplesses réclamées par certains secteurs). L'enjeu : la vitesse de la transition climatique d'ici 2040, entre ambition environnementale et coût pour l'économie et les ménages.",
+     "Vote sur le cadre pour la neutralité climatique (objectif 2040), février 2026 (10e législature)."),
 ]
 
 

@@ -59,6 +59,12 @@ VOTES_CLES_PE = {
     "elargissement_ue": 186518,
     "etat_droit_hongrie": 168862,
     "reglement_ia": 166051,
+    # Urgence climatique et événements extrêmes.
+    "urgence_climatique": 110615,
+    "loi_climat": 118521,
+    "adaptation_climat": 126261,
+    "protection_civile": 117083,
+    "neutralite_2040": 184178,
 }
 
 # « Voix 2 » = la DÉLÉGATION FRANÇAISE du groupe européen où siège le parti du
