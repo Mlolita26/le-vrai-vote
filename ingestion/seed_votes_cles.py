@@ -30,11 +30,33 @@ THEMES = [
     ("sante", "Santé"),
     ("education", "Éducation"),
     ("taxe-impots", "Taxe et impôts"),
+    ("budget", "Budget"),
     ("travail", "Travail"),
     ("transports", "Transports"),
     ("logement", "Logement"),
     ("defense", "Défense"),
 ]
+
+# Thème « Budget » : lu par AXES de questions, pas vote par vote. Chaque axe
+# regroupe des amendements emblématiques des lois de finances (PLF/PLFSS). L'ordre
+# et les libellés d'affichage vivent aussi dans build_site.py (AXES_BUDGET) ; ici,
+# on ne stocke que le slug de l'axe et le « sens de l'axe » sur chaque vote clé.
+#   {uid : (slug_axe, position qui va dans le sens de l'axe)}
+# sens_axe = 'pour'  -> voter POUR ce scrutin va dans le sens de l'axe
+#            'contre'-> voter CONTRE ce scrutin va dans le sens de l'axe
+# (ex. amendement « supprimer telle taxe » : voter CONTRE = taxer davantage).
+AXES = {
+    # Axe « capital » : voter POUR = taxer davantage le capital / les hauts patrimoines.
+    "VTANR5L17V3300": ("capital", "pour"),   # taxe Zucman
+    "VTANR5L17V3242": ("capital", "pour"),   # super-dividendes
+    "VTANR5L17V3187": ("capital", "pour"),   # multinationales 25 %
+    "VTANR5L17V3199": ("capital", "pour"),   # doublement taxe GAFAM
+    "VTANR5L17V3149": ("capital", "pour"),   # surtaxe grandes entreprises
+    # Axe « pouvoir-achat » : voter POUR = alléger l'impôt des ménages modestes.
+    "VTANR5L17V3096": ("pouvoir-achat", "pour"),  # indexation du barème sur l'inflation
+    # Axe « ecologie-fiscale » : voter POUR = taxer la pollution.
+    "VTANR5L17V3848": ("ecologie-fiscale", "pour"),  # taxe sur les jets privés
+}
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
 
@@ -405,6 +427,34 @@ VOTES = [
     ("VTANR5L16V2256", "defense", "Loi de programmation militaire 2024-2030 (2023)",
      "Fixe le budget et les priorités des armées pour 2024-2030 : 413 milliards d'euros, en forte hausse, pour moderniser la dissuasion nucléaire, les drones, le cyber et le renseignement, et reconstituer les stocks de munitions, dans le contexte de la guerre en Ukraine. L'enjeu : le réarmement et la souveraineté de défense de la France, mis en regard du poids de cet effort pour les finances publiques.",
      "Texte issu de la commission mixte paritaire, adopté le 12 juillet 2023."),
+
+    # ── Budget (thème créé le 25/07/2026) — amendements du PLF 2026 ───────────
+    # Lus par AXES (voir AXES ci-dessus et AXES_BUDGET dans build_site.py).
+    # Positions de vote RÉELLES : la plupart de ces amendements de la 1re partie
+    # du PLF 2026 ont été rendus caducs par le rejet global des recettes
+    # (21 novembre 2025) puis l'adoption via l'article 49.3 — c'est dit dans
+    # chaque contexte. Scrutins nominatifs vérifiés un à un contre le dump officiel.
+    ("VTANR5L17V3300", "budget", "Taxe Zucman sur les très hauts patrimoines (budget 2026)",
+     "Amendement au budget 2026 créant un impôt minimum de 2 % par an sur les patrimoines de plus de 100 millions d'euros (proposition dite « taxe Zucman »). L'enjeu : faire contribuer davantage les plus grandes fortunes, mis en regard du risque d'exil fiscal et de la difficulté à taxer un patrimoine qui n'a pas été vendu.",
+     "Première partie du projet de loi de finances pour 2026, examen prioritaire du 31 octobre 2025. Rejeté (172 pour, 228 contre) : la gauche a voté pour, le Rassemblement national et le bloc central contre."),
+    ("VTANR5L17V3242", "budget", "Taxe sur les super-dividendes (budget 2026)",
+     "Amendement au budget 2026 instaurant une taxe sur les « super-dividendes » : les dividendes exceptionnels versés par les grandes entreprises (chiffre d'affaires supérieur à 750 millions d'euros), au-delà de leur moyenne des dernières années. L'enjeu : capter une part des versements exceptionnels aux actionnaires.",
+     "Première partie du PLF 2026. Adopté (71 pour, 63 contre, 40 abstentions) grâce à l'abstention du Rassemblement national, avant d'être rendu caduc par le rejet global de la partie recettes (21 novembre 2025). La gauche a voté pour, le bloc central contre."),
+    ("VTANR5L17V3187", "budget", "Taxe sur les multinationales selon leur activité en France (budget 2026)",
+     "Amendement au budget 2026 taxant les bénéfices des grandes multinationales à proportion de l'activité qu'elles réalisent réellement en France, pour limiter le transfert de bénéfices vers des pays à faible imposition. L'enjeu : faire contribuer les groupes qui logent leurs profits ailleurs — sa solidité juridique a été débattue.",
+     "Première partie du PLF 2026. Adopté largement (207 pour, 89 contre) par la gauche et le Rassemblement national ensemble, le bloc central votant contre ; rendu caduc par le rejet global de la partie recettes."),
+    ("VTANR5L17V3199", "budget", "Doublement de la taxe sur les géants du numérique (budget 2026)",
+     "Amendement au budget 2026 doublant la « taxe GAFAM » sur les grandes entreprises du numérique (de 3 % à 6 % du chiffre d'affaires réalisé en France). L'enjeu : faire davantage contribuer les géants du numérique.",
+     "Première partie du PLF 2026. Adopté très largement (296 pour, 58 contre) sur presque tous les bancs — gauche, Rassemblement national et une partie du bloc central —, puis rendu caduc par le rejet global de la partie recettes."),
+    ("VTANR5L17V3149", "budget", "Surtaxe sur les bénéfices des grandes entreprises (budget 2026)",
+     "Amendement du Gouvernement au budget 2026 reconduisant et réajustant la contribution exceptionnelle sur les bénéfices des grandes entreprises : allègement pour les entreprises intermédiaires, alourdissement pour les plus grandes (chiffre d'affaires supérieur à 3 milliards d'euros). L'enjeu : la contribution des grands groupes au redressement des comptes publics.",
+     "Article 4 du PLF 2026, première lecture (27 octobre 2025). Adopté (196 pour, 149 contre). La gauche et le centre (MoDem, LIOT) ont voté pour l'alourdissement du taux supérieur, le Rassemblement national contre ; Renaissance et Les Républicains étaient partagés."),
+    ("VTANR5L17V3096", "budget", "Indexation du barème de l'impôt sur le revenu (budget 2026)",
+     "Amendement au budget 2026 indexant le barème de l'impôt sur le revenu sur l'inflation. Sans indexation (le « gel » du barème), la hausse des prix rend imposables des ménages jusque-là non imposables et augmente mécaniquement l'impôt de chacun. L'enjeu : protéger le pouvoir d'achat des ménages face à l'inflation, au prix de moindres recettes pour l'État.",
+     "Article 2 du PLF 2026, première lecture (25 octobre 2025). Adopté (226 pour, 104 contre) contre l'avis du Gouvernement, par une large coalition (Rassemblement national, La France insoumise, Les Républicains, une partie de Renaissance) ; les Socialistes ont voté contre. Rendu caduc par le rejet global de la partie recettes."),
+    ("VTANR5L17V3848", "budget", "Taxe sur les jets privés (budget 2026)",
+     "Amendement au budget 2026 supprimant l'avantage fiscal sur le carburant (kérosène) des jets privés et de l'aviation d'affaires, la recette étant affectée aux transports en commun d'Île-de-France. L'enjeu : rapprocher la fiscalité du transport aérien privé de celle des autres carburants — un sujet à forte charge symbolique.",
+     "Article 15 du PLF 2026, première lecture (17 novembre 2025). Adopté (137 pour, 107 contre) par la gauche et une majorité du Rassemblement national, contre le bloc central et Les Républicains ; rendu caduc par le rejet global de la partie recettes."),
 ]
 
 
@@ -655,6 +705,21 @@ SENS = {
                        "s'opposer à cet encadrement"),
     "VTANR5L16V2256": ("adopter la programmation militaire 2024-2030 (413 Md€, hausse du budget des armées)",
                        "rejeter le texte"),
+    # ── Budget (amendements PLF 2026) ──
+    "VTANR5L17V3300": ("instaurer un impôt plancher de 2 % par an sur les patrimoines de plus de 100 millions d'euros",
+                       "refuser cet impôt sur les très hauts patrimoines"),
+    "VTANR5L17V3242": ("taxer les « super-dividendes » exceptionnels versés par les grandes entreprises",
+                       "refuser cette taxe sur les dividendes exceptionnels"),
+    "VTANR5L17V3187": ("taxer les bénéfices des multinationales à proportion de leur activité réalisée en France",
+                       "refuser cette taxation des multinationales"),
+    "VTANR5L17V3199": ("doubler la taxe sur les géants du numérique (de 3 % à 6 % du chiffre d'affaires)",
+                       "refuser ce doublement de la taxe sur les géants du numérique"),
+    "VTANR5L17V3149": ("alourdir la contribution exceptionnelle sur les bénéfices des plus grandes entreprises",
+                       "refuser cet alourdissement de l'impôt des grandes entreprises"),
+    "VTANR5L17V3096": ("indexer le barème de l'impôt sur le revenu sur l'inflation — ce qui évite que la seule hausse des prix rende des ménages imposables",
+                       "refuser cette indexation (le « gel » du barème)"),
+    "VTANR5L17V3848": ("supprimer l'avantage fiscal sur le carburant des jets privés et affecter la recette aux transports d'Île-de-France",
+                       "conserver cet avantage fiscal sur le carburant des jets privés"),
 }
 
 
@@ -670,6 +735,10 @@ def seed(base: Path) -> None:
         cur.execute("ALTER TABLE votes_cles ADD COLUMN sens_pour TEXT")
     if "sens_contre" not in cols:
         cur.execute("ALTER TABLE votes_cles ADD COLUMN sens_contre TEXT")
+    if "axe_budget" not in cols:
+        cur.execute("ALTER TABLE votes_cles ADD COLUMN axe_budget TEXT")
+    if "sens_axe" not in cols:
+        cur.execute("ALTER TABLE votes_cles ADD COLUMN sens_axe TEXT")
 
     # Idempotent : thématiques créées à la demande (libellé unique), votes clés
     # ajoutés seulement s'ils n'existent pas déjà (permet d'ajouter le PE après coup).
@@ -733,12 +802,23 @@ def seed(base: Path) -> None:
             "UPDATE votes_cles SET sens_pour=?, sens_contre=? WHERE scrutin_id=?",
             (spour, scontre, r[0])).rowcount
 
+    # Rattachement aux axes du thème Budget (idempotent, réexécutable).
+    maj_axe = 0
+    for uid, (axe, sens_axe) in AXES.items():
+        r = cur.execute("SELECT id FROM scrutins WHERE uid_officiel=?", (uid,)).fetchone()
+        if r is None:
+            continue
+        maj_axe += cur.execute(
+            "UPDATE votes_cles SET axe_budget=?, sens_axe=? WHERE scrutin_id=?",
+            (axe, sens_axe, r[0])).rowcount
+
     con.commit()
     n = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     sans_sens = cur.execute("SELECT COUNT(*) FROM votes_cles WHERE sens_pour IS NULL").fetchone()[0]
     couv = cur.execute("SELECT COUNT(*) FROM couverture").fetchone()[0]
     print(f"Semé : {len(THEMES)} thématiques, +{ajout} vote(s) clé(s) ajouté(s) ({n} au total), "
-          f"{deplaces} déplacé(s) de thème ; sens (pour/contre) sur {maj_sens} vote(s), {sans_sens} sans sens. "
+          f"{deplaces} déplacé(s) de thème ; sens (pour/contre) sur {maj_sens} vote(s), {sans_sens} sans sens ; "
+          f"axe budget sur {maj_axe} vote(s). "
           f"Vue couverture : {couv} états calculés.")
     con.close()
 

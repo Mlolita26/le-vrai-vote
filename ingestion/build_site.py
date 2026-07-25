@@ -56,7 +56,31 @@ THEME_SLUGS = {
     "Transports": "transports",
     "Logement": "logement",
     "Défense": "defense",
+    "Budget": "budget",
 }
+# Thème « Budget » : axes de lecture (slug DB, titre, question neutre, libellé du
+# sens positif de l'axe, libellé du sens opposé). Ordre d'affichage = cet ordre.
+# La « barre de posture » compte, par candidat, ses votes dans le sens de l'axe
+# (vote personnel s'il a voté, sinon position de son parti).
+AXES_BUDGET = [
+    ("capital", "Imposition du capital et des hauts patrimoines",
+     "Faut-il taxer davantage les grandes fortunes et les revenus du capital ?",
+     "pour taxer davantage le capital", "contre"),
+    ("pouvoir-achat", "Impôt et pouvoir d'achat des ménages",
+     "Alléger ou maintenir la pression fiscale sur les ménages modestes et moyens ?",
+     "pour alléger l'impôt des ménages", "contre"),
+    ("ecologie-fiscale", "Fiscalité écologique",
+     "Taxer la pollution, au risque du pouvoir d'achat automobile ?",
+     "pour taxer la pollution", "contre"),
+    ("ame", "Immigration et dépense sociale : l'aide médicale d'État",
+     "Faut-il restreindre l'aide médicale d'État ?",
+     "pour restreindre l'AME", "contre"),
+]
+AXES_BUDGET_ORDRE = [a[0] for a in AXES_BUDGET]
+# En dessous de ce nombre de votes dans un axe, on n'affiche PAS de barre de
+# posture (un « comptage » sur 1 ou 2 votes serait trompeur) : seulement la
+# question et les cartes. La barre n'a de sens que sur un ensemble de votes.
+MIN_POSTURE_VOTES = 3
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {
     "pour": ("pour", "badge-pour"),
@@ -271,10 +295,11 @@ def charger(base):
         "SELECT id, libelle, ordre FROM thematiques ORDER BY ordre")]
     votes_cles = [dict(v) for v in cur.execute(
         "SELECT vc.id, vc.thematique_id, vc.titre, vc.resume, vc.source_resume, "
-        "vc.contexte, vc.sens_pour, vc.sens_contre, s.date, s.chambre, s.legislature, "
+        "vc.contexte, vc.sens_pour, vc.sens_contre, vc.axe_budget, vc.sens_axe, "
+        "s.date, s.chambre, s.legislature, "
         "s.objet, s.sort, s.total_pour, "
         "s.total_contre, s.total_abstention, s.suffrages_requis, vc.scrutin_id FROM votes_cles vc "
-        "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, s.date")]
+        "JOIN scrutins s ON s.id = vc.scrutin_id ORDER BY vc.thematique_id, vc.axe_budget, s.date")]
     for v in votes_cles:
         v["est_censure"] = "motion de censure" in (v["objet"] or "").lower()
     # Décomptes officiels par groupe parlementaire, par vote clé.
@@ -358,6 +383,56 @@ def position_parti(slug, v, groupes_par_vote, groupe_du_candidat):
     if not g:
         return None, ab
     return majorite_groupe(g), (g["libelle"] or ab)
+
+
+def position_effective(slug, v, etats, equiv_senat, groupes_par_vote, groupe_du_candidat):
+    """Position « au plus précis » : vote personnel exprimé s'il existe, sinon la
+    position majoritaire du groupe du parti. Même logique que la vue unique du
+    comparateur, réutilisée pour la barre de posture."""
+    p = position_perso(slug, v, etats, equiv_senat)
+    if p:
+        return p
+    parti, _ = position_parti(slug, v, groupes_par_vote, groupe_du_candidat)
+    return parti
+
+
+def posture_axe(slug, votes_axe, etats, equiv_senat, groupes_par_vote, groupe_du_candidat):
+    """Compte, pour un candidat et les votes d'un axe budget, combien vont dans le
+    sens de l'axe (sens_axe), combien à l'opposé, combien d'abstentions. total =
+    votes où une position (perso ou parti) existe ; les votes sans donnée sont ignorés."""
+    oui = non = abst = 0
+    for v in votes_axe:
+        eff = position_effective(slug, v, etats, equiv_senat, groupes_par_vote, groupe_du_candidat)
+        if eff is None:
+            continue
+        if eff == "abstention":
+            abst += 1
+        elif eff == v["sens_axe"]:
+            oui += 1
+        else:
+            non += 1
+    return {"oui": oui, "non": non, "abst": abst, "total": oui + non + abst}
+
+
+def posture_html(surnom, pst, lab_oui, lab_non):
+    """Barre de posture d'un candidat sur un axe : comptes en toutes lettres
+    (l'information ne repose jamais sur la seule couleur — RGAA) + jauge décorative."""
+    if pst["total"] == 0:
+        return '<p class="posture posture-vide">Aucune donnée de vote pour ce candidat sur cet axe.</p>'
+    o, nn, ab, tot = pst["oui"], pst["non"], pst["abst"], pst["total"]
+    pc = lambda x: round(100 * x / tot)
+    resume = (f'<span class="posture-lab posture-lab-oui">{e(lab_oui)} : <strong>{o}</strong></span>'
+              f'<span class="posture-lab posture-lab-non">{e(lab_non)} : <strong>{nn}</strong></span>')
+    if ab:
+        resume += f'<span class="posture-lab posture-lab-abst">abstention : <strong>{ab}</strong></span>'
+    jauge = (f'<span class="jauge-oui" style="width:{pc(o)}%"></span>'
+             f'<span class="jauge-non" style="width:{pc(nn)}%"></span>'
+             f'<span class="jauge-abst" style="width:{pc(ab)}%"></span>')
+    aria = (f"{surnom} : {lab_oui} {o}, {lab_non} {nn}"
+            + (f", abstention {ab}" if ab else "") + f", sur {tot} votes de l'axe.")
+    return (f'<div class="posture"><p class="posture-resume">{resume}'
+            f'<span class="posture-total">sur {tot} votes</span></p>'
+            f'<div class="posture-jauge" role="img" aria-label="{e(aria)}">{jauge}</div></div>')
 
 
 def positions_comparaison(candidats, votes_cles, etats, nuances, justifs_groupes, equiv_senat,
@@ -635,8 +710,8 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
         # les « non concerné »/vides à la fin (tri stable → ordre d'origine préservé).
         votes_t = sorted(votes_t, key=lambda v: 0 if _vote_present(v) else 1)
         slug_t = THEME_SLUGS[t["libelle"]]
-        lignes = ""
-        for v in votes_t:
+
+        def _carte(v):
             etat_v = etats.get((p["slug"], v["id"]), "a_importer")
             est_pe = v["chambre"] == "pe"
             nuance = nuances.get((p["slug"], v["id"]))
@@ -674,7 +749,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             # rattachée n'apporte rien : on ne l'affiche pas (évite le bruit sur
             # les fiches des candidats sans lien avec le Parlement européen).
             if est_pe and not a_vote_perso and not groupe_html:
-                continue
+                return ""
             # Voix 1 — vote personnel. Au PE, affichée seulement si vote réel ;
             # sinon ruban « n'y siégeait pas » (on n'affiche pas « non concerné »
             # pour un mandat européen que la personne n'avait pas).
@@ -714,7 +789,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                 sous_html = f'<span class="mini">{rail_sous}</span>' if rail_sous else ''
                 rail_html = (f'<div class="ap-rail rail-{rail_cls}">'
                              f'<span class="pos">{rail_mot}</span>{sous_html}</div>')
-            lignes += f"""<li class="vote-carte">
+            return f"""<li class="vote-carte">
 {rail_html}
 <div class="ap-corps">
 <p class="ap-titre">{e(v['titre'])} {provenance}</p>
@@ -727,12 +802,50 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 {nuance_html}
 </div>
 </li>"""
-        if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
-            n_cartes = lignes.count('class="vote-carte"')
-            themes_presents.append((slug_t, t["libelle"], n_cartes))
-            votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
-                           f'<h3>{e(t["libelle"])}</h3>'
-                           f'<ul class="votes-cles">{lignes}</ul></section>')
+
+        if t["libelle"] == "Budget":
+            # Rendu par AXES : chaque axe = une question neutre + (si assez de
+            # votes) une barre de posture + les cartes. C'est ce qui rend digeste
+            # un thème de plusieurs votes.
+            corps = ""
+            n_cartes = 0
+            for axe_slug, axe_titre, question, lab_oui, lab_non in AXES_BUDGET:
+                votes_a = [v for v in votes_t if v["axe_budget"] == axe_slug]
+                if not votes_a:
+                    continue
+                votes_a = sorted(votes_a, key=lambda v: 0 if _vote_present(v) else 1)
+                cartes_a = "".join(_carte(v) for v in votes_a)
+                if not cartes_a:
+                    continue
+                n_cartes += cartes_a.count('class="vote-carte"')
+                bar = ""
+                if len(votes_a) >= MIN_POSTURE_VOTES:
+                    pst = posture_axe(p["slug"], votes_a, etats, equiv_senat,
+                                      groupes_par_vote, groupe_du_candidat)
+                    bar = posture_html(p["nom_famille"] or p["nom"], pst, lab_oui, lab_non)
+                corps += (f'<div class="axe-bloc" data-axe="{axe_slug}">'
+                          f'<h4 class="axe-titre">{e(axe_titre)}</h4>'
+                          f'<p class="axe-question">{e(question)}</p>'
+                          + bar
+                          + f'<ul class="votes-cles">{cartes_a}</ul></div>')
+            if corps:
+                intro = (f'<p class="axe-intro note-methode">Le budget se lit par grandes questions. '
+                         f'Pour chacune, la barre indique la posture de {e(p["nom"])} — ses votes '
+                         f'personnels quand il ou elle a voté, sinon la position de son parti. '
+                         f'Ces amendements du budget 2026 traduisent des positions de vote réelles ; '
+                         f'la plupart n\'ont pas été conservés dans le budget finalement adopté '
+                         f'(rejet de la partie recettes le 21 novembre 2025, puis article 49.3).</p>')
+                themes_presents.append((slug_t, t["libelle"], n_cartes))
+                votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
+                               f'<h3>{e(t["libelle"])}</h3>{intro}{corps}</section>')
+        else:
+            lignes = "".join(_carte(v) for v in votes_t)
+            if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
+                n_cartes = lignes.count('class="vote-carte"')
+                themes_presents.append((slug_t, t["libelle"], n_cartes))
+                votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
+                               f'<h3>{e(t["libelle"])}</h3>'
+                               f'<ul class="votes-cles">{lignes}</ul></section>')
 
     n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
     bloc_an = ("<h2>Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"
@@ -992,6 +1105,35 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       + ' (<a href="' + info.just[1] + '" rel="noopener">source</a>)</p>';
   }
 
+  // Thème Budget : posture d'un candidat sur un axe (comptage des votes dans le
+  // sens de l'axe — vote perso s'il a voté, sinon position du parti).
+  function postureCompute(slug, votesAxe) {
+    var oui = 0, non = 0, abst = 0;
+    votesAxe.forEach(function (v) {
+      var pos = infoDe(slug, v.id).pos;
+      if (!pos) return;
+      if (pos === "abstention") abst++;
+      else if (pos === v.sens_axe) oui++;
+      else non++;
+    });
+    return { oui: oui, non: non, abst: abst, total: oui + non + abst };
+  }
+  function postureBar(surnom, pst, labOui, labNon) {
+    if (!pst.total)
+      return '<div class="cmp-posture cmp-posture-vide"><span class="cmp-posture-qui">' + surnom
+        + '</span><span class="posture-none">aucune donnée sur cet axe</span></div>';
+    var pc = function (x) { return Math.round(100 * x / pst.total); };
+    var labs = '<span class="posture-lab posture-lab-oui">' + labOui + ' : <strong>' + pst.oui + '</strong></span>'
+      + '<span class="posture-lab posture-lab-non">' + labNon + ' : <strong>' + pst.non + '</strong></span>';
+    if (pst.abst) labs += '<span class="posture-lab posture-lab-abst">abstention : <strong>' + pst.abst + '</strong></span>';
+    var jauge = '<span class="jauge-oui" style="width:' + pc(pst.oui) + '%"></span>'
+      + '<span class="jauge-non" style="width:' + pc(pst.non) + '%"></span>'
+      + '<span class="jauge-abst" style="width:' + pc(pst.abst) + '%"></span>';
+    return '<div class="cmp-posture"><p class="cmp-posture-qui">' + surnom + '</p>'
+      + '<p class="posture-resume">' + labs + '<span class="posture-total">sur ' + pst.total + ' votes</span></p>'
+      + '<div class="posture-jauge" aria-hidden="true">' + jauge + '</div></div>';
+  }
+
   function rendre() {
     var a = selA.value, b = selB.value, res = document.getElementById("resultat");
     document.getElementById("note-mode").textContent =
@@ -1008,34 +1150,65 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
 
     var totComp = 0, totAcc = 0;
     var sections = document.createElement("div");
+    // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
+    function carteVote(v) {
+      var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
+      var pa = ia.pos, pb = ib.pos;
+      var comparable = pa && pb;
+      var diverge = comparable && pa !== pb;
+      // Classe d'etat conservee pour la teinte de la carte, mais sans libelle
+      // texte : la concordance pour/contre des deux bannieres suffit (redondant).
+      var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
+      var sens = (v.sens_pour && v.sens_contre)
+        ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
+          + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
+          + v.sens_contre + '</span></p>'
+        : '';
+      var html = '<article class="cmp-vote ' + etat + '">'
+        + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
+        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
+        + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
+        + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
+        + justifDe(surA, ia) + justifDe(surB, ib)
+        + '</details>'
+        + '</article>';
+      return { pa: pa, pb: pb, comparable: comparable, html: html };
+    }
     d.themes.forEach(function (theme) {
       var votesT = d.votes.filter(function (v) { return v.theme === theme; });
+      if (!votesT.length) return;
       var comp = 0, acc = 0, cartes = "";
-      votesT.forEach(function (v) {
-        var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
-        var pa = ia.pos, pb = ib.pos;
-        var comparable = pa && pb;
-        var diverge = comparable && pa !== pb;
-        if (comparable) { comp++; if (pa === pb) acc++; }
-        if (filtre === "comparable" && !pa && !pb) return;
-        // Classe d'etat conservee pour la teinte de la carte, mais sans libelle
-        // texte : la concordance pour/contre des deux bannieres suffit (redondant).
-        var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
-        var sens = (v.sens_pour && v.sens_contre)
-          ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
-            + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
-            + v.sens_contre + '</span></p>'
-          : '';
-        cartes += '<article class="cmp-vote ' + etat + '">'
-          + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
-          + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
-          + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
-          + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
-          + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
-          + justifDe(surA, ia) + justifDe(surB, ib)
-          + '</details>'
-          + '</article>';
-      });
+      function ajoute(v) {
+        var c = carteVote(v);
+        if (c.comparable) { comp++; if (c.pa === c.pb) acc++; }
+        if (filtre === "comparable" && !c.pa && !c.pb) return "";
+        return c.html;
+      }
+      if (theme === d.theme_budget) {
+        // Par axes : question + barre de posture des deux candidats, puis cartes.
+        (d.axes_budget || []).forEach(function (ax) {
+          var vA = votesT.filter(function (v) { return v.axe === ax.slug; });
+          if (!vA.length) return;
+          var cards = "";
+          vA.forEach(function (v) { cards += ajoute(v); });
+          if (!cards) return;
+          // Barre de posture seulement à partir de 3 votes dans l'axe (sinon
+          // un « comptage » serait trompeur) — même seuil que la fiche.
+          var paire = "";
+          if (vA.length >= 3) {
+            paire = '<div class="cmp-posture-paire">'
+              + postureBar(surA, postureCompute(a, vA), ax.lab_oui, ax.lab_non)
+              + postureBar(surB, postureCompute(b, vA), ax.lab_oui, ax.lab_non)
+              + '</div>';
+          }
+          cartes += '<div class="cmp-axe"><h3 class="axe-titre">' + ax.titre + '</h3>'
+            + '<p class="axe-question">' + ax.question + '</p>'
+            + paire + cards + '</div>';
+        });
+      } else {
+        votesT.forEach(function (v) { cartes += ajoute(v); });
+      }
       totComp += comp; totAcc += acc;
       if (!cartes) return;
       var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";
@@ -1209,9 +1382,14 @@ def generer(base):
                    "theme": libelles_themes[v["thematique_id"]],
                    "chambre": CHAMBRE_LABEL.get(v["chambre"], v["chambre"]),
                    "sens_pour": v.get("sens_pour"), "sens_contre": v.get("sens_contre"),
+                   "axe": v.get("axe_budget"), "sens_axe": v.get("sens_axe"),
                    "date": v["date"]} for v in votes_cles],
         "positions": positions_comparaison(candidats, votes_cles, etats, nuances, justifs_groupes, equiv_senat,
                                            groupes_par_vote, groupe_du_candidat),
+        # Config des axes du thème Budget (ordre, question, libellés des deux sens).
+        "axes_budget": [{"slug": a[0], "titre": a[1], "question": a[2],
+                         "lab_oui": a[3], "lab_non": a[4]} for a in AXES_BUDGET],
+        "theme_budget": "Budget",
         "libelles": {"pour": ["Pour", "badge-pour"], "contre": ["Contre", "badge-contre"],
                      "abstention": ["Abstention", "badge-abstention"]},
         "meta": meta,

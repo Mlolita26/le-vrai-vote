@@ -29,6 +29,9 @@ RATTACHEMENTS = [
     ("gabriel-attal", "17", "EPR", "Renaissance — groupe Ensemble pour la République"),
     ("marine-le-pen", "16", "RN", "Rassemblement national — groupe RN"),
     ("marine-le-pen", "17", "RN", "Rassemblement national — groupe RN"),
+    # Jordan Bardella n'a jamais siégé à l'Assemblée (eurodéputé) : c'est la
+    # position du groupe RN à l'Assemblée, l'UI affiche « n'y siégeait pas ».
+    ("jordan-bardella", "17", "RN", "Rassemblement national — groupe RN à l'Assemblée. Jordan Bardella n'y siège pas (eurodéputé) : position de son parti, pas un vote personnel."),
     ("jean-luc-melenchon", "15", "FI", "La France insoumise — groupe FI"),
     ("jean-luc-melenchon", "16", "LFI - NUPES", "La France insoumise — groupe LFI-NUPES"),
     ("jean-luc-melenchon", "17", "LFI-NFP", "La France insoumise — groupe LFI-NFP"),

@@ -637,3 +637,41 @@ img, svg, table { max-width:100%; }
     justify-content:space-between; gap:.1rem; flex-wrap:nowrap; }
   .entete-nav nav a{ padding:.5rem .3rem; font-size:.88rem; }
 }
+
+/* ============================================================
+   Thème Budget : axes de lecture + barre de posture.
+   L'information est portée par le texte (comptes chiffrés) ; la
+   jauge colorée n'est qu'un renfort visuel (RGAA).
+   ============================================================ */
+.axe-intro{ margin:.2rem 0 1.1rem; }
+.axe-bloc{ margin:0 0 1.6rem; }
+.axe-bloc + .axe-bloc{ border-top:1px solid var(--lisere); padding-top:1.3rem; }
+.axe-titre{ font-family:'Spectral',Georgia,serif; font-size:1.08rem; margin:0 0 .15rem; color:var(--encre); }
+.axe-question{ margin:0 0 .75rem; color:var(--encre-douce); font-style:italic; }
+
+.posture{ background:var(--faint); border:1px solid var(--lisere); border-radius:10px;
+  padding:.7rem .85rem; margin:0 0 .95rem; }
+.posture-vide{ background:var(--faint); border:1px dashed var(--lisere); border-radius:10px;
+  padding:.6rem .85rem; margin:0 0 .95rem; color:var(--mute); font-size:.9rem; }
+.posture-resume{ margin:0 0 .5rem; display:flex; flex-wrap:wrap; gap:.35rem .9rem;
+  align-items:baseline; font-size:.92rem; }
+.posture-lab{ white-space:nowrap; }
+.posture-lab strong{ font-variant-numeric:tabular-nums; }
+.posture-lab-oui{ color:var(--b-pour-fg); }
+.posture-lab-non{ color:var(--b-contre-fg); }
+.posture-lab-abst{ color:var(--b-abst-fg); }
+.posture-total{ color:var(--mute); font-size:.82rem; margin-left:auto; }
+.posture-jauge{ display:flex; height:12px; border-radius:6px; overflow:hidden;
+  background:var(--b-neutre-bg); }
+.posture-jauge span{ display:block; height:100%; }
+.jauge-oui{ background:var(--b-pour-fg); }
+.jauge-non{ background:var(--b-contre-fg); }
+.jauge-abst{ background:var(--b-abst-fg); }
+
+.cmp-axe{ margin:0 0 1.5rem; }
+.cmp-posture-paire{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin:.2rem 0 .95rem; }
+.cmp-posture{ background:var(--faint); border:1px solid var(--lisere); border-radius:10px; padding:.6rem .7rem; }
+.cmp-posture-qui{ font-weight:600; margin:0 0 .4rem; font-size:.9rem; }
+.cmp-posture-vide{ display:flex; flex-direction:column; gap:.2rem; }
+.posture-none{ color:var(--mute); font-size:.85rem; }
+@media (max-width:520px){ .cmp-posture-paire{ grid-template-columns:1fr; } }

@@ -141,6 +141,13 @@ CREATE TABLE IF NOT EXISTS votes_cles (
     -- motions de censure, résolutions, déclarations du Gouvernement). Éditorial, neutre.
     sens_pour     TEXT,
     sens_contre   TEXT,
+    -- Thème « Budget » uniquement : rattache un amendement de loi de finances à
+    -- l'un des axes de lecture (capital, pouvoir-achat, ecologie-fiscale, ame) et
+    -- indique laquelle des positions ('pour' ou 'contre') va dans le sens de l'axe
+    -- (taxer davantage / protéger le pouvoir d'achat / taxer la pollution /
+    -- restreindre l'AME). Sert au calcul de la « barre de posture ». Éditorial.
+    axe_budget    TEXT,
+    sens_axe      TEXT CHECK (sens_axe IN ('pour','contre') OR sens_axe IS NULL),
     ordre         INTEGER NOT NULL DEFAULT 0,
     -- Scrutin équivalent au Sénat sur le MÊME texte (autre chambre) : permet
     -- d'afficher la position d'un sénateur (Retailleau) sur une loi clé sans

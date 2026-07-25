@@ -99,6 +99,35 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       + ' (<a href="' + info.just[1] + '" rel="noopener">source</a>)</p>';
   }
 
+  // Thème Budget : posture d'un candidat sur un axe (comptage des votes dans le
+  // sens de l'axe — vote perso s'il a voté, sinon position du parti).
+  function postureCompute(slug, votesAxe) {
+    var oui = 0, non = 0, abst = 0;
+    votesAxe.forEach(function (v) {
+      var pos = infoDe(slug, v.id).pos;
+      if (!pos) return;
+      if (pos === "abstention") abst++;
+      else if (pos === v.sens_axe) oui++;
+      else non++;
+    });
+    return { oui: oui, non: non, abst: abst, total: oui + non + abst };
+  }
+  function postureBar(surnom, pst, labOui, labNon) {
+    if (!pst.total)
+      return '<div class="cmp-posture cmp-posture-vide"><span class="cmp-posture-qui">' + surnom
+        + '</span><span class="posture-none">aucune donnée sur cet axe</span></div>';
+    var pc = function (x) { return Math.round(100 * x / pst.total); };
+    var labs = '<span class="posture-lab posture-lab-oui">' + labOui + ' : <strong>' + pst.oui + '</strong></span>'
+      + '<span class="posture-lab posture-lab-non">' + labNon + ' : <strong>' + pst.non + '</strong></span>';
+    if (pst.abst) labs += '<span class="posture-lab posture-lab-abst">abstention : <strong>' + pst.abst + '</strong></span>';
+    var jauge = '<span class="jauge-oui" style="width:' + pc(pst.oui) + '%"></span>'
+      + '<span class="jauge-non" style="width:' + pc(pst.non) + '%"></span>'
+      + '<span class="jauge-abst" style="width:' + pc(pst.abst) + '%"></span>';
+    return '<div class="cmp-posture"><p class="cmp-posture-qui">' + surnom + '</p>'
+      + '<p class="posture-resume">' + labs + '<span class="posture-total">sur ' + pst.total + ' votes</span></p>'
+      + '<div class="posture-jauge" aria-hidden="true">' + jauge + '</div></div>';
+  }
+
   function rendre() {
     var a = selA.value, b = selB.value, res = document.getElementById("resultat");
     document.getElementById("note-mode").textContent =
@@ -115,34 +144,65 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
 
     var totComp = 0, totAcc = 0;
     var sections = document.createElement("div");
+    // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
+    function carteVote(v) {
+      var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
+      var pa = ia.pos, pb = ib.pos;
+      var comparable = pa && pb;
+      var diverge = comparable && pa !== pb;
+      // Classe d'etat conservee pour la teinte de la carte, mais sans libelle
+      // texte : la concordance pour/contre des deux bannieres suffit (redondant).
+      var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
+      var sens = (v.sens_pour && v.sens_contre)
+        ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
+          + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
+          + v.sens_contre + '</span></p>'
+        : '';
+      var html = '<article class="cmp-vote ' + etat + '">'
+        + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
+        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
+        + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
+        + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
+        + justifDe(surA, ia) + justifDe(surB, ib)
+        + '</details>'
+        + '</article>';
+      return { pa: pa, pb: pb, comparable: comparable, html: html };
+    }
     d.themes.forEach(function (theme) {
       var votesT = d.votes.filter(function (v) { return v.theme === theme; });
+      if (!votesT.length) return;
       var comp = 0, acc = 0, cartes = "";
-      votesT.forEach(function (v) {
-        var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
-        var pa = ia.pos, pb = ib.pos;
-        var comparable = pa && pb;
-        var diverge = comparable && pa !== pb;
-        if (comparable) { comp++; if (pa === pb) acc++; }
-        if (filtre === "comparable" && !pa && !pb) return;
-        // Classe d'etat conservee pour la teinte de la carte, mais sans libelle
-        // texte : la concordance pour/contre des deux bannieres suffit (redondant).
-        var etat = diverge ? "diverge" : (comparable ? "accord" : "incomp");
-        var sens = (v.sens_pour && v.sens_contre)
-          ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
-            + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
-            + v.sens_contre + '</span></p>'
-          : '';
-        cartes += '<article class="cmp-vote ' + etat + '">'
-          + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
-          + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
-          + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
-          + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
-          + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
-          + justifDe(surA, ia) + justifDe(surB, ib)
-          + '</details>'
-          + '</article>';
-      });
+      function ajoute(v) {
+        var c = carteVote(v);
+        if (c.comparable) { comp++; if (c.pa === c.pb) acc++; }
+        if (filtre === "comparable" && !c.pa && !c.pb) return "";
+        return c.html;
+      }
+      if (theme === d.theme_budget) {
+        // Par axes : question + barre de posture des deux candidats, puis cartes.
+        (d.axes_budget || []).forEach(function (ax) {
+          var vA = votesT.filter(function (v) { return v.axe === ax.slug; });
+          if (!vA.length) return;
+          var cards = "";
+          vA.forEach(function (v) { cards += ajoute(v); });
+          if (!cards) return;
+          // Barre de posture seulement à partir de 3 votes dans l'axe (sinon
+          // un « comptage » serait trompeur) — même seuil que la fiche.
+          var paire = "";
+          if (vA.length >= 3) {
+            paire = '<div class="cmp-posture-paire">'
+              + postureBar(surA, postureCompute(a, vA), ax.lab_oui, ax.lab_non)
+              + postureBar(surB, postureCompute(b, vA), ax.lab_oui, ax.lab_non)
+              + '</div>';
+          }
+          cartes += '<div class="cmp-axe"><h3 class="axe-titre">' + ax.titre + '</h3>'
+            + '<p class="axe-question">' + ax.question + '</p>'
+            + paire + cards + '</div>';
+        });
+      } else {
+        votesT.forEach(function (v) { cartes += ajoute(v); });
+      }
       totComp += comp; totAcc += acc;
       if (!cartes) return;
       var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";

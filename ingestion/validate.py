@@ -254,8 +254,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
     # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
     n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     if n_vc:
-        verifier("98 votes clés répartis sur 12 thématiques",
-                 n_vc == 98 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 12)
+        verifier("115 votes clés répartis sur 15 thématiques",
+                 n_vc == 115 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 15)
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
@@ -303,16 +303,16 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
         # Positions des groupes parlementaires sur les votes clés.
-        verifier("positions de groupes extraites pour les 98 scrutins des votes clés",
+        verifier("positions de groupes extraites pour les 115 scrutins des votes clés",
                  cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
-                             ).fetchone()[0] == 98)
+                             ).fetchone()[0] == 115)
         verifier("aucun décompte de groupe négatif",
                  cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
         # Justifications de groupe (éditorial) : chacune adossée à un décompte de
         # groupe réel pour ce scrutin, et sourcée avec une URL non vide.
-        verifier("109 justifications de groupe, toutes adossées à un décompte et sourcées",
-                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 109
+        verifier("124 justifications de groupe, toutes adossées à un décompte et sourcées",
+                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 124
                  and cur.execute(
                      "SELECT COUNT(*) FROM justifications_groupes j WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_groupes pg WHERE pg.scrutin_id = j.scrutin_id "
@@ -320,9 +320,18 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  and cur.execute("SELECT COUNT(*) FROM justifications_groupes j "
                                  "JOIN sources s ON s.id = j.source_id WHERE s.url = ''"
                                  ).fetchone()[0] == 0)
-        verifier("49 rattachements candidat → groupe, justifiés et sourcés",
+        verifier("50 rattachements candidat → groupe, justifiés et sourcés",
                  cur.execute("SELECT COUNT(*) FROM groupes_reference WHERE detail != ''"
-                             ).fetchone()[0] == 49)
+                             ).fetchone()[0] == 50)
+        # Thème Budget : axes de lecture (chaque vote d'axe a un sens_axe cohérent).
+        verifier("7 amendements budget rattachés à un axe, chacun avec un sens d'axe",
+                 cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget IS NOT NULL"
+                             ).fetchone()[0] == 7
+                 and cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget IS NOT NULL "
+                                 "AND sens_axe NOT IN ('pour','contre')").fetchone()[0] == 0)
+        verifier("axe « capital » : 5 amendements (base de la barre de posture)",
+                 cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget='capital'"
+                             ).fetchone()[0] == 5)
         # Résultat officiel (sort + décompte) présent pour chaque vote clé.
         verifier("chaque vote clé AN/Congrès/Sénat porte le résultat officiel (adopté/rejeté + décompte)",
                  cur.execute("SELECT COUNT(*) FROM votes_cles vc JOIN scrutins s ON s.id = vc.scrutin_id "
