@@ -77,6 +77,15 @@ AXES_BUDGET = [
      "pour restreindre l'AME", "contre"),
 ]
 AXES_BUDGET_ORDRE = [a[0] for a in AXES_BUDGET]
+# Thème « Défense » : sections thématiques (slug DB dans axe_budget, titre).
+# Simple regroupement de sujets — PAS d'axe pour/contre, donc pas de barre de
+# posture. Ordre d'affichage = cet ordre.
+AXES_DEFENSE = [
+    ("budget-defense", "Budget et industrie de défense"),
+    ("ukraine", "Guerre en Ukraine"),
+    ("proche-orient", "Proche et Moyen-Orient"),
+    ("engagements", "Engagements militaires et autres conflits"),
+]
 # En dessous de ce nombre de votes dans un axe, on n'affiche PAS de barre de
 # posture (un « comptage » sur 1 ou 2 votes serait trompeur) : seulement la
 # question et les cartes. La barre n'a de sens que sur un ensemble de votes.
@@ -838,6 +847,27 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                 themes_presents.append((slug_t, t["libelle"], n_cartes))
                 votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
                                f'<h3>{e(t["libelle"])}</h3>{intro}{corps}</section>')
+        elif t["libelle"] == "Défense":
+            # Rendu par SECTIONS thématiques (regroupement de sujets, sans barre
+            # de posture : ce ne sont pas des axes pour/contre).
+            corps = ""
+            n_cartes = 0
+            for axe_slug, axe_titre in AXES_DEFENSE:
+                votes_a = [v for v in votes_t if v["axe_budget"] == axe_slug]
+                if not votes_a:
+                    continue
+                votes_a = sorted(votes_a, key=lambda v: 0 if _vote_present(v) else 1)
+                cartes_a = "".join(_carte(v) for v in votes_a)
+                if not cartes_a:
+                    continue
+                n_cartes += cartes_a.count('class="vote-carte"')
+                corps += (f'<div class="axe-bloc" data-axe="{axe_slug}">'
+                          f'<h4 class="axe-titre">{e(axe_titre)}</h4>'
+                          f'<ul class="votes-cles">{cartes_a}</ul></div>')
+            if corps:
+                themes_presents.append((slug_t, t["libelle"], n_cartes))
+                votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
+                               f'<h3>{e(t["libelle"])}</h3>{corps}</section>')
         else:
             lignes = "".join(_carte(v) for v in votes_t)
             if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)

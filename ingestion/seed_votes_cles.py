@@ -56,6 +56,23 @@ AXES = {
     "VTANR5L17V3096": ("pouvoir-achat", "pour"),  # indexation du barème sur l'inflation
     # Axe « ecologie-fiscale » : voter POUR = taxer la pollution.
     "VTANR5L17V3848": ("ecologie-fiscale", "pour"),  # taxe sur les jets privés
+    # ── Défense : sections (axe = section ; pas de sens_axe, pas de posture) ──
+    "VTANR5L16V2256": ("budget-defense", None),
+    "PE-HTV-172867": ("budget-defense", None),
+    "PE-HTV-174053": ("budget-defense", None),
+    "PE-HTV-181587": ("budget-defense", None),
+    "VTANR5L16V652": ("ukraine", None),
+    "VTANR5L17V988": ("ukraine", None),
+    "PE-HTV-164536": ("ukraine", None),
+    "PE-HTV-169362": ("ukraine", None),
+    "PE-HTV-179048": ("proche-orient", None),
+    "VTANR5L17V683": ("proche-orient", None),
+    "VTANR5L16V1456": ("proche-orient", None),
+    "VTANR5L14V510": ("engagements", None),
+    "VTANR5L14V998": ("engagements", None),
+    "VTANR5L14V1195": ("engagements", None),
+    "VTANR5L16V650": ("engagements", None),
+    "VTANR5L16V1483": ("engagements", None),
 }
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -138,13 +155,13 @@ VOTES = [
     ("VTANR5L15V2059", "europe-international", "Ratification du CETA (2019)",
      "Autorise la France à ratifier le CETA, l'accord de libre-échange entre l'Union européenne et le Canada, qui supprime la quasi-totalité des droits de douane entre les deux zones et facilite donc le commerce dans les deux sens. L'enjeu : de nouveaux débouchés pour les exportateurs européens, mis en balance avec les craintes des éleveurs et d'associations sur la concurrence de produits agricoles soumis à d'autres normes et sur l'impact climatique des échanges transatlantiques.",
      "Tous les candidats suivis alors en poste ont voté contre, pour des motifs différents selon les groupes : impacts sur l'élevage, normes sanitaires et climat à gauche, souveraineté au RN et à DLF. Le Sénat a ensuite rejeté le texte (2024) ; l'accord reste appliqué à titre provisoire."),
-    ("VTANR5L16V652", "europe-international", "Soutien à l'Ukraine (2022)",
+    ("VTANR5L16V652", "defense", "Soutien à l'Ukraine (2022)",
      "Résolution par laquelle l'Assemblée nationale affirme son soutien à l'Ukraine et condamne l'invasion menée par la Russie depuis février 2022. Une résolution exprime une position politique solennelle, mais sans portée juridique contraignante. L'enjeu : marquer le soutien de la France à un pays agressé et à la sécurité de l'Europe.",
      None),
     ("VTANR5L17V456", "europe-international", "Accord UE-Mercosur : déclaration du Gouvernement (2024)",
      "Le Mercosur est un accord de libre-échange en négociation entre l'Union européenne et des pays d'Amérique du Sud (Brésil, Argentine, Uruguay, Paraguay) qui augmenterait les échanges, notamment les importations agricoles (bœuf, volaille, sucre). Sur ce vote, le Gouvernement demandait aux députés d'approuver l'opposition de la France à l'accord en l'état : voter « pour » revenait donc à soutenir ce refus. L'enjeu : les agriculteurs européens redoutent une concurrence de produits soumis à des règles sanitaires et environnementales moins strictes, quand les partisans de l'accord mettent en avant de nouveaux marchés.",
      "Vote au titre de l'article 50-1 de la Constitution : il exprime la position formelle de l'Assemblée, sans effet législatif direct."),
-    ("VTANR5L17V988", "europe-international", "Renforcement du soutien à l'Ukraine (2025)",
+    ("VTANR5L17V988", "defense", "Renforcement du soutien à l'Ukraine (2025)",
      "Résolution appelant à renforcer le soutien à l'Ukraine, notamment en utilisant les avoirs russes gelés en Europe pour la financer, et à faciliter le processus d'adhésion de l'Ukraine à l'Union européenne. Comme toute résolution, elle exprime une position sans créer d'obligation juridique. L'enjeu : l'ampleur et les moyens du soutien européen à l'Ukraine dans la durée.",
      None),
 
@@ -205,10 +222,10 @@ VOTES = [
     ("PE-HTV-167531", "immigration", "Pacte européen sur l'asile et la migration (2024)",
      "Pièce centrale du Pacte sur la migration et l'asile : le règlement sur la gestion de l'asile et de la migration réforme la répartition des demandeurs entre États membres et instaure un mécanisme dit de solidarité (accueil de demandeurs ou contribution financière). L'enjeu : répartir la charge de l'asile entre les pays de l'Union — un compromis critiqué à la fois comme trop contraignant et comme insuffisamment protecteur.",
      "Volet « gestion de l'asile et de la migration » du Pacte, vote d'avril 2024."),
-    ("PE-HTV-164536", "europe-international", "Facilité pour l'Ukraine — 50 milliards (2024)",
+    ("PE-HTV-164536", "defense", "Facilité pour l'Ukraine — 50 milliards (2024)",
      "Crée la « facilité pour l'Ukraine » : un soutien financier de l'Union doté de 50 milliards d'euros sur 2024-2027 (prêts et subventions) pour le fonctionnement de l'État ukrainien, sa reconstruction et ses réformes. L'enjeu : assurer à l'Ukraine en guerre un financement européen pluriannuel et prévisible.",
      "Établissement de la facilité pour l'Ukraine, vote de février 2024."),
-    ("PE-HTV-169362", "europe-international", "Soutien continu à l'Ukraine (2024)",
+    ("PE-HTV-169362", "defense", "Soutien continu à l'Ukraine (2024)",
      "Résolution appelant l'Union et les États membres à maintenir et renforcer leur soutien financier et militaire à l'Ukraine face à l'invasion russe. Une résolution exprime une position politique, sans portée juridiquement contraignante. L'enjeu : la constance et l'ampleur du soutien européen dans la durée.",
      "Résolution sur la nécessité d'un soutien continu de l'UE à l'Ukraine, vote de juillet 2024 (10e législature)."),
 
@@ -455,6 +472,40 @@ VOTES = [
     ("VTANR5L17V3848", "budget", "Taxe sur les jets privés (budget 2026)",
      "Amendement au budget 2026 supprimant l'avantage fiscal sur le carburant (kérosène) des jets privés et de l'aviation d'affaires, la recette étant affectée aux transports en commun d'Île-de-France. L'enjeu : rapprocher la fiscalité du transport aérien privé de celle des autres carburants — un sujet à forte charge symbolique.",
      "Article 15 du PLF 2026, première lecture (17 novembre 2025). Adopté (137 pour, 107 contre) par la gauche et une majorité du Rassemblement national, contre le bloc central et Les Républicains ; rendu caduc par le rejet global de la partie recettes."),
+    # ── Défense : ajouts issus de l'étude AN + PE (26/07/2026) ───────────────
+    ("VTANR5L14V510", "defense", "Intervention militaire au Mali — opération Serval (2013)",
+     "Déclaration du Gouvernement (article 35 de la Constitution) autorisant la prolongation de l'intervention militaire française au Mali, lancée en janvier 2013 (opération Serval) pour stopper l'avancée de groupes jihadistes vers Bamako. L'enjeu : engager durablement l'armée française dans la lutte antiterroriste au Sahel.",
+     "Vote quasi unanime — union nationale sur l'engagement des troupes."),
+    ("VTANR5L14V998", "defense", "Engagement des forces françaises en Irak contre Daech (2015)",
+     "Déclaration du Gouvernement (article 35) autorisant la prolongation de l'engagement des forces françaises en Irak au sein de la coalition internationale contre l'organisation État islamique (Daech). L'enjeu : la participation de la France à la guerre contre Daech.",
+     "Vote quasi unanime."),
+    ("VTANR5L14V1195", "defense", "Frappes aériennes en Syrie contre Daech (2015)",
+     "Autorisation de prolonger les frappes aériennes françaises au-dessus de la Syrie contre l'organisation État islamique, engagées à l'automne 2015 après les attentats. L'enjeu : étendre l'intervention anti-Daech au territoire syrien.",
+     "Vote quasi unanime."),
+    ("VTANR5L16V650", "defense", "Soutien à l'Arménie face à l'Azerbaïdjan (2022)",
+     "Résolution (sans valeur juridique contraignante) exigeant la fin de l'agression de l'Azerbaïdjan contre l'Arménie et appelant à des sanctions. L'enjeu : le soutien de la France à l'Arménie dans le conflit du Haut-Karabakh.",
+     "Adoptée à l'unanimité des votants."),
+    ("VTANR5L16V1483", "defense", "Classer le groupe Wagner comme organisation terroriste (2023)",
+     "Résolution appelant la France et l'Union européenne à inscrire le groupe paramilitaire russe Wagner sur la liste des organisations terroristes, en raison de ses exactions en Afrique et en Ukraine. L'enjeu : la réponse à l'influence militaire russe.",
+     "Adoptée à l'unanimité des votants."),
+    ("VTANR5L17V683", "defense", "Condamnation de la répression du régime iranien (2025)",
+     "Résolution condamnant l'oppression imposée aux femmes iraniennes et la répression du régime de Téhéran, et réaffirmant le soutien de la France au mouvement pour la liberté en Iran. L'enjeu : la position de la France face au régime iranien.",
+     "Adoptée à l'unanimité des votants."),
+    ("VTANR5L16V1456", "defense", "Conflit israélo-palestinien : résolution « deux États » (2023)",
+     "Résolution d'origine parlementaire, sans valeur contraignante, réaffirmant la nécessité d'une solution à deux États et condamnant la politique menée par l'État d'Israël envers les Palestiniens — le texte employait le terme, très contesté, d'« apartheid ». L'enjeu : la position de la France sur le conflit israélo-palestinien.",
+     "Rejetée (71 pour, 199 contre). Le vocabulaire du texte et son origine (La France insoumise) ont concentré l'opposition d'une large partie de l'hémicycle."),
+    ("PE-HTV-179048", "defense", "Gaza : famine, otages et solution à deux États (PE, 2025)",
+     "Résolution du Parlement européen sur la guerre à Gaza : lutter contre la famine, obtenir la libération des otages détenus par le Hamas et avancer vers une solution à deux États. L'enjeu : la position de l'Union européenne sur la guerre entre Israël et le Hamas.",
+     None),
+    ("PE-HTV-172867", "defense", "Livre blanc sur l'avenir de la défense européenne (PE, 2025)",
+     "Rapport du Parlement européen sur l'avenir de la défense européenne (« Livre blanc ») : renforcer les capacités militaires communes et l'autonomie stratégique de l'Union. L'enjeu : jusqu'où intégrer la défense à l'échelle européenne plutôt que de la garder strictement nationale.",
+     None),
+    ("PE-HTV-174053", "defense", "Politique de sécurité et de défense commune de l'UE (PE, 2025)",
+     "Rapport annuel du Parlement européen sur la politique de sécurité et de défense commune (PSDC) de l'Union. L'enjeu : le bilan et l'orientation de la coopération militaire européenne.",
+     None),
+    ("PE-HTV-181587", "defense", "Programme pour l'industrie de défense européenne — EDIP (PE, 2025)",
+     "Programme européen (EDIP) destiné à financer et coordonner la production d'armement au niveau de l'Union, dans le prolongement du plan « ReArm Europe ». L'enjeu : bâtir une base industrielle de défense européenne commune.",
+     None),
 ]
 
 
@@ -720,6 +771,18 @@ SENS = {
                        "refuser cette indexation (le « gel » du barème)"),
     "VTANR5L17V3848": ("supprimer l'avantage fiscal sur le carburant des jets privés et affecter la recette aux transports d'Île-de-France",
                        "conserver cet avantage fiscal sur le carburant des jets privés"),
+    # ── Défense : ajouts ──
+    "VTANR5L14V510": ("autoriser la prolongation de l'intervention militaire au Mali", "s'y opposer"),
+    "VTANR5L14V998": ("autoriser l'engagement des forces françaises en Irak contre Daech", "s'y opposer"),
+    "VTANR5L14V1195": ("autoriser les frappes françaises en Syrie contre Daech", "s'y opposer"),
+    "VTANR5L16V650": ("exiger la fin de l'agression azerbaïdjanaise et soutenir l'Arménie", "s'y opposer"),
+    "VTANR5L16V1483": ("demander le classement de Wagner comme organisation terroriste", "s'y opposer"),
+    "VTANR5L17V683": ("condamner la répression du régime iranien et soutenir le mouvement pour la liberté", "s'y opposer"),
+    "VTANR5L16V1456": ("adopter la résolution (solution à deux États, condamnation de la politique israélienne)", "rejeter la résolution"),
+    "PE-HTV-179048": ("adopter la résolution (lutte contre la famine à Gaza, libération des otages, solution à deux États)", "rejeter la résolution"),
+    "PE-HTV-172867": ("soutenir le renforcement de la défense européenne commune", "s'y opposer"),
+    "PE-HTV-174053": ("approuver l'orientation de la politique de défense commune de l'UE", "s'y opposer"),
+    "PE-HTV-181587": ("financer une industrie de défense européenne commune", "s'y opposer"),
 }
 
 

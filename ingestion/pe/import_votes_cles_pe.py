@@ -70,6 +70,11 @@ VOTES_CLES_PE = {
     "vetos_accord_fiscal": 147044,
     "stages_qualite": 155946,
     "quotas_co2_aviation": 144789,
+    # Défense européenne et Proche-Orient (ajout 26/07/2026).
+    "gaza_famine_2etats": 179048,
+    "livre_blanc_defense_ue": 172867,
+    "psdc_rapport_2024": 174053,
+    "edip_industrie_defense": 181587,
 }
 
 # « Voix 2 » = la DÉLÉGATION FRANÇAISE du groupe européen où siège le parti du
