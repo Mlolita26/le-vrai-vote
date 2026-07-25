@@ -158,6 +158,13 @@ SOURCES = {
                 "LCP, juillet 2023 — adoption définitive de la loi de programmation militaire 2024-2030, positions des groupes"),
     "lcp_palestine": ("https://lcp.fr/actualites/en-2014-l-assemblee-se-prononcait-en-faveur-d-une-reconnaissance-de-l-etat-de-palestine",
                       "LCP — vote du 2 décembre 2014 : l'Assemblée en faveur de la reconnaissance de l'État de Palestine (PS pour, UMP contre)"),
+    # ── Justifications LFI en écologie/agriculture (ajout 26/07/2026) ──
+    "an_egalim_lfi": ("https://www.assemblee-nationale.fr/dyn/15/comptes-rendus/seance/2e-session-extraordinaire-de-2017-2018/deuxieme-seance-du-mercredi-12-septembre-2018",
+                      "Compte rendu AN, 12/09/2018 — LFI juge la loi EGalim insuffisante sur le revenu agricole et demande son renvoi en commission"),
+    "f24_climat_lfi": ("https://www.france24.com/fr/info-en-continu/20210329-m%C3%A9lenchon-rejette-la-loi-climat-et-ses-manques-dangereux-dans-un-h%C3%A9micycle-agit%C3%A9",
+                       "France 24, 29/03/2021 — J.-L. Mélenchon rejette la loi Climat, jugée « inutile » voire « dangereuse » et très en deçà de la Convention citoyenne"),
+    "reporterre_enr_lfi": ("https://reporterre.net/Clemence-Guette-Le-projet-de-loi-sur-les-energies-renouvelables-manque-de-logique",
+                           "Reporterre — Clémence Guetté (LFI) explique l'opposition du groupe à la loi d'accélération des EnR (marché libéralisé, veto des maires, pôle public)"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -308,9 +315,6 @@ JUSTIFS = [
      "lfi_mercosur"),
 
     # ── Loi Duplomb, 2025 (L17) ──────────────────────────────────────────────
-    ("VTANR5L17V2957", "LFI-NFP",
-     "A voté contre, dénonçant la réautorisation de l'acétamipride — un néonicotinoïde interdit en France depuis 2018, jugé dangereux pour les abeilles — et les atteintes à la ressource en eau. Les groupes de gauche ont saisi le Conseil constitutionnel.",
-     "maire_duplomb"),
     ("VTANR5L17V2957", "EcoS",
      "A voté contre, en raison de la réintroduction d'un néonicotinoïde interdit depuis 2018 et des reculs environnementaux du texte (eau, élevages).",
      "maire_duplomb"),
@@ -608,6 +612,16 @@ JUSTIFS = [
     ("VTANR5L14V981", "UMP",
      "A voté contre : le groupe UMP, alors dans l'opposition, s'est opposé à la résolution — neuf de ses députés ont toutefois voté pour.",
      "lcp_palestine"),
+    # ── LFI en écologie/agriculture : votes contre sans justification ──
+    ("VTANR5L15V729", "FI",
+     "A voté contre : le groupe a jugé la loi très en deçà de son ambition initiale, estimant qu'elle ne garantissait pas un revenu suffisant aux agriculteurs (mécanisme de fixation des prix jugé insatisfaisant), et a demandé le renvoi du texte en commission.",
+     "an_egalim_lfi"),
+    ("VTANR5L15V3738", "FI",
+     "A voté contre : Jean-Luc Mélenchon a rejeté un texte jugé « sans doute inutile », voire « dangereux » et très en deçà de l'urgence climatique et des propositions de la Convention citoyenne (notée 2,5/10 par ses membres), déplorant l'absence de mesures sur les accords de libre-échange, le 100 % renouvelable ou l'interdiction du glyphosate.",
+     "f24_climat_lfi"),
+    ("VTANR5L16V823", "LFI - NUPES",
+     "A voté contre : le groupe (Clémence Guetté) a dénoncé une logique de « marché libéralisé » et le quasi-droit de veto laissé aux maires, plaidant pour un pôle public de l'énergie et pour réserver le solaire aux terres déjà artificialisées, toitures et parkings plutôt qu'aux terres agricoles.",
+     "reporterre_enr_lfi"),
 ]
 
 
