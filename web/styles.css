@@ -615,6 +615,13 @@ img, svg, table { max-width:100%; }
 .cmp-det[open] > summary::before{ content:"▾"; }
 .cmp-det > summary:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:4px; }
 .cmp-det > *:not(summary){ margin-top:.5rem; }
+/* Sur ordinateur : tout est visible, pas de menu déroulant (le repli
+   ne sert que sur téléphone). On masque le résumé-bouton et on force
+   l'affichage du contenu même quand le <details> est fermé. */
+@media (min-width:641px){
+  .cmp-det > summary{ display:none; }
+  .cmp-det > *:not(summary){ display:block; margin-top:.5rem; }
+}
 
 /* ============================================================
    En-tête mobile (≤640px) : ligne 1 = marque + bascule thème ;
