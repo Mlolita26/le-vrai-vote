@@ -21,7 +21,7 @@ BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 
 THEMES = [
     ("ecologie-agriculture", "Écologie et agriculture"),
-    ("pouvoir-achat-fiscalite", "Pouvoir d'achat et fiscalité"),
+    ("pouvoir-achat-fiscalite", "Économie"),
     ("securite-justice", "Sécurité et justice"),
     ("immigration", "Immigration"),
     ("societe", "Questions de société"),
@@ -31,6 +31,7 @@ THEMES = [
     ("education", "Éducation"),
     ("taxe-impots", "Taxe et impôts"),
     ("travail", "Travail"),
+    ("transports", "Transports"),
 ]
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -264,7 +265,7 @@ VOTES = [
     ("VTANR5L17V1624", "securite-justice", "Justice des mineurs — loi Attal (2025)",
      "Durcit la réponse pénale à la délinquance des mineurs : comparution immédiate possible dès 16 ans, atténuation plus limitée de la peine du fait de la minorité (l'« excuse de minorité »), et amende civile pour les parents ne répondant pas aux convocations du juge. L'enjeu : sanctionner plus vite et plus fermement les mineurs délinquants, mis en balance avec un principe propre à la justice des mineurs — la primauté de l'éducation sur la répression.",
      "Texte porté par Gabriel Attal, adopté sur le texte de la commission mixte paritaire. Toute la gauche a voté contre, le RN pour. Le Conseil constitutionnel a ensuite censuré plusieurs de ces mesures (juin 2025)."),
-    ("VTANR5L16V3045", "societe", "Société du bien vieillir (2023)",
+    ("VTANR5L16V3045", "sante", "Société du bien vieillir (2023)",
      "Mesures sur le grand âge : repérage des personnes âgées fragiles et isolées, lutte contre la maltraitance, création d'une carte professionnelle pour les aides à domicile — sans la « loi grand âge » ni le financement de l'autonomie longtemps annoncés. L'enjeu : améliorer l'accompagnement du vieillissement, la critique portant sur l'absence de moyens jugés à la hauteur du défi démographique.",
      "Première lecture. LFI et le groupe GDR (dont le PCF) ont voté contre, jugeant le texte insuffisant ; le RN a voté pour ; le groupe Les Républicains n'a pas pris part au vote."),
     ("VTANR5L17V7454", "institutions", "Autonomie de la Corse (2026)",
@@ -350,6 +351,26 @@ VOTES = [
     ("PE-HTV-155946", "travail", "Stages de qualité dans l'Union (2023)",
      "Position du Parlement européen pour un cadre garantissant des stages de qualité : lutte contre les stages non ou mal rémunérés et contre les stages répétés se substituant à un véritable emploi. L'enjeu : protéger les jeunes en stage contre la précarité, la question débattue étant le degré de contrainte imposé aux employeurs.",
      "Position adoptée au Parlement européen ; la délégation du RN a voté contre."),
+
+    # ── Ajouts du 25/07/2026 (cancer, transports, femmes, handicap) ──────────
+    ("VTANR5L17V6572", "sante", "Médicaments contre les cancers de l'enfant (2026)",
+     "Crée un cadre pour développer les médicaments contre les cancers et les maladies rares de l'enfant (recherche, disponibilité), financé notamment par une contribution des laboratoires pharmaceutiques. L'enjeu : répondre au manque de traitements pédiatriques, faute de rentabilité pour l'industrie ; texte porté de façon transpartisane, salué par les associations de familles.",
+     "Adopté très largement (98 voix contre 22). Fait notable : le RN est le seul groupe à avoir voté contre."),
+    ("VTANR5L15V942", "transports", "Pacte ferroviaire — réforme de la SNCF (2018)",
+     "Transforme la SNCF en société anonyme, fixe le calendrier d'ouverture à la concurrence du rail (prévue au niveau européen) et met fin à l'embauche au statut de cheminot pour les nouveaux entrants. L'enjeu : préparer l'ouverture à la concurrence et la situation financière de la SNCF, la crainte des opposants étant une privatisation rampante et une dégradation du service public.",
+     "Vote sur le texte issu de la commission mixte paritaire, au terme d'un long conflit social au printemps 2018."),
+    ("PE-HTV-144789", "transports", "Quotas CO₂ pour l'aviation (UE, 2022)",
+     "Révise le marché carbone européen appliqué à l'aviation : suppression progressive des quotas d'émission gratuits dont bénéficiaient les compagnies aériennes, qui devront donc payer davantage pour leurs émissions de CO₂. L'enjeu : faire contribuer le transport aérien à la baisse des émissions, mis en balance avec le coût pour les compagnies et le prix des billets.",
+     "Vote au Parlement européen ; seule la délégation du RN a voté contre."),
+    ("VTANR5L15V619", "societe", "Violences sexuelles et sexistes — loi Schiappa (2018)",
+     "Renforce la lutte contre les violences sexuelles et sexistes : allongement à trente ans du délai de prescription des crimes sexuels sur mineurs, création de l'« outrage sexiste » (verbalisation du harcèlement de rue), répression du cyberharcèlement en meute. L'enjeu : mieux protéger les victimes, le débat portant sur l'absence de seuil d'âge clair du consentement et sur le risque de juger certains viols comme de simples agressions sexuelles.",
+     "Première lecture. La gauche a voté contre, jugeant le texte insuffisant sur ces points."),
+    ("VTANR5L16V1843", "societe", "Accès des femmes aux responsabilités (parité, 2023)",
+     "Renforce la place des femmes aux postes de direction : objectifs et obligations de parité dans l'encadrement supérieur des grandes entreprises et de la fonction publique. L'enjeu : accélérer l'égalité femmes-hommes aux responsabilités, la question débattue étant le recours aux quotas et le calendrier.",
+     None),
+    ("VTANR5L15V2865", "travail", "Emploi des personnes handicapées (2020)",
+     "Réforme l'obligation d'emploi des travailleurs handicapés (OETH) qui s'impose aux entreprises : simplification des déclarations, valorisation de l'emploi direct, accompagnement renforcé. L'enjeu : améliorer l'accès à l'emploi des personnes en situation de handicap, encore très éloignées du marché du travail.",
+     None),
 ]
 
 
@@ -566,6 +587,19 @@ SENS = {
                        "s'y opposer"),
     "PE-HTV-155946": ("soutenir un encadrement des stages contre la précarité",
                       "s'y opposer"),
+    # ── Ajouts (cancer, transports, femmes, handicap) ──
+    "VTANR5L17V6572": ("adopter le cadre de soutien aux médicaments contre les cancers de l'enfant (financé par une contribution des laboratoires)",
+                       "rejeter le texte"),
+    "VTANR5L15V942": ("adopter le pacte ferroviaire (SNCF en société anonyme, ouverture à la concurrence, fin de l'embauche au statut de cheminot)",
+                      "rejeter le texte"),
+    "PE-HTV-144789": ("faire payer davantage l'aviation pour ses émissions de CO₂ (fin des quotas gratuits)",
+                      "s'y opposer"),
+    "VTANR5L15V619": ("adopter la loi Schiappa (prescription allongée, outrage sexiste, cyberharcèlement)",
+                      "rejeter le texte"),
+    "VTANR5L16V1843": ("renforcer la parité aux postes de direction (entreprises, fonction publique)",
+                       "s'y opposer"),
+    "VTANR5L15V2865": ("réformer l'obligation d'emploi des travailleurs handicapés dans les entreprises",
+                       "s'y opposer"),
 }
 
 

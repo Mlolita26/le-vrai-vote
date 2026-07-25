@@ -69,6 +69,7 @@ VOTES_CLES_PE = {
     "impot_minimum_mondial": 143328,
     "vetos_accord_fiscal": 147044,
     "stages_qualite": 155946,
+    "quotas_co2_aviation": 144789,
 }
 
 # « Voix 2 » = la DÉLÉGATION FRANÇAISE du groupe européen où siège le parti du

@@ -132,6 +132,13 @@ SOURCES = {
                            "LCP, octobre 2023 — adoption du projet de loi « plein emploi » (RSA conditionné) ; RN et Nupes contre, majorité + LR pour"),
     "lcp_partage_valeur": ("https://lcp.fr/actualites/interessement-primes-participation-l-assemblee-a-adopte-le-projet-de-loi-sur-le-partage",
                            "LCP, juin 2023 — partage de la valeur : seuls LFI et le communiste de son groupe contre (Marianne Maximi)"),
+    # Ajouts (cancer, transports, femmes)
+    "carenews_cancer": ("https://www.carenews.com/grandir-sans-cancer/news/medicaments-contre-les-cancers-et-maladies-rares-de-l-enfant-la-loi-votee",
+                        "Grandir Sans Cancer / Carenews, mai 2026 — loi médicaments cancers de l'enfant votée par tous les groupes sauf le RN (opposé à la taxe sur les laboratoires)"),
+    "bdt_ferroviaire": ("https://www.banquedesterritoires.fr/la-reforme-ferroviaire-definitivement-adoptee-par-le-parlement",
+                        "Banque des Territoires, 2018 — adoption du pacte ferroviaire : SNCF en SA, ouverture à la concurrence, fin du statut ; gauche contre"),
+    "wiki_schiappa": ("https://fr.wikipedia.org/wiki/Loi_Schiappa",
+                      "Wikipédia — loi Schiappa (2018) : opposition de la gauche en première lecture (correctionnalisation du viol, seuil d'âge du consentement)"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -506,6 +513,36 @@ JUSTIFS = [
     ("VTANR5L16V2112", "GDR - NUPES",
      "A voté contre, avec LFI, pour les mêmes raisons.",
      "lcp_partage_valeur"),
+
+    # ── Santé : médicaments cancers de l'enfant, 2026 (L17) ──────────────────
+    ("VTANR5L17V6572", "RN",
+     "A voté contre — seul groupe à s'y opposer : le RN refusait la taxe sur les laboratoires pharmaceutiques prévue pour financer le fonds de recherche sur les cancers et maladies rares de l'enfant.",
+     "carenews_cancer"),
+    ("VTANR5L17V6572", "EPR",
+     "A voté pour, avec l'ensemble des autres groupes, ce texte transpartisan salué par les associations de familles.",
+     "carenews_cancer"),
+
+    # ── Transports : pacte ferroviaire (SNCF), 2018 (L15) ────────────────────
+    ("VTANR5L15V942", "LaREM",
+     "A voté pour : préparer l'ouverture à la concurrence prévue par l'Union et redresser la situation financière de la SNCF.",
+     "bdt_ferroviaire"),
+    ("VTANR5L15V942", "FI",
+     "A voté contre, dénonçant une privatisation rampante et la fin du statut de cheminot.",
+     "bdt_ferroviaire"),
+    ("VTANR5L15V942", "GDR",
+     "A voté contre : le groupe communiste dénonçait un texte au service de « l'ultralibéralisme » et la casse du service public ferroviaire.",
+     "bdt_ferroviaire"),
+
+    # ── Société : loi Schiappa (violences sexuelles), 2018 (L15) ─────────────
+    ("VTANR5L15V619", "LaREM",
+     "A voté pour : renforcer la lutte contre les violences sexuelles et sexistes (prescription allongée, outrage sexiste, cyberharcèlement).",
+     "wiki_schiappa"),
+    ("VTANR5L15V619", "FI",
+     "A voté contre en première lecture, jugeant le texte insuffisant et craignant une « correctionnalisation » du viol (jugé comme agression sexuelle) et l'absence d'un seuil d'âge clair de non-consentement.",
+     "wiki_schiappa"),
+    ("VTANR5L15V619", "NG",
+     "A voté contre en première lecture, pour des motifs proches : protection jugée insuffisante des mineurs victimes.",
+     "wiki_schiappa"),
 ]
 
 

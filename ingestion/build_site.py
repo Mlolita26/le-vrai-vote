@@ -43,7 +43,7 @@ CANDIDATS_PRIORITAIRES = [
 
 THEME_SLUGS = {
     "Écologie et agriculture": "ecologie-agriculture",
-    "Pouvoir d'achat et fiscalité": "pouvoir-achat-fiscalite",
+    "Économie": "pouvoir-achat-fiscalite",
     "Sécurité et justice": "securite-justice",
     "Immigration": "immigration",
     "Questions de société": "societe",
@@ -53,6 +53,7 @@ THEME_SLUGS = {
     "Éducation": "education",
     "Taxe et impôts": "taxe-impots",
     "Travail": "travail",
+    "Transports": "transports",
 }
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {
