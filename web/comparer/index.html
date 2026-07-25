@@ -29,10 +29,13 @@ lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
   <button type="button" data-filtre="tous" aria-pressed="false">Tous les votes clés</button>
 </div>
 <p class="note-methode" id="note-mode"></p>
+<div class="filtres-themes filtres-cmp" id="filtres-cmp" role="group" aria-label="Filtrer la comparaison par thème" hidden></div>
 <div id="resultat"></div>
 <script>
 fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
   var selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
+  var boxThemes = document.getElementById("filtres-cmp");
+  var themeFiltre = "tous";
   // Desktop : tout est deplie (details ouverts) ; mobile : replies.
   var wideCmp = window.matchMedia("(min-width:641px)");
   function syncCmpOpen() {
@@ -51,6 +54,38 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     o.value = c.slug; o.textContent = c.nom;
     selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
   });
+  // Pré-remplissage depuis une fiche candidat : /comparer/?a=slug&b=slug
+  var params = new URLSearchParams(window.location.search);
+  var slugs = d.candidats.map(function (c) { return c.slug; });
+  var pa = params.get("a"), pb = params.get("b");
+  if (pa && slugs.indexOf(pa) >= 0) selA.value = pa;
+  if (pb && slugs.indexOf(pb) >= 0) selB.value = pb;
+
+  // Filtre par thème : n'affiche que les sections du thème choisi. Délégation
+  // posée une fois ; les puces sont reconstruites à chaque comparaison.
+  function appliquerThemeFiltre(scroller) {
+    boxThemes.querySelectorAll(".filtre-chip").forEach(function (x) {
+      var on = x.dataset.cible === themeFiltre;
+      x.classList.toggle("actif", on);
+      x.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    document.querySelectorAll("#resultat .cmp-theme").forEach(function (s) {
+      s.style.display = (themeFiltre === "tous" || s.dataset.theme === themeFiltre) ? "" : "none";
+    });
+    if (scroller) {
+      var ent = document.querySelector(".entete-nav");
+      var dec = (ent ? ent.offsetHeight : 56) + 8;
+      var y = boxThemes.getBoundingClientRect().top + window.pageYOffset - dec;
+      window.scrollTo({ top: y < 0 ? 0 : y, behavior: "smooth" });
+    }
+  }
+  boxThemes.addEventListener("click", function (ev) {
+    var b = ev.target.closest(".filtre-chip");
+    if (!b) return;
+    themeFiltre = b.dataset.cible;
+    appliquerThemeFiltre(true);
+  });
+
   var filtre = "comparable";
   function brancher(sel, set) {
     var bs = document.querySelectorAll(sel + " button");
@@ -135,14 +170,15 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       + "sinon la position majoritaire de son groupe (marquée « position du parti »). "
       + "« Aucune donnée » = ni vote personnel ni parti rattaché pour ce scrutin.";
     res.textContent = "";
-    if (!a || !b) { res.textContent = "Choisissez deux candidats à comparer."; return; }
-    if (a === b) { res.textContent = "Choisissez deux candidats différents."; return; }
+    if (!a || !b) { res.textContent = "Choisissez deux candidats à comparer."; boxThemes.hidden = true; return; }
+    if (a === b) { res.textContent = "Choisissez deux candidats différents."; boxThemes.hidden = true; return; }
     var objA = d.candidats.find(function (c) { return c.slug === a; });
     var objB = d.candidats.find(function (c) { return c.slug === b; });
     var nomA = objA.nom, nomB = objB.nom;
     var surA = objA.nom_famille || nomA, surB = objB.nom_famille || nomB;
 
     var totComp = 0, totAcc = 0;
+    var themesRendus = [];
     var sections = document.createElement("div");
     // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
     function carteVote(v) {
@@ -169,7 +205,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         + '</article>';
       return { pa: pa, pb: pb, comparable: comparable, html: html };
     }
-    d.themes.forEach(function (theme) {
+    d.themes.forEach(function (theme, ti) {
       var votesT = d.votes.filter(function (v) { return v.theme === theme; });
       if (!votesT.length) return;
       var comp = 0, acc = 0, cartes = "";
@@ -205,11 +241,36 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       }
       totComp += comp; totAcc += acc;
       if (!cartes) return;
-      var resume = comp ? (acc + " accord" + (acc > 1 ? "s" : "") + " / " + comp + " comparable" + (comp > 1 ? "s" : "")) : "aucun vote comparable";
-      sections.innerHTML += '<section class="cmp-theme"><h2>' + theme + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
+      var pctT = comp ? Math.round(100 * acc / comp) : null;
+      var resume = comp
+        ? ('<strong>' + pctT + ' %</strong> identiques · ' + acc + ' / ' + comp
+           + ' comparable' + (comp > 1 ? "s" : ""))
+        : "aucun vote comparable";
+      sections.innerHTML += '<section class="cmp-theme" data-theme="' + ti + '"><h2>' + theme
+        + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
+      themesRendus.push({ ti: ti, lib: theme, comp: comp, pct: pctT });
     });
 
     var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
+
+    // Puces de filtre par thème, chacune avec son % de positions identiques.
+    // Le thème sélectionné reste actif s'il existe encore dans cette comparaison.
+    if (themeFiltre !== "tous" && !themesRendus.some(function (t) { return t.ti + "" === themeFiltre; }))
+      themeFiltre = "tous";
+    if (themesRendus.length > 1) {
+      var chips = '<button type="button" class="filtre-chip" data-cible="tous" aria-pressed="false">'
+        + 'Tous les thèmes' + (totComp ? ' · ' + pct + ' %' : '') + '</button>';
+      themesRendus.forEach(function (t) {
+        chips += '<button type="button" class="filtre-chip" data-cible="' + t.ti + '" aria-pressed="false">'
+          + t.lib + (t.comp ? ' · ' + t.pct + ' %' : '') + '</button>';
+      });
+      boxThemes.innerHTML = chips;
+      boxThemes.hidden = false;
+    } else {
+      boxThemes.innerHTML = "";
+      boxThemes.hidden = true;
+    }
+
     var entete = document.createElement("div");
     entete.className = "resultat-comparaison";
     entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong> '
@@ -221,8 +282,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
     res.appendChild(entete);
     res.appendChild(sections);
+    appliquerThemeFiltre(false);
   }
-  selA.addEventListener("change", rendre); selB.addEventListener("change", rendre);
+  // Changer de candidat réinitialise le filtre thème (nouvelle comparaison) ;
+  // basculer comparable/tous le conserve.
+  function rendreNouveauCouple() { themeFiltre = "tous"; rendre(); }
+  selA.addEventListener("change", rendreNouveauCouple);
+  selB.addEventListener("change", rendreNouveauCouple);
   rendre();
 });
 </script>

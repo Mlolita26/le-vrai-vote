@@ -19,6 +19,25 @@
 <div class="fiche-tete"><img class="cand-avatar cand-photo" src="../../photos/francois-asselineau.jpg" alt="" loading="lazy" width="72" height="72">
 <div><h1>François Asselineau</h1>
 <p class="detail">Union populaire républicaine — date rapportée par agrégateur, à re-sourcer sur document primaire</p></div></div>
+<div class="fiche-actions" role="group" aria-label="Changer de candidat ou lancer une comparaison">
+<label class="fiche-action"><span>Voir un autre candidat</span>
+<select id="switch-cand" aria-label="Aller à la fiche d'un autre candidat"><option value="jean-luc-melenchon">Jean-Luc Mélenchon</option><option value="marine-le-pen">Marine Le Pen</option><option value="edouard-philippe">Édouard Philippe</option><option value="gabriel-attal">Gabriel Attal</option><option value="bruno-retailleau">Bruno Retailleau</option><option value="marine-tondelier">Marine Tondelier</option><option value="anasse-kazib">Anasse Kazib</option><option value="antoine-mikolajczak">Antoine Mikolajczak</option><option value="bernard-cazeneuve">Bernard Cazeneuve</option><option value="clara-egger">Clara Egger</option><option value="clementine-autain">Clémentine Autain</option><option value="david-lisnard">David Lisnard</option><option value="delphine-batho">Delphine Batho</option><option value="florian-philippot">Florian Philippot</option><option value="francois-asselineau" selected>François Asselineau</option><option value="francois-ruffin">François Ruffin</option><option value="jerome-guedj">Jérôme Guedj</option><option value="karim-bouamrane">Karim Bouamrane</option><option value="lydie-massard">Lydie Massard</option><option value="nathalie-arthaud">Nathalie Arthaud</option><option value="nicolas-dupont-aignan">Nicolas Dupont-Aignan</option><option value="philippe-brun">Philippe Brun</option><option value="selma-labib">Selma Labib</option><option value="segolene-royal">Ségolène Royal</option><option value="xavier-bertrand">Xavier Bertrand</option></select></label>
+<label class="fiche-action"><span>Comparer Asselineau avec</span>
+<select id="switch-cmp" aria-label="Comparer François Asselineau avec un autre candidat"><option value="">— Comparer avec… —</option><option value="jean-luc-melenchon">Jean-Luc Mélenchon</option><option value="marine-le-pen">Marine Le Pen</option><option value="edouard-philippe">Édouard Philippe</option><option value="gabriel-attal">Gabriel Attal</option><option value="bruno-retailleau">Bruno Retailleau</option><option value="marine-tondelier">Marine Tondelier</option><option value="anasse-kazib">Anasse Kazib</option><option value="antoine-mikolajczak">Antoine Mikolajczak</option><option value="bernard-cazeneuve">Bernard Cazeneuve</option><option value="clara-egger">Clara Egger</option><option value="clementine-autain">Clémentine Autain</option><option value="david-lisnard">David Lisnard</option><option value="delphine-batho">Delphine Batho</option><option value="florian-philippot">Florian Philippot</option><option value="francois-ruffin">François Ruffin</option><option value="jerome-guedj">Jérôme Guedj</option><option value="karim-bouamrane">Karim Bouamrane</option><option value="lydie-massard">Lydie Massard</option><option value="nathalie-arthaud">Nathalie Arthaud</option><option value="nicolas-dupont-aignan">Nicolas Dupont-Aignan</option><option value="philippe-brun">Philippe Brun</option><option value="selma-labib">Selma Labib</option><option value="segolene-royal">Ségolène Royal</option><option value="xavier-bertrand">Xavier Bertrand</option></select></label>
+</div>
+<script>
+(function () {
+  var here = "francois-asselineau";
+  var sc = document.getElementById("switch-cand");
+  if (sc) sc.addEventListener("change", function () {
+    if (sc.value && sc.value !== here) window.location.href = "../" + sc.value + "/";
+  });
+  var sk = document.getElementById("switch-cmp");
+  if (sk) sk.addEventListener("change", function () {
+    if (sk.value) window.location.href = "../../comparer/?a=" + here + "&b=" + encodeURIComponent(sk.value);
+  });
+})();
+</script>
 <p>Candidature déclarée le 31/08/2023 — <a href="https://fr.wikipedia.org/wiki/%C3%89lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2027" rel="noopener">source de la déclaration</a>.
 Date de naissance : à importer.</p>
 <h2>Votes clés</h2><p class="note-methode">François Asselineau n'a jamais siégé au Parlement (Assemblée nationale, Sénat ou Parlement européen) depuis 1997 : il n'existe donc aucun vote personnel à afficher sur les lois clés. Les positions viendront des déclarations publiques (programme, discours), clairement identifiées comme telles.</p><details class="votes-replies"><summary>Voir la liste des lois clés (toutes « indisponible » pour ce candidat)</summary><p class="note-methode">Sélection selon la <a href="../../methode/">grille de critères publiée</a>, identique pour tous les candidats. « Non concerné » : pas en poste dans la chambre à la date du scrutin ; « absent (déduit) » : mandat actif mais aucune mention au scrutin officiel.</p><section class="theme-bloc" data-theme="ecologie-agriculture"><h3>Écologie et agriculture</h3><ul class="votes-cles"><li class="vote-carte">

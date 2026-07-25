@@ -340,6 +340,19 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .fiche-tete h1 { margin:0 0 0.2rem; }
 .credits-photos { font-size:0.82rem; }
 
+/* Barre d'actions de la fiche : changer de candidat / lancer une comparaison */
+.fiche-actions { display:flex; flex-wrap:wrap; gap:.7rem 1.4rem; align-items:end;
+  margin:1rem 0 1.4rem; padding:.85rem 1rem; background:var(--faint);
+  border:1px solid var(--lisere); border-radius:12px; }
+.fiche-action { display:flex; flex-direction:column; gap:.3rem;
+  font-size:.82rem; font-weight:600; color:var(--encre-douce); }
+.fiche-action select { padding:.5rem .65rem; border:1px solid var(--lisere); border-radius:8px;
+  font-size:.95rem; background:var(--carte); color:var(--encre); font-family:inherit; min-width:14rem; }
+@media (max-width:520px){
+  .fiche-action { width:100%; }
+  .fiche-action select { min-width:0; width:100%; }
+}
+
 /* Ligne « Au Sénat » (équivalent d'un vote clé dans l'autre chambre) */
 .ligne-senat { font-size:0.88rem; color:var(--encre-douce); margin:0.35rem 0;
   padding-left:0.6rem; border-left:3px solid var(--lisere); }
@@ -453,10 +466,15 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .mode-compare button.actif { background:var(--accent); color:var(--accent-texte); }
 .mode-compare button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 
+/* Puces de filtre par thème dans le comparateur (réutilise .filtres-themes).
+   L'attribut hidden doit primer sur le display:flex hérité de .filtres-themes. */
+.filtres-cmp[hidden] { display:none; }
+
 .cmp-theme { margin:1.8rem 0 0; }
 .cmp-theme h2 { display:flex; flex-wrap:wrap; align-items:baseline; gap:.5rem 1rem;
   border-bottom:2px solid var(--lisere); padding-bottom:.3rem; }
 .cmp-compte { font-family:system-ui; font-size:.82rem; font-weight:600; color:var(--encre-douce); }
+.cmp-compte strong { color:var(--accent); font-weight:700; }
 
 .cmp-vote { background:var(--carte); border:1px solid var(--lisere); border-radius:12px;
   padding:.75rem .95rem; margin:.6rem 0; border-left:4px solid var(--lisere); }
