@@ -88,12 +88,9 @@ NUANCES = [
     ("francois-ruffin", "VTANR5L16V186",
      "A voté contre avec les groupes de la NUPES, qui jugeaient le texte « insoutenable sur le plan social et environnemental » et lui reprochaient d'esquiver la question des bas salaires et de la hausse du Smic.",
      "lcp_pouvoir_achat"),
-    ("jerome-guedj", "VTANR5L16V186",
-     "Abstention avec le groupe Socialistes — « le compte n'y est pas » : des revalorisations jugées inférieures à l'inflation, sans opposition frontale au principe des mesures.",
-     "lcp_pouvoir_achat"),
-    ("philippe-brun", "VTANR5L16V186",
-     "Abstention avec le groupe Socialistes — « le compte n'y est pas » : des revalorisations jugées inférieures à l'inflation, sans opposition frontale au principe des mesures.",
-     "lcp_pouvoir_achat"),
+    # (Les nuances SOC de Guedj et Brun sur ce vote ont été retirées : elles
+    #  répétaient mot pour mot la justification du groupe Socialistes, désormais
+    #  affichée sous le chip du parti — pas de double emploi.)
     # Fraudes sociales et fiscales 2026 : opposition unanime de la gauche sur l'équilibre du texte.
     ("clementine-autain", "VTANR5L17V6319",
      "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",

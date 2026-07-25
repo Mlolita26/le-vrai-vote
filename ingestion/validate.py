@@ -287,8 +287,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         # Nuances : chacune sourcée et adossée à une position réellement en base —
         # soit un vote PERSONNEL, soit (au PE surtout) la position de la DÉLÉGATION
         # du parti rattachée au candidat (même garde-fou que seed_nuances.py).
-        verifier("23 nuances, toutes adossées à une position (perso ou délégation)",
-                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 23
+        verifier("21 nuances, toutes adossées à une position (perso ou délégation)",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 21
                  and cur.execute(
                      "SELECT COUNT(*) FROM nuances n WHERE NOT ("
                      "  EXISTS (SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "

@@ -521,7 +521,6 @@ sa présence et son parcours — à partir des données publiques officielles, c
 <a class="bouton bouton-second" href="methode/">Lire la méthode</a>
 </p>
 <div class="stats">
-<div><div class="stat-num">{nombre_fr(meta['n_scrutins'])}</div><div class="stat-lbl">scrutins officiels en base</div></div>
 <div><div class="stat-num">{len(candidats)}</div><div class="stat-lbl">candidatures suivies ({len(declares)} déclarées + {len(primaires)} en primaire)</div></div>
 <div><div class="stat-num">{n_couverts}</div><div class="stat-lbl">candidats aux votes déjà consultables</div></div>
 <div><div class="stat-num accent">100 %</div><div class="stat-lbl">des faits reliés à leur source</div></div>
@@ -535,28 +534,6 @@ sa présence et son parcours — à partir des données publiques officielles, c
 <div class="step"><div class="step-num">1</div><h3>Choisissez un candidat</h3><p>Parcourez les candidatures déclarées et les personnalités en lice pour une primaire. Une pastille indique d'emblée ce qui est disponible.</p></div>
 <div class="step"><div class="step-num">2</div><h3>Lisez ses votes réels</h3><p>Ses positions sur les votes clés, regroupées par thème, chacune accompagnée d'un résumé neutre de la loi et de son assiduité.</p></div>
 <div class="step"><div class="step-num">3</div><h3>Comparez deux candidats</h3><p>Mettez deux candidats côte à côte sur les mêmes votes clés et voyez, thème par thème, où ils se rejoignent et où ils s'opposent.</p></div>
-</div>
-</section>
-
-<section class="bloc">
-<h2>Trois principes non négociables</h2>
-<p class="intro">Sur un site qui parle de personnes réelles en campagne, la crédibilité est la seule valeur. Ces règles priment sur tout le reste.</p>
-<div class="principes">
-<div class="principe"><div class="principe-num">01 — Sources</div><h3>Tout est sourcé</h3><p>Chaque fait renvoie à un document officiel vérifiable en un clic. Un fait sans source ne s'affiche pas.</p></div>
-<div class="principe"><div class="principe-num">02 — Neutralité</div><h3>Aucune éditorialisation</h3><p>Méthodologie publique et identique pour tous. « A voté contre », jamais « a trahi ».</p></div>
-<div class="principe"><div class="principe-num">03 — Honnêteté</div><h3>Honnêteté sur les manques</h3><p>Trois états d'affichage clairs — jamais de vide ambigu, jamais de supposition.</p></div>
-</div>
-</section>
-
-<section class="bloc">
-<div class="etats-panel">
-<h2>Trois états</h2>
-<p>Tous les candidats n'ont pas le même historique traçable — un député cumule des milliers de scrutins, un maire n'en a aucun. Chaque pastille dit exactement ce que l'on sait, et ce que l'on ne sait pas.</p>
-<div class="etats-grid">
-<div class="etat-item"><span class="pastille pastille-ok">Votes disponibles</span><p>Le candidat était en poste et a voté. Ses positions réelles sont consultables dès maintenant.</p></div>
-<div class="etat-item"><span class="pastille pastille-partiel">Couverture partielle</span><p>Mandats hors de la période couverte, ou chambre pas encore importée (Sénat, Parlement européen).</p></div>
-<div class="etat-item"><span class="pastille pastille-decl">Positions déclaratives</span><p>Jamais parlementaire : ses positions viendront de ses déclarations publiques, clairement identifiées comme telles.</p></div>
-</div>
 </div>
 </section>
 
@@ -1046,6 +1023,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
 def page_methode(meta, noms):
     contenu = f"""
 <h1>Méthode</h1>
+<h2>Trois principes non négociables</h2>
+<p>Sur un site qui parle de personnes réelles en campagne, la crédibilité est la seule valeur. Ces règles priment sur tout le reste.</p>
+<ul class="methode-liste">
+<li><strong>Sources — tout est sourcé.</strong> Chaque fait renvoie à un document officiel vérifiable en un clic. Un fait sans source ne s'affiche pas.</li>
+<li><strong>Neutralité — aucune éditorialisation.</strong> Méthodologie publique et identique pour tous. « A voté contre », jamais « a trahi ».</li>
+<li><strong>Honnêteté sur les manques.</strong> Des états d'affichage clairs — jamais de vide ambigu, jamais de supposition.</li>
+</ul>
 <h2>D'où viennent les données</h2>
 <ul class="methode-liste">
 <li><strong>Scrutins et positions de vote</strong> : dumps officiels de
@@ -1067,6 +1051,13 @@ validation des parrainages par le Conseil constitutionnel (mars 2027).</li>
 <li><strong>Non concerné</strong> : la personne n'était pas en poste dans la chambre à la date du scrutin.</li>
 <li><strong>Indisponible</strong> : la personne n'a jamais été parlementaire — il n'existe pas de vote à afficher.</li>
 <li><strong>À importer</strong> : la donnée existe mais n'est pas encore chargée.</li>
+</ul>
+<h2>Les pastilles des candidats</h2>
+<p>Tous les candidats n'ont pas le même historique traçable — un député cumule des milliers de scrutins, un maire n'en a aucun. Sur chaque fiche, une pastille dit d'emblée ce que l'on peut montrer :</p>
+<ul class="methode-liste">
+<li><span class="pastille pastille-ok">Votes disponibles</span> — le candidat était en poste et a voté : ses positions réelles sont consultables.</li>
+<li><span class="pastille pastille-partiel">Couverture partielle</span> — mandats hors de la période couverte, ou chambre pas encore importée (Sénat, Parlement européen).</li>
+<li><span class="pastille pastille-decl">Positions déclaratives</span> — jamais parlementaire : ses positions viendront de ses déclarations publiques, clairement identifiées comme telles.</li>
 </ul>
 <h2>Ce que veulent dire « absent » et « non-votant »</h2>
 <p>L'Assemblée nationale ne publie jamais la liste des absents : un élu est compté <strong>absent (déduit)</strong>
