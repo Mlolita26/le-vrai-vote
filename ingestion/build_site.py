@@ -383,7 +383,7 @@ def concordances(candidats):
 
 def page(titre, actif, contenu, profondeur, meta):
     r = "../" * profondeur
-    nav_items = [("", "Accueil"), ("candidats/", "Candidats"), ("themes/", "Thèmes"),
+    nav_items = [("", "Accueil"), ("candidats/", "Candidats"),
                  ("comparer/", "Comparer"), ("methode/", "Méthode")]
     nav = "".join(
         f'<a href="{r}{chemin if chemin else "./"}"'
@@ -736,7 +736,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             n_cartes = lignes.count('class="vote-carte"')
             themes_presents.append((slug_t, t["libelle"], n_cartes))
             votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
-                           f'<h3><a href="../../themes/{slug_t}/">{e(t["libelle"])}</a></h3>'
+                           f'<h3>{e(t["libelle"])}</h3>'
                            f'<ul class="votes-cles">{lignes}</ul></section>')
 
     n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
@@ -1144,7 +1144,6 @@ def generer(base):
     _rang = {slug: i for i, slug in enumerate(CANDIDATS_PRIORITAIRES)}
     candidats.sort(key=lambda c: (_rang.get(c["slug"], len(_rang)), c["nom"]))
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
-    (WEB / "themes").mkdir(exist_ok=True)
     (WEB / "comparer").mkdir(exist_ok=True)
     (WEB / "methode").mkdir(exist_ok=True)
 
@@ -1156,14 +1155,11 @@ def generer(base):
         (dossier / "index.html").write_text(
             fiche_candidat(p, themes, votes_cles, etats, nuances, justifs_groupes,
                            groupes_par_vote, groupe_du_candidat, equiv_senat, meta), encoding="utf-8")
-    (WEB / "themes" / "index.html").write_text(
-        page_themes_index(themes, votes_cles, meta), encoding="utf-8")
-    for t in themes:
-        votes_t = [v for v in votes_cles if v["thematique_id"] == t["id"]]
-        dossier = WEB / "themes" / THEME_SLUGS[t["libelle"]]
-        dossier.mkdir(exist_ok=True)
-        (dossier / "index.html").write_text(
-            page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_par_vote, equiv_senat, meta), encoding="utf-8")
+    # Les pages « thème » autonomes ont été retirées (juillet 2026) : les thèmes
+    # restent comme regroupement sur chaque fiche candidat et dans le comparateur,
+    # mais une page thème isolée portait trop d'information sans pouvoir montrer
+    # toutes les justifications. Les fonctions page_theme/page_themes_index sont
+    # conservées (non appelées) au cas où.
     (WEB / "comparer" / "index.html").write_text(page_comparer(meta), encoding="utf-8")
     (WEB / "methode" / "index.html").write_text(
         page_methode(meta, {c["slug"]: c["nom"] for c in candidats}), encoding="utf-8")
@@ -1185,8 +1181,8 @@ def generer(base):
         "meta": meta,
     }, ensure_ascii=False), encoding="utf-8")
 
-    print(f"Site généré : accueil + {len(candidats)} fiches + {len(themes)} pages thème + "
-          f"comparer/methode. {len(votes_cles)} votes clés. Comparateur thématique (perso/parti).")
+    print(f"Site généré : accueil + {len(candidats)} fiches + comparer/methode "
+          f"(pages thème retirées). {len(votes_cles)} votes clés. Comparateur : vue unique.")
 
 
 if __name__ == "__main__":
