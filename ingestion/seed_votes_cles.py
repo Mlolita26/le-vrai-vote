@@ -28,6 +28,7 @@ THEMES = [
     ("europe-international", "Europe et international"),
     ("institutions", "Institutions et vie démocratique"),
     ("sante", "Santé"),
+    ("education", "Éducation"),
 ]
 
 URL_CONGRES_IVG = "https://lcp.fr/actualites/apres-le-vote-du-congres-la-france-devient-le-premier-pays-au-monde-a-inscrire-l-ivg"
@@ -293,6 +294,29 @@ VOTES = [
     ("VTANR5L15V4414", "sante", "Allongement du délai d'IVG à 14 semaines (2022)",
      "Allonge de 12 à 14 semaines le délai légal pour recourir à une interruption volontaire de grossesse (IVG). L'enjeu : l'accès effectif à l'IVG pour les femmes hors délai — qui devaient jusque-là se rendre à l'étranger —, face à des objections d'ordre médical et éthique.",
      None),
+
+    # ── Éducation (thème créé le 25/07/2026) ─────────────────────────────────
+    ("VTANR5L15V351", "education", "Parcoursup — accès à l'université (loi ORE, 2018)",
+     "Crée la plateforme Parcoursup et autorise les universités à examiner les dossiers des lycéens (« attendus », prérequis) pour l'accès aux filières, surtout celles très demandées. L'enjeu : mieux orienter et réduire l'échec en licence, la critique portant sur l'instauration d'une forme de sélection à l'entrée de l'université.",
+     None),
+    ("VTANR5L15V3188", "education", "Programmation de la recherche 2021-2030 (LPR)",
+     "Fixe une trajectoire budgétaire pluriannuelle pour la recherche publique jusqu'en 2030 et modifie les carrières scientifiques (nouveaux contrats, « chaires de professeur junior »). L'enjeu : le niveau et la prévisibilité des moyens de la recherche, le débat portant sur une hausse jugée trop lente et sur la précarité de certains nouveaux contrats.",
+     None),
+    ("VTANR5L17V7397", "education", "Bourses étudiantes et précarité (2026)",
+     "Réforme les bourses sur critères sociaux (revalorisation, élargissement des bénéficiaires) et prévoit des mesures contre la précarité étudiante. L'enjeu : les conditions de vie et le pouvoir d'achat des étudiants, mis en balance avec le coût pour les finances publiques.",
+     None),
+    ("VTANR5L17V2880", "education", "Antisémitisme dans l'enseignement supérieur (2025)",
+     "Renforce la lutte contre l'antisémitisme dans les universités : signalement des actes, sanctions disciplinaires, formation et sensibilisation des étudiants. L'enjeu : protéger les étudiants face aux actes antisémites, la question débattue étant l'articulation de ces mesures avec la liberté d'expression et le militantisme sur les campus.",
+     None),
+    ("VTANR5L17V1550", "education", "Scolarisation des élèves handicapés (2025)",
+     "Réorganise l'accompagnement des élèves en situation de handicap : création de « pôles d'appui à la scolarité » et évolution du rôle des accompagnants (AESH). L'enjeu : mieux scolariser les enfants handicapés, la critique portant sur les moyens réels et sur le statut des accompagnants.",
+     None),
+    ("VTANR5L17V840", "education", "Égalité des chances pour les écoles de service public (2025)",
+     "Prolonge un dispositif d'aide (classes préparatoires intégrées, accompagnement) permettant à des jeunes de milieux modestes de préparer les concours d'accès aux écoles de service public (administration, magistrature…). L'enjeu : diversifier le recrutement de la haute fonction publique, la mesure étant contestée par ses opposants comme une forme de traitement préférentiel.",
+     None),
+    ("VTANR5L17V5845", "education", "Enseignement de la défense nationale à l'école (2026)",
+     "Renforce l'enseignement des enjeux de défense nationale dans le « parcours de citoyenneté » des collégiens et lycéens (lien armée-Nation, connaissance des menaces). L'enjeu : sensibiliser les jeunes aux questions de défense, un contenu jugé par ses opposants trop orienté vers l'« esprit de défense ».",
+     None),
 ]
 
 
@@ -474,6 +498,21 @@ SENS = {
                       "ne pas imposer ces ratios"),
     "VTANR5L15V4414": ("allonger le délai légal de l'IVG de 12 à 14 semaines",
                        "maintenir le délai à 12 semaines"),
+    # ── Éducation ──
+    "VTANR5L15V351": ("adopter Parcoursup et l'examen des dossiers pour l'accès à l'université",
+                      "rejeter ce dispositif (jugé comme une sélection à l'entrée de la fac)"),
+    "VTANR5L15V3188": ("adopter la programmation budgétaire de la recherche et la réforme des carrières",
+                       "rejeter le texte"),
+    "VTANR5L17V7397": ("adopter la réforme des bourses et les mesures contre la précarité étudiante",
+                       "rejeter le texte"),
+    "VTANR5L17V2880": ("adopter ces mesures de lutte contre l'antisémitisme à l'université",
+                       "s'y opposer"),
+    "VTANR5L17V1550": ("adopter cette réorganisation de l'accompagnement des élèves handicapés",
+                       "s'y opposer"),
+    "VTANR5L17V840": ("prolonger ce dispositif d'accès des jeunes défavorisés aux écoles de service public",
+                      "refuser cette prolongation"),
+    "VTANR5L17V5845": ("renforcer l'enseignement de la défense nationale à l'école",
+                       "s'y opposer"),
 }
 
 

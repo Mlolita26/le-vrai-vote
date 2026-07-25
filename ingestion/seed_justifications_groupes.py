@@ -87,6 +87,11 @@ SOURCES = {
                  "franceinfo — le Rassemblement national, principal allié de Viktor Orbán au Parlement européen"),
     "basta_rn_salaire": ("https://basta.media/parlement-europeen-RN-oppose-droits-des-femmes-salaire-minimum-Bardella-LePen-Elections-UE",
                          "Basta!, 2024 — récapitulatif des votes du RN au Parlement européen, dont l'opposition au salaire minimum européen"),
+    # Éducation
+    "lfi_antisem_sup": ("https://lafranceinsoumise.fr/2025/07/02/instrumentalisation-de-la-lutte-contre-lantisemitisme-une-loi-adoptee-pour-reprimer-les-mobilisations-etudiantes/",
+                        "lafranceinsoumise.fr, 02/07/2025 — LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme"),
+    "lcp_antisem_sup": ("https://lcp.fr/actualites/lutte-contre-l-antisemitisme-dans-l-enseignement-superieur-l-examen-d-une-proposition-de",
+                        "LCP, 2025 — examen de la PPL antisémitisme dans l'enseignement supérieur, positions des groupes"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -308,6 +313,14 @@ JUSTIFS = [
     ("PE-HTV-147342", "RN",
      "A voté contre : le RN s'oppose à un cadre salarial fixé au niveau européen, y préférant des leviers nationaux (baisses de cotisations pour les employeurs).",
      "basta_rn_salaire"),
+
+    # ── Antisémitisme dans l'enseignement supérieur, 2025 (L17) — sensible ────
+    ("VTANR5L17V2880", "LFI-NFP",
+     "A voté contre : LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme, y voyant un moyen de « criminaliser le militantisme étudiant » (notamment les mobilisations pro-palestiniennes), tout en affirmant condamner l'antisémitisme.",
+     "lfi_antisem_sup"),
+    ("VTANR5L17V2880", "RN",
+     "A voté pour, avec la majorité et la droite, en soutien au renforcement des mesures contre l'antisémitisme à l'université.",
+     "lcp_antisem_sup"),
 ]
 
 

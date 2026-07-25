@@ -50,6 +50,7 @@ THEME_SLUGS = {
     "Europe et international": "europe-international",
     "Institutions et vie démocratique": "institutions",
     "Santé": "sante",
+    "Éducation": "education",
 }
 # Libellé et classe de badge pour chaque état de la vue couverture.
 ETATS = {
@@ -690,8 +691,14 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             # mention explicite \u2014 pour ne pas la confondre avec un vote personnel.
             # (Exclu pour les motions de censure : seul le \u00ab pour \u00bb y est compt\u00e9,
             # une banni\u00e8re color\u00e9e serait ambigu\u00eb.)
-            if not a_vote_perso and not rail_from_senat and pos_parti and not v["est_censure"]:
-                mention_parti = ("n'y si\u00e9geait pas" if est_pe
+            # \u00ab absent \u00bb compte comme a_vote_perso, mais la personne n'a rien
+            # exprim\u00e9 : si son parti a vot\u00e9, on montre la banni\u00e8re \u00ab Parti \u00bb color\u00e9e
+            # (comme pour \u00ab pas en poste \u00bb), avec la mention \u00ab absent(e) \u00bb.
+            montre_parti = (pos_parti and not rail_from_senat and not v["est_censure"]
+                            and (not a_vote_perso or etat_v == "absent"))
+            if montre_parti:
+                mention_parti = ("absent(e) ce jour-l\u00e0" if etat_v == "absent"
+                                 else "n'y si\u00e9geait pas" if est_pe
                                  else "n'\u00e9tait pas en poste" if etat_v == "non_concerne"
                                  else "position de son parti")
                 rail_html = (f'<div class="ap-rail rail-parti-{pos_parti}">'

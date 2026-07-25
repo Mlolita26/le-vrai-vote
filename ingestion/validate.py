@@ -254,8 +254,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
     # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
     n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     if n_vc:
-        verifier("76 votes clés répartis sur 8 thématiques",
-                 n_vc == 76 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 8)
+        verifier("83 votes clés répartis sur 9 thématiques",
+                 n_vc == 83 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 9)
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
@@ -303,16 +303,16 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
         # Positions des groupes parlementaires sur les votes clés.
-        verifier("positions de groupes extraites pour les 76 scrutins des votes clés",
+        verifier("positions de groupes extraites pour les 83 scrutins des votes clés",
                  cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
-                             ).fetchone()[0] == 76)
+                             ).fetchone()[0] == 83)
         verifier("aucun décompte de groupe négatif",
                  cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
         # Justifications de groupe (éditorial) : chacune adossée à un décompte de
         # groupe réel pour ce scrutin, et sourcée avec une URL non vide.
-        verifier("60 justifications de groupe, toutes adossées à un décompte et sourcées",
-                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 60
+        verifier("62 justifications de groupe, toutes adossées à un décompte et sourcées",
+                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 62
                  and cur.execute(
                      "SELECT COUNT(*) FROM justifications_groupes j WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_groupes pg WHERE pg.scrutin_id = j.scrutin_id "
