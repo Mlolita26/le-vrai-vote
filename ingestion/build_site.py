@@ -34,6 +34,13 @@ LIBELLES_MANDAT = {
 }
 SEUIL_COMPARABLE = 30  # nb minimal de votes exprimés pour entrer au comparateur
 
+# Candidats mis en avant (ordre imposé) : en tête de la liste, de l'accueil et
+# du comparateur ; les autres suivent, par ordre alphabétique.
+CANDIDATS_PRIORITAIRES = [
+    "jean-luc-melenchon", "marine-le-pen", "edouard-philippe",
+    "gabriel-attal", "bruno-retailleau", "marine-tondelier",
+]
+
 THEME_SLUGS = {
     "Écologie et agriculture": "ecologie-agriculture",
     "Pouvoir d'achat et fiscalité": "pouvoir-achat-fiscalite",
@@ -597,10 +604,25 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
     # Votes clés groupés par thème, avec l'état calculé de ce candidat.
     votes_html = ""
     themes_presents = []
+
+    def _vote_present(v):
+        """Le candidat OU son parti a-t-il une position sur ce vote clé ?"""
+        ev = etats.get((p["slug"], v["id"]), "a_importer")
+        if ev in ("pour", "contre", "abstention", "absent", "non_votant"):
+            return True
+        ab = groupe_du_candidat.get((p["slug"], v["legislature"]))
+        if ab and any(x["abrege"] == ab for x in groupes_par_vote.get(v["id"], [])):
+            return True
+        eqp = equiv_senat.get(v["id"])
+        return bool(eqp and eqp["positions"].get(p["slug"]))
+
     for t in themes:
         votes_t = [v for v in votes_cles if v["thematique_id"] == t["id"]]
         if not votes_t:
             continue
+        # Dans chaque thème : d'abord les votes où le candidat/parti était présent,
+        # les « non concerné »/vides à la fin (tri stable → ordre d'origine préservé).
+        votes_t = sorted(votes_t, key=lambda v: 0 if _vote_present(v) else 1)
         slug_t = THEME_SLUGS[t["libelle"]]
         lignes = ""
         for v in votes_t:
@@ -1041,6 +1063,10 @@ photographie librement réutilisable sont représentés par leurs initiales.</p>
 def generer(base):
     (candidats, themes, votes_cles, etats, nuances,
      groupes_par_vote, groupe_du_candidat, equiv_senat, meta) = charger(base)
+    # Ordre stratégique : candidats principaux en tête (se propage à l'accueil,
+    # à la liste et au comparateur, qui consomment tous cette liste ordonnée).
+    _rang = {slug: i for i, slug in enumerate(CANDIDATS_PRIORITAIRES)}
+    candidats.sort(key=lambda c: (_rang.get(c["slug"], len(_rang)), c["nom"]))
     (WEB / "candidats").mkdir(parents=True, exist_ok=True)
     (WEB / "themes").mkdir(exist_ok=True)
     (WEB / "comparer").mkdir(exist_ok=True)
