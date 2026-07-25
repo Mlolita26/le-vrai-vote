@@ -416,7 +416,6 @@ def page(titre, actif, contenu, profondeur, meta):
 {contenu}
 </main>
 <footer class="pied">
-<p>Données générées le {e(date_fr(meta['genere_le']))} — {nombre_fr(meta['n_scrutins'])} scrutins en base (Assemblée nationale et Congrès, juillet 2012 → juillet 2026 ; Sénat et Parlement européen à importer). Candidatures mises à jour le {e(meta['candidats_maj'])}.</p>
 <p>Données parlementaires : licence ouverte (Assemblée nationale). Contenu : CC BY 4.0. <a href="https://github.com/Mlolita26/le-vrai-vote">Code source</a>.</p>
 </footer>
 </body>
@@ -554,8 +553,6 @@ sa présence et son parcours — à partir des données publiques officielles, c
 <div class="cand-grille" id="grille-declarees">{''.join(carte_accueil(c) for c in declares)}</div>
 <h3 class="sous-titre">En lice pour une primaire</h3>
 <div class="cand-grille" id="grille-primaire">{''.join(carte_accueil(c) for c in primaires)}</div>
-<p class="note-methode">Jordan Bardella n'est pas candidat : Marine Le Pen, déclarée le 7 juillet 2026
-après l'arrêt d'appel, porte la candidature du Rassemblement national.</p>
 </section>
 <script>
 document.getElementById("recherche").addEventListener("input", function () {{
@@ -715,7 +712,6 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 {senat_sec}
 <p class="ap-resume">{e(v['resume'])} <a href="{e(v['source_resume'])}" rel="noopener">Scrutin officiel \u2192</a></p>
 {nuance_html}
-{f'<p class="vote-contexte">{e(v["contexte"])}</p>' if v['contexte'] else ''}
 </div>
 </li>"""
         if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
@@ -764,7 +760,12 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
       // Remonter au niveau des filtres : sinon, après un clic en bas de page,
       // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
       var barre = document.querySelector(".filtres-themes");
-      if (barre && barre.scrollIntoView) barre.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (barre) {
+        var ent = document.querySelector(".entete-nav");
+        var dec = (ent ? ent.offsetHeight : 56) + 8;
+        var y = barre.getBoundingClientRect().top + window.pageYOffset - dec;
+        window.scrollTo({ top: y < 0 ? 0 : y, behavior: "smooth" });
+      }
     });
   });
 })();
@@ -927,8 +928,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         bs.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
         b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
         rendre();
-        var res = document.getElementById("resultat");
-        if (res && res.scrollIntoView) res.scrollIntoView({ behavior: "smooth", block: "start" });
+        var anc = document.querySelector(".filtre-compare") || document.getElementById("resultat");
+        if (anc) {
+          var ent = document.querySelector(".entete-nav");
+          var dec = (ent ? ent.offsetHeight : 56) + 8;
+          var y = anc.getBoundingClientRect().top + window.pageYOffset - dec;
+          window.scrollTo({ top: y < 0 ? 0 : y, behavior: "smooth" });
+        }
       });
     });
   }

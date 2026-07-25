@@ -48,8 +48,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         bs.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
         b.classList.add("actif"); b.setAttribute("aria-pressed", "true");
         rendre();
-        var res = document.getElementById("resultat");
-        if (res && res.scrollIntoView) res.scrollIntoView({ behavior: "smooth", block: "start" });
+        var anc = document.querySelector(".filtre-compare") || document.getElementById("resultat");
+        if (anc) {
+          var ent = document.querySelector(".entete-nav");
+          var dec = (ent ? ent.offsetHeight : 56) + 8;
+          var y = anc.getBoundingClientRect().top + window.pageYOffset - dec;
+          window.scrollTo({ top: y < 0 ? 0 : y, behavior: "smooth" });
+        }
       });
     });
   }
