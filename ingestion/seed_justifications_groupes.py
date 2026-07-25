@@ -123,6 +123,15 @@ SOURCES = {
                     "Assemblée nationale — adoption de la PPL renforçant le parcours inclusif des élèves en situation de handicap"),
     "lcp_egalite_chances": ("https://lcp.fr/actualites/egalite-des-chances-les-deputes-se-prononcent-en-faveur-de-la-prolongation-du-dispositif",
                             "LCP, février 2025 — prolongation du « concours Talents » ; opposition du RN (Bryan Masson) à la « discrimination positive »"),
+    # Taxe/impôts et Travail
+    "europe1_isf": ("https://www.europe1.fr/politique/lassemblee-a-vote-la-transformation-de-lisf-en-impot-sur-la-fortune-immobiliere-3470117",
+                    "Europe 1, 2017 — transformation de l'ISF en IFI : majorité + LR pour, gauche contre ; 150 M€ d'impôts en moins pour les 100 plus grandes fortunes"),
+    "wiki_ordonnances2017": ("https://fr.wikipedia.org/wiki/R%C3%A9forme_du_code_du_travail_en_2017",
+                             "Wikipédia — réforme du code du travail par ordonnances (2017) : accords d'entreprise, encadrement des prud'hommes ; votes des groupes"),
+    "lcp_france_travail": ("https://lcp.fr/actualites/reforme-du-rsa-france-travail-l-assemblee-nationale-adopte-le-projet-de-loi-pour-le",
+                           "LCP, octobre 2023 — adoption du projet de loi « plein emploi » (RSA conditionné) ; RN et Nupes contre, majorité + LR pour"),
+    "lcp_partage_valeur": ("https://lcp.fr/actualites/interessement-primes-participation-l-assemblee-a-adopte-le-projet-de-loi-sur-le-partage",
+                           "LCP, juin 2023 — partage de la valeur : seuls LFI et le communiste de son groupe contre (Marianne Maximi)"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -447,6 +456,56 @@ JUSTIFS = [
     ("VTANR5L17V840", "EPR",
      "A voté pour, en soutien à un dispositif diversifiant le recrutement de la haute fonction publique.",
      "lcp_egalite_chances"),
+
+    # ── Taxe : budget 2018 (suppression de l'ISF + flat tax), L15 ────────────
+    ("VTANR5L15V272", "LaREM",
+     "A voté pour : la majorité présente la suppression de l'ISF et la « flat tax » comme un moyen d'orienter l'épargne vers l'investissement et l'emploi (engagements de campagne d'Emmanuel Macron).",
+     "europe1_isf"),
+    ("VTANR5L15V272", "LR",
+     "A voté pour, en soutien à l'allègement de la fiscalité du capital.",
+     "europe1_isf"),
+    ("VTANR5L15V272", "FI",
+     "A voté contre, dénonçant un budget « pour les riches » : le ministre a reconnu que les 100 plus grandes fortunes paieraient environ 150 millions d'euros d'impôts en moins.",
+     "europe1_isf"),
+    ("VTANR5L15V272", "NG",
+     "A voté contre, avec la gauche, contre la suppression de l'ISF.",
+     "europe1_isf"),
+
+    # ── Travail : ordonnances (réforme du code du travail), 2017 (L15) ───────
+    ("VTANR5L15V106", "LaREM",
+     "A voté pour : donner plus de place aux accords d'entreprise et « sécuriser » les licenciements pour, selon le Gouvernement, favoriser l'embauche.",
+     "wiki_ordonnances2017"),
+    ("VTANR5L15V106", "LR",
+     "A voté pour, en soutien à l'assouplissement du droit du travail.",
+     "wiki_ordonnances2017"),
+    ("VTANR5L15V106", "FI",
+     "A voté contre, dénonçant une régression sociale, notamment le plafonnement des indemnités prud'homales.",
+     "wiki_ordonnances2017"),
+    ("VTANR5L15V106", "NG",
+     "A voté contre, avec la gauche.",
+     "wiki_ordonnances2017"),
+
+    # ── Travail : France Travail / RSA conditionné, 2023 (L16) ───────────────
+    ("VTANR5L16V2965", "RE",
+     "A voté pour : réduire le chômage et mieux accompagner les allocataires du RSA vers l'emploi.",
+     "lcp_france_travail"),
+    ("VTANR5L16V2965", "LFI - NUPES",
+     "A voté contre, dénonçant une « casse sociale » et le principe d'un RSA conditionné à des heures d'activité (le Défenseur des droits y a vu une atteinte aux droits).",
+     "lcp_france_travail"),
+    ("VTANR5L16V2965", "RN",
+     "A voté contre, s'opposant au conditionnement du RSA prévu par le texte.",
+     "lcp_france_travail"),
+
+    # ── Travail : partage de la valeur (ANI), 2023 (L16) ─────────────────────
+    ("VTANR5L16V2112", "RE",
+     "A voté pour, pour développer l'intéressement, la participation et les primes et associer davantage les salariés aux résultats de l'entreprise.",
+     "lcp_partage_valeur"),
+    ("VTANR5L16V2112", "LFI - NUPES",
+     "A voté contre : LFI reproche un texte « muet » sur des mécanismes plus justes comme les hausses de salaire, et privilégiant des primes ponctuelles (Marianne Maximi).",
+     "lcp_partage_valeur"),
+    ("VTANR5L16V2112", "GDR - NUPES",
+     "A voté contre, avec LFI, pour les mêmes raisons.",
+     "lcp_partage_valeur"),
 ]
 
 

@@ -311,8 +311,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
         # Justifications de groupe (éditorial) : chacune adossée à un décompte de
         # groupe réel pour ce scrutin, et sourcée avec une URL non vide.
-        verifier("87 justifications de groupe, toutes adossées à un décompte et sourcées",
-                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 87
+        verifier("101 justifications de groupe, toutes adossées à un décompte et sourcées",
+                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 101
                  and cur.execute(
                      "SELECT COUNT(*) FROM justifications_groupes j WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_groupes pg WHERE pg.scrutin_id = j.scrutin_id "
