@@ -299,12 +299,17 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       boxThemes.hidden = true;
     }
 
+    function lienProgramme(obj, surnom) {
+      if (!obj.programme) return "Programme " + surnom + " : indisponible";
+      return '<a href="' + obj.programme.url + '" rel="noopener">Programme ' + surnom + '</a>';
+    }
     var entete = document.createElement("div");
     entete.className = "resultat-comparaison";
     entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong> '
       + '(vote personnel ou, à défaut, position du parti) :</p>'
       + '<div id="entete-chiffres">' + texteChiffres(totComp, totAcc) + '</div>'
-      + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
+      + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>'
+      + '<p>' + lienProgramme(objA, surA) + ' · ' + lienProgramme(objB, surB) + '</p>';
     res.appendChild(entete);
     res.appendChild(sections);
     appliquerThemeFiltre(false);

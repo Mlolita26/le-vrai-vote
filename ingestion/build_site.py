@@ -633,15 +633,15 @@ def bloc_programme(p):
     else:
         propre = ('<p class="couverture couverture-hors">Aucun site de campagne ou de programme '
                    'identifié et vérifié pour ce candidat — indisponible pour le moment.</p>')
-    return f"""<h2>Programme</h2>
+    return f"""<h2 id="programme">Programme</h2>
 <p class="note-methode">Positions déclarées (programme, discours sourcés) : particulièrement utile
 pour les candidats sans mandat parlementaire récent. Un lien n'est affiché que vers un site officiel
 (campagne ou parti) vérifié — jamais un résumé ou une interprétation rédigés par ce site.</p>
 {propre}
 <p>Pour comparer les propositions de plusieurs candidats sur un même thème (fiscalité, immigration, défense…) :
-<a href="{IFRAP_URL}" rel="noopener">comparateur de programmes de l'iFRAP →</a>
-<span class="note-methode"> (ressource externe ; l'iFRAP est un think tank orienté libéral-conservateur qui reformule
-les propositions des candidats — ce n'est pas une analyse de Le Vrai Vote).</span></p>"""
+<a href="{IFRAP_URL}" rel="noopener">comparateur de programmes de l'iFRAP →</a></p>
+<p class="note-methode">Ressource externe : l'iFRAP est un think tank orienté libéral-conservateur qui reformule
+les propositions des candidats — ce n'est pas une analyse de Le Vrai Vote.</p>"""
 
 
 def avatar(p, prefixe=""):
@@ -786,7 +786,7 @@ def fiche_candidat(p, candidats, themes, votes_cles, etats, nuances, justifs_gro
             f"<li>Législature {e(s['leg'])} : {s['present']}/{s['total']} scrutins solennels "
             f"({100 * s['present'] / s['total']:.1f} %)</li>".replace(".", ",")
             for s in p["solennels"])
-        solennels_html = f"""<h2>Présence aux scrutins solennels</h2>
+        solennels_html = f"""<h2 id="solennels">Présence aux scrutins solennels</h2>
 <p class="note-methode">Les scrutins solennels sont les votes d'ensemble annoncés à l'avance —
 référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée dans une prochaine version.</p>
 <ul>{lignes}</ul>"""
@@ -976,10 +976,10 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                                f'<ul class="votes-cles">{lignes}</ul></section>')
 
     n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
-    bloc_an = ("<h2>Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"
+    bloc_an = ("<h2 id=\"positions-an\">Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"
                + positions_html) if n_an_expr else ""
     b_sen = badges_positions(p["positions_senat"])
-    bloc_senat = ("<h2>Positions de vote \u2014 S\u00e9nat</h2>\n"
+    bloc_senat = ("<h2 id=\"positions-senat\">Positions de vote \u2014 S\u00e9nat</h2>\n"
                   "<p class=\"note-methode\">Scrutins publics du S\u00e9nat collect\u00e9s sur senat.fr. "
                   "Beaucoup de textes au S\u00e9nat ne font pas l'objet d'un scrutin public : "
                   "cette r\u00e9partition ne couvre que les scrutins publics.</p>\n" + b_sen) if b_sen else ""
@@ -1028,7 +1028,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
         # Jamais parlementaire : tous les votes cl\u00e9s sont \u00ab indisponible \u00bb.
         # On r\u00e9sume en une phrase et on replie le d\u00e9tail (rien n'est perdu).
         section_votes = (
-            f'<h2>Votes cl\u00e9s</h2>'
+            f'<h2 id="votes-cles">Votes cl\u00e9s</h2>'
             f'<p class="note-methode">{e(p["nom"])} n\'a jamais si\u00e9g\u00e9 au Parlement '
             f'(Assembl\u00e9e nationale, S\u00e9nat ou Parlement europ\u00e9en) depuis 1997 : il n\'existe donc '
             f'aucun vote personnel \u00e0 afficher sur les lois cl\u00e9s. Les positions viendront des '
@@ -1036,18 +1036,31 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             f'<details class="votes-replies"><summary>Voir la liste des lois cl\u00e9s '
             f'(toutes \u00ab indisponible \u00bb pour ce candidat)</summary>{note_votes}{votes_html}</details>')
     else:
-        section_votes = (f'<h2>Votes cl\u00e9s par th\u00e8me</h2>{note_votes}{filtre_html}'
+        section_votes = (f'<h2 id="votes-cles">Votes cl\u00e9s par th\u00e8me</h2>{note_votes}{filtre_html}'
                          f'<div id="votes-themes">{votes_html}</div>{js_filtre}')
+    sommaire_items = [("#votes-cles", "Votes clés")]
+    if bloc_an:
+        sommaire_items.append(("#positions-an", "Positions — Assemblée"))
+    if bloc_senat:
+        sommaire_items.append(("#positions-senat", "Positions — Sénat"))
+    if solennels_html:
+        sommaire_items.append(("#solennels", "Assiduité"))
+    sommaire_items.append(("#mandats", "Mandats"))
+    sommaire_items.append(("#programme", "Programme"))
+    sommaire_html = ('<nav class="sommaire-fiche" aria-label="Aller à une section de cette fiche">'
+                      + "".join(f'<a href="{href}">{e(lib)}</a>' for href, lib in sommaire_items)
+                      + '</nav>')
     contenu = f"""
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
 <div class="fiche-tete">{avatar(p, "../../").replace('width="42" height="42"', 'width="72" height="72"')}
 <div><h1>{e(p['nom'])}</h1>
 <p class="detail">{e(p['detail'])}</p></div></div>
 {switcher_candidat(p, candidats)}
+{sommaire_html}
 <p>{statut} {e(declaration)} — <a href="{e(p['source'])}" rel="noopener">source de la déclaration</a>.
 {f"Né(e) le {date_fr(p['naissance'])} (source : open data officiel)." if p['naissance'] else "Date de naissance : à importer."}</p>
 {section_votes}
-<h2>Mandats (sources officielles, datés)</h2>
+<h2 id="mandats">Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
 {bloc_an}
 {bloc_senat}
@@ -1487,12 +1500,17 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       boxThemes.hidden = true;
     }
 
+    function lienProgramme(obj, surnom) {
+      if (!obj.programme) return "Programme " + surnom + " : indisponible";
+      return '<a href="' + obj.programme.url + '" rel="noopener">Programme ' + surnom + '</a>';
+    }
     var entete = document.createElement("div");
     entete.className = "resultat-comparaison";
     entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong> '
       + '(vote personnel ou, à défaut, position du parti) :</p>'
       + '<div id="entete-chiffres">' + texteChiffres(totComp, totAcc) + '</div>'
-      + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
+      + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>'
+      + '<p>' + lienProgramme(objA, surA) + ' · ' + lienProgramme(objB, surB) + '</p>';
     res.appendChild(entete);
     res.appendChild(sections);
     appliquerThemeFiltre(false);
@@ -1645,7 +1663,9 @@ def generer(base):
 
     libelles_themes = {t["id"]: t["libelle"] for t in themes}
     (WEB / "data.json").write_text(json.dumps({
-        "candidats": [{"slug": c["slug"], "nom": c["nom"], "nom_famille": c["nom_famille"]}
+        "candidats": [{"slug": c["slug"], "nom": c["nom"], "nom_famille": c["nom_famille"],
+                       "programme": {"url": c["programme"]["url"], "type": c["programme"]["type"]}
+                                     if c["programme"] else None}
                       for c in candidats],
         "themes": [t["libelle"] for t in themes],
         "votes": [{"id": str(v["id"]), "uid": v["uid"], "slug": v["slug"],

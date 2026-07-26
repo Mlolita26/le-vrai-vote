@@ -361,6 +361,15 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   .fiche-action select { min-width:0; width:100%; }
 }
 
+/* Sommaire de la fiche candidat : accès direct à chaque section (ex. Programme)
+   sans avoir à scroller pour découvrir qu'elle existe. */
+.sommaire-fiche { display:flex; flex-wrap:wrap; gap:.4rem; margin:0 0 1.2rem; }
+.sommaire-fiche a { font-size:.82rem; font-weight:600; color:var(--encre-douce);
+  background:var(--carte); border:1.5px solid var(--lisere); border-radius:999px;
+  padding:.32rem .8rem; text-decoration:none; }
+.sommaire-fiche a:hover, .sommaire-fiche a:focus-visible { border-color:var(--accent); color:var(--accent); }
+#votes-cles, #positions-an, #positions-senat, #solennels, #mandats, #programme { scroll-margin-top:6rem; }
+
 /* Ligne « Au Sénat » (équivalent d'un vote clé dans l'autre chambre) */
 .ligne-senat { font-size:0.88rem; color:var(--encre-douce); margin:0.35rem 0;
   padding-left:0.6rem; border-left:3px solid var(--lisere); }
