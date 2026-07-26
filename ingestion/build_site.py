@@ -590,7 +590,7 @@ def carte_candidat(p, prefixe):
     lien_statut = "candidature déclarée" if p["statut"] == "declaree" else "en lice pour une primaire"
     return f"""<article class="carte-candidat" data-nom="{e(p['nom'].lower())}">
 <div class="carte-tete">{avatar(p, prefixe)}<h3><a href="{prefixe}candidats/{e(p['slug'])}/">{e(p['nom'])}</a></h3></div>
-<p class="detail">{e(p['parti'])} · {lien_statut} · {e(declaration)} (<a href="{e(p['source'])}" rel="noopener">source</a>)</p>
+<p class="detail">{e(p['parti'])} · {lien_statut} · {e(declaration)}</p>
 <p class="couverture couverture-{etat}">{e(phrase)}</p>
 </article>"""
 
@@ -634,14 +634,9 @@ def bloc_programme(p):
         propre = ('<p class="couverture couverture-hors">Aucun site de campagne ou de programme '
                    'identifié et vérifié pour ce candidat — indisponible pour le moment.</p>')
     return f"""<h2 id="programme">Programme</h2>
-<p class="note-methode">Positions déclarées (programme, discours sourcés) : particulièrement utile
-pour les candidats sans mandat parlementaire récent. Un lien n'est affiché que vers un site officiel
-(campagne ou parti) vérifié — jamais un résumé ou une interprétation rédigés par ce site.</p>
 {propre}
 <p>Pour comparer les propositions de plusieurs candidats sur un même thème (fiscalité, immigration, défense…) :
-<a href="{IFRAP_URL}" rel="noopener">comparateur de programmes de l'iFRAP →</a></p>
-<p class="note-methode">Ressource externe : l'iFRAP est un think tank orienté libéral-conservateur qui reformule
-les propositions des candidats — ce n'est pas une analyse de Le Vrai Vote.</p>"""
+<a href="{IFRAP_URL}" rel="noopener">comparateur de programmes de l'iFRAP →</a></p>"""
 
 
 def avatar(p, prefixe=""):
@@ -994,11 +989,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                        f'aria-label="Filtrer les votes cl\u00e9s par th\u00e8me">{chips}</div>')
     else:
         filtre_html = ""
-    note_votes = (
-        '<p class="note-methode">S\u00e9lection selon la <a href="../../methode/">grille de crit\u00e8res '
-        'publi\u00e9e</a>, identique pour tous les candidats. \u00ab Non concern\u00e9 \u00bb : pas en poste dans la '
-        'chambre \u00e0 la date du scrutin ; \u00ab absent (d\u00e9duit) \u00bb : mandat actif mais aucune mention '
-        'au scrutin officiel.</p>')
+    note_votes = ""
     js_filtre = """<script>
 (function() {
   var chips = document.querySelectorAll(".filtres-themes .filtre-chip");
@@ -1011,15 +1002,9 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
       blocs.forEach(function (b) {
         b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
       });
-      // Remonter au niveau des filtres : sinon, après un clic en bas de page,
+      // Remonter tout en haut de la page : sinon, après un clic en bas de page,
       // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
-      var barre = document.querySelector(".filtres-themes");
-      if (barre) {
-        var ent = document.querySelector(".entete-nav");
-        var dec = (ent ? ent.offsetHeight : 56) + 8;
-        var y = barre.getBoundingClientRect().top + window.pageYOffset - dec;
-        window.scrollTo({ top: y < 0 ? 0 : y, behavior: "smooth" });
-      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
 })();
@@ -1054,11 +1039,10 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 <nav class="fil"><a href="../">← Tous les candidats</a></nav>
 <div class="fiche-tete">{avatar(p, "../../").replace('width="42" height="42"', 'width="72" height="72"')}
 <div><h1>{e(p['nom'])}</h1>
-<p class="detail">{e(p['detail'])}</p></div></div>
+<p class="detail">{e(p['parti'])}</p></div></div>
 {switcher_candidat(p, candidats)}
 {sommaire_html}
-<p>{statut} {e(declaration)} — <a href="{e(p['source'])}" rel="noopener">source de la déclaration</a>.
-{f"Né(e) le {date_fr(p['naissance'])} (source : open data officiel)." if p['naissance'] else "Date de naissance : à importer."}</p>
+<p>{statut} {e(declaration)}.</p>
 {section_votes}
 <h2 id="mandats">Mandats (sources officielles, datés)</h2>
 <ul class="mandats">{mandats_html}</ul>
