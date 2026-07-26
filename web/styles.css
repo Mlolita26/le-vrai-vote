@@ -91,7 +91,9 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   position:sticky; top:0; z-index:20; background:var(--fond);
 }
 .marque { font-family:'Spectral', Georgia, serif; font-weight:700; font-size:1.3rem;
-  letter-spacing:-0.01em; color:var(--encre); text-decoration:none; }
+  letter-spacing:-0.01em; color:var(--encre); text-decoration:none;
+  display:flex; align-items:center; gap:0.45rem; }
+.marque-logo { display:block; flex:none; }
 .entete-nav nav { display:flex; flex-wrap:wrap; align-items:center; gap:0.2rem 0.35rem; margin-left:auto; }
 .entete-nav nav a { text-decoration:none; color:var(--encre-douce); font-size:0.92rem;
   padding:0.35rem 0.6rem; border-radius:7px; }

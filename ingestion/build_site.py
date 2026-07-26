@@ -504,12 +504,23 @@ def page(titre, actif, contenu, profondeur, meta):
         f'<a href="{r}{chemin if chemin else "./"}"'
         f'{" aria-current=\"page\"" if libelle == actif else ""}>{libelle}</a>'
         for chemin, libelle in nav_items)
+    titre_page = f"{e(titre)} — Le Vrai Vote"
+    og_image = f"https://mlolita26.github.io/le-vrai-vote/{r.replace('../', '')}assets/og-image.png" if r else "https://mlolita26.github.io/le-vrai-vote/assets/og-image.png"
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(titre)} — Le Vrai Vote</title>
+<title>{titre_page}</title>
+<link rel="icon" type="image/png" sizes="32x32" href="{r}assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="{r}assets/favicon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="{r}assets/favicon-512.png">
+<link rel="apple-touch-icon" href="{r}assets/apple-touch-icon.png">
+<meta property="og:title" content="{titre_page}">
+<meta property="og:type" content="website">
+<meta property="og:image" content="{og_image}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{og_image}">
 <link rel="stylesheet" href="{r}styles.css">
 <script src="{r}theme.js" defer></script>
 <script src="{r}config.js"></script>
@@ -518,7 +529,7 @@ def page(titre, actif, contenu, profondeur, meta):
 <body>
 <div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
 <header class="entete-nav">
-  <a class="marque" href="{r}./">Le Vrai Vote</a>
+  <a class="marque" href="{r}./"><img src="{r}assets/favicon-192.png" alt="" width="32" height="32" class="marque-logo">Le Vrai Vote</a>
   <nav aria-label="Navigation principale">{nav}</nav>
 </header>
 <main>
