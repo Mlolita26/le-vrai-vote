@@ -93,6 +93,9 @@ VOTES = [
     ("VTANR5L17V2957", "ecologie-agriculture", "Loi agricole dite « loi Duplomb » (2025)",
      "Réautorise, par dérogation, l'acétamipride — un insecticide de la famille des néonicotinoïdes, réputés dangereux pour les abeilles, interdit en France depuis 2018 mais encore autorisé ailleurs en Europe —, réclamé par une partie des agriculteurs (betteraves, noisettes) faute d'alternative jugée efficace. Le texte facilite aussi la création de réserves d'eau pour l'irrigation et l'agrandissement de certains élevages. L'enjeu : la compétitivité de ces filières face à la concurrence européenne, mise en balance avec la protection des pollinisateurs, de l'eau et de la santé.",
      "Texte soutenu par la FNSEA et la Coordination rurale, combattu par la Confédération paysanne, les apiculteurs et des associations de santé et d'environnement. Une pétition record (plus de deux millions de signatures) a demandé son abrogation, et le Conseil constitutionnel a censuré la réintroduction de l'acétamipride en août 2025 — après ce scrutin."),
+    ("VTANR5L17V8427", "ecologie-agriculture", "Loi d'urgence pour la protection et la souveraineté agricoles (2026)",
+     "Vise à soutenir l'agriculture française face aux crises climatiques et à la concurrence internationale : facilite les réserves d'eau pour l'irrigation, renforce les contrôles sur les denrées importées aux frontières et interdit l'achat de produits non-européens pour la restauration collective publique, réduit les délais de négociation entre agriculteurs et premiers acheteurs, et permet aux porteurs de certains projets (agricoles, énergétiques, d'infrastructure) d'obtenir réparation en cas de recours jugé abusif contre leur projet. Autorise aussi, à titre dérogatoire et via une procédure d'évaluation accélérée (60 jours, contre 12 mois habituellement), la réintroduction de produits phytosanitaires interdits en France dont l'acétamipride, un insecticide de la famille des néonicotinoïdes. L'enjeu : la compétitivité de l'agriculture française, mise en balance avec la protection de l'eau, des pollinisateurs et de la santé.",
+     "Adopté une première fois le 2 juin 2026 (scrutin n°7259 : 369 pour, 178 contre, 15 abstentions), puis, sur le texte de compromis de la commission mixte paritaire, le 20 juillet 2026 (scrutin n°8427 : 296 pour, 224 contre, 41 abstentions) — c'est ce second vote, définitif à l'Assemblée, qui est affiché ici. Reprend, sur les pesticides, un dispositif proche de celui de la loi Duplomb (2025), partiellement censuré par le Conseil constitutionnel après son adoption. Le Conseil, de nouveau saisi le 24 juillet 2026, ne s'était pas prononcé à la date de mise à jour du site : cette disposition est un candidat plausible à une nouvelle censure."),
 
     # ── Pouvoir d'achat et fiscalité ─────────────────────────────────────────
     ("VTANR5L16V186", "travail", "Mesures d'urgence pouvoir d'achat (2022)",
@@ -551,6 +554,8 @@ SENS = {
     "PE-HTV-164499": ("imposer aux États des objectifs de restauration des milieux naturels dégradés",
                       "refuser ces objectifs"),
     "VTANR5L17V2957": ("adopter la loi (réautoriser l'acétamipride, faciliter réserves d'eau et agrandissements d'élevages)",
+                       "rejeter le texte"),
+    "VTANR5L17V8427": ("adopter la loi (réintroduction dérogatoire de pesticides interdits dont l'acétamipride, réserves d'eau, contrôles aux frontières)",
                        "rejeter le texte"),
     "PE-HTV-184178": ("fixer l'objectif européen de réduction des émissions à l'horizon 2040",
                       "refuser cet objectif intermédiaire"),

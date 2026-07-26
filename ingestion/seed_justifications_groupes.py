@@ -165,6 +165,13 @@ SOURCES = {
                        "France 24, 29/03/2021 — J.-L. Mélenchon rejette la loi Climat, jugée « inutile » voire « dangereuse » et très en deçà de la Convention citoyenne"),
     "reporterre_enr_lfi": ("https://reporterre.net/Clemence-Guette-Le-projet-de-loi-sur-les-energies-renouvelables-manque-de-logique",
                            "Reporterre — Clémence Guetté (LFI) explique l'opposition du groupe à la loi d'accélération des EnR (marché libéralisé, veto des maires, pôle public)"),
+    # ── Loi d'urgence agricole, 2026 (L17) ────────────────────────────────────
+    "basta_urgence_agricole": ("https://basta.media/Adoption-loi-urgence-agricole-quels-deputes-vote-pour-reintroduire-des-pesticides-dangereux",
+                               "Basta!, juillet 2026 — détail du vote par groupe sur la loi d'urgence agricole, citation d'Aurélie Trouvé (LFI) interpellant Attal, Philippe et Le Pen"),
+    "vert_urgence_agricole": ("https://vert.eco/agriculture/loi-durgence-agricole-adoptee-a-lassemblee-nationale-lhistoire-reviendra-sur-ce-grave-moment-de-regression/",
+                              "Vert, 21/07/2026 — citations d'Aurélie Trouvé et de Manon Meunier (LFI) contre le texte"),
+    "maireinfo_urgence_agricole": ("https://www.maire-info.com/agriculture/l'assemblee-nationale-adopte-le-projet-de-loi-d'urgence-agricole-dans-l'agitation-et-la-division-article-31002",
+                                   "Maire-Info, juillet 2026 — citation de Gabriel Attal (« sentiment de gâchis ») et division du groupe EPR"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -612,6 +619,32 @@ JUSTIFS = [
     ("VTANR5L16V823", "LFI - NUPES",
      "A voté contre : le groupe (Clémence Guetté) a dénoncé une logique de « marché libéralisé » et le quasi-droit de veto laissé aux maires, plaidant pour un pôle public de l'énergie et pour réserver le solaire aux terres déjà artificialisées, toitures et parkings plutôt qu'aux terres agricoles.",
      "reporterre_enr_lfi"),
+
+    # ── Loi d'urgence pour la protection et la souveraineté agricoles, 2026 (L17) ──
+    ("VTANR5L17V8427", "LFI-NFP",
+     "A voté contre à l'unanimité : Aurélie Trouvé a interpellé directement les candidats Gabriel Attal, Édouard Philippe et Marine Le Pen, appelés selon elle à « rendre des comptes à tous les Français » pour un texte qu'elle juge dangereux pour la santé des enfants ; Manon Meunier a dénoncé une loi de « mal-adaptation » au changement climatique.",
+     "vert_urgence_agricole"),
+    ("VTANR5L17V8427", "EPR",
+     "Groupe divisé (51 pour, 15 contre, 16 abstentions, dont l'ancienne Première ministre Élisabeth Borne et l'ex-ministre de l'Écologie Agnès Pannier-Runacher) : son président Gabriel Attal a voté pour tout en exprimant un « sentiment de gâchis » et en critiquant la méthode du Gouvernement sur les amendements de suppression.",
+     "maireinfo_urgence_agricole"),
+    ("VTANR5L17V8427", "RN",
+     "A voté pour à l'unanimité, en soutien à un texte présenté comme une réponse aux difficultés de la profession agricole face à la concurrence et aux aléas climatiques.",
+     "basta_urgence_agricole"),
+    ("VTANR5L17V8427", "DR",
+     "A voté pour à l'unanimité, en soutien à l'allègement des contraintes réclamé par une partie de la profession agricole.",
+     "basta_urgence_agricole"),
+    ("VTANR5L17V8427", "SOC",
+     "A voté contre, avec le reste de la gauche, dénonçant des reculs environnementaux jugés majeurs, notamment sur l'eau et les pesticides.",
+     "basta_urgence_agricole"),
+    ("VTANR5L17V8427", "EcoS",
+     "A voté contre à l'unanimité, opposé à la réintroduction de pesticides et aux reculs environnementaux du texte sur la gestion de l'eau.",
+     "basta_urgence_agricole"),
+    ("VTANR5L17V8427", "GDR",
+     "A voté contre, avec le reste de la gauche, pour les mêmes motifs environnementaux (pesticides, gestion de l'eau).",
+     "basta_urgence_agricole"),
+    ("VTANR5L17V8427", "Dem",
+     "Groupe divisé (19 pour, 11 contre, 6 abstentions) : son président Marc Fesneau, qui avait publiquement critiqué les mesures du texte relatives à l'eau, a néanmoins voté pour son adoption.",
+     "basta_urgence_agricole"),
 ]
 
 
