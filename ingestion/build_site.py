@@ -1204,6 +1204,14 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   var selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
   var boxThemes = document.getElementById("filtres-cmp");
   var themeFiltre = "tous";
+  var totComp = 0, totAcc = 0, themesRendus = [];
+  function texteChiffres(comp, acc) {
+    var p = comp ? Math.round(100 * acc / comp) : 0;
+    return comp
+      ? '<p class="grand-chiffre">' + p + ' %</p><p>de positions identiques sur <strong>' + comp
+        + '</strong> votes clés comparables (' + acc + ' accords).</p>'
+      : '<p>Aucun vote clé comparable entre ces deux candidats.</p>';
+  }
   // Desktop : tout est deplie (details ouverts) ; mobile : replies.
   var wideCmp = window.matchMedia("(min-width:641px)");
   function syncCmpOpen() {
@@ -1240,6 +1248,15 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     document.querySelectorAll("#resultat .cmp-theme").forEach(function (s) {
       s.style.display = (themeFiltre === "tous" || s.dataset.theme === themeFiltre) ? "" : "none";
     });
+    var chiffres = document.getElementById("entete-chiffres");
+    if (chiffres) {
+      if (themeFiltre === "tous") {
+        chiffres.innerHTML = texteChiffres(totComp, totAcc);
+      } else {
+        var t = themesRendus.find(function (x) { return x.ti + "" === themeFiltre; });
+        chiffres.innerHTML = t ? texteChiffres(t.comp, t.acc) : texteChiffres(totComp, totAcc);
+      }
+    }
     if (scroller) {
       var ent = document.querySelector(".entete-nav");
       var dec = (ent ? ent.offsetHeight : 56) + 8;
@@ -1345,8 +1362,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     var nomA = objA.nom, nomB = objB.nom;
     var surA = objA.nom_famille || nomA, surB = objB.nom_famille || nomB;
 
-    var totComp = 0, totAcc = 0;
-    var themesRendus = [];
+    totComp = 0; totAcc = 0;
+    themesRendus = [];
     var sections = document.createElement("div");
     // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
     function carteVote(v) {
@@ -1416,7 +1433,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         : "aucun vote comparable";
       sections.innerHTML += '<section class="cmp-theme" data-theme="' + ti + '"><h2>' + theme
         + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
-      themesRendus.push({ ti: ti, lib: theme, comp: comp, pct: pctT });
+      themesRendus.push({ ti: ti, lib: theme, comp: comp, acc: acc, pct: pctT });
     });
 
     var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
@@ -1443,10 +1460,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     entete.className = "resultat-comparaison";
     entete.innerHTML = '<p><strong>' + nomA + '</strong> et <strong>' + nomB + '</strong> '
       + '(vote personnel ou, à défaut, position du parti) :</p>'
-      + (totComp
-          ? '<p class="grand-chiffre">' + pct + ' %</p><p>de positions identiques sur <strong>'
-            + totComp + '</strong> votes clés comparables (' + totAcc + ' accords).</p>'
-          : '<p>Aucun vote clé comparable entre ces deux candidats.</p>')
+      + '<div id="entete-chiffres">' + texteChiffres(totComp, totAcc) + '</div>'
       + '<p><a href="../candidats/' + a + '/">Fiche ' + nomA + '</a> · <a href="../candidats/' + b + '/">Fiche ' + nomB + '</a></p>';
     res.appendChild(entete);
     res.appendChild(sections);
