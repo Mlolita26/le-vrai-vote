@@ -13,6 +13,11 @@ Règles :
   - Jordan Bardella n'est PAS candidat (Marine Le Pen déclarée le 07/07/2026
     après l'arrêt d'appel) : il n'a pas de ligne candidature, ses données
     restent en base à titre historique.
+  - Clémentine Autain a retiré sa candidature le 11/07/2026, après l'échec de
+    la primaire de la gauche unitaire (source : recherche du 26/07/2026 sur
+    son site de campagne, retrait non mentionné sur le site lui-même — à
+    resourcer sur un article de presse dédié). Sa ligne candidature a été
+    retirée de la base ; ses données personnelles restent à titre historique.
 
 Usage : python ingestion/seed_candidatures.py [chemin_base]
 """
@@ -57,7 +62,7 @@ CANDIDATS = [
     ("Philippot", "Florian", "florian-philippot", "declaree", "2026-05-09", "Les Patriotes" + RESOURCER, "wiki"),
     ("Retailleau", "Bruno", "bruno-retailleau", "declaree", "2026-04-19", "Les Républicains — LCP « mi-avril », concordant", "wiki"),
     # Candidats à une primaire
-    ("Autain", "Clémentine", "clementine-autain", "primaire", None, "Primaire de la gauche unitaire (11/10/2026) — recensée par LCP", "lcp"),
+    # Autain (LFI/gauche unitaire) retirée le 11/07/2026 — voir note en tête de fichier.
     ("Brun", "Philippe", "philippe-brun", "primaire", "2026-06-30", "Primaire du Parti socialiste" + RESOURCER, "wiki"),
     ("Lisnard", "David", "david-lisnard", "primaire", "2026-03-31", "Nouvelle Énergie" + RESOURCER, "wiki"),
     ("Massard", "Lydie", "lydie-massard", "primaire", "2026-04-02", "Primaire de la gauche unitaire, Union démocratique bretonne" + RESOURCER, "wiki"),

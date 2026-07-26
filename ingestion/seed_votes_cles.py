@@ -340,6 +340,9 @@ VOTES = [
     ("VTANR5L15V4414", "sante", "Allongement du délai d'IVG à 14 semaines (2022)",
      "Allonge de 12 à 14 semaines le délai légal pour recourir à une interruption volontaire de grossesse (IVG). L'enjeu : l'accès effectif à l'IVG pour les femmes hors délai — qui devaient jusque-là se rendre à l'étranger —, face à des objections d'ordre médical et éthique.",
      None),
+    ("VTANR5L17V7261", "sante", "Reconnaissance de la responsabilité de l'État et indemnisation des victimes du chlordécone",
+     "Reconnaît la responsabilité de l'État dans le préjudice sanitaire, moral, écologique et économique subi par la Guadeloupe et la Martinique et leurs populations, résultant de l'autorisation du chlordécone — un insecticide utilisé dans les bananeraies antillaises jusqu'en 1993, alors que sa toxicité et sa persistance dans les sols et l'eau étaient déjà documentées — et de son usage prolongé. Donne un an au Gouvernement pour proposer au Parlement les modalités d'indemnisation des victimes, notamment via une extension possible du fonds existant pour les victimes de pesticides. L'enjeu : la réparation d'un préjudice sanitaire de long terme (le chlordécone, un perturbateur endocrinien, reste présent dans les sols antillais pour plusieurs siècles), le débat portant sur l'ampleur et le financement de cette indemnisation.",
+     "Adopté une première fois par l'Assemblée le 29 février 2024 (scrutin n°3382 : 100 pour, 1 contre, 80 abstentions), modifié par le Sénat le 12 juin 2025, puis adopté définitivement et à l'unanimité par l'Assemblée le 2 juin 2026 (scrutin n°7261 : 236 pour) — c'est ce second vote qui est affiché ici. Promulguée le 12 juin 2026 (loi n° 2026-491)."),
 
     # ── Éducation (thème créé le 25/07/2026) ─────────────────────────────────
     ("VTANR5L15V351", "education", "Parcoursup — accès à l'université (loi ORE, 2018)",
@@ -688,6 +691,8 @@ SENS = {
                       "ne pas imposer ces ratios"),
     "VTANR5L15V4414": ("allonger le délai légal de l'IVG de 12 à 14 semaines",
                        "maintenir le délai à 12 semaines"),
+    "VTANR5L17V7261": ("reconnaître la responsabilité de l'État et engager l'indemnisation des victimes du chlordécone",
+                       "rejeter le texte"),
     # ── Éducation ──
     "VTANR5L15V351": ("adopter Parcoursup et l'examen des dossiers pour l'accès à l'université",
                       "rejeter ce dispositif (jugé comme une sélection à l'entrée de la fac)"),

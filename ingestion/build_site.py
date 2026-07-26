@@ -299,6 +299,10 @@ def charger(base):
         exprimes = {sid: pos for sid, pos in cur.execute(
             "SELECT scrutin_id, position FROM positions_vote "
             "WHERE personne_id=? AND position IN ('pour','contre','abstention')", (pid,))}
+        programme = cur.execute(
+            "SELECT pr.type AS type, pr.note AS note, s.url AS url, s.collecte AS verifie_le "
+            "FROM programmes pr JOIN sources s ON s.id = pr.source_id "
+            "WHERE pr.personne_id=?", (pid,)).fetchone()
         candidats.append({
             "slug": c["slug"], "nom": f"{c['prenom']} {c['nom']}", "nom_famille": c["nom"],
             "naissance": c["naissance"], "statut": c["statut"],
@@ -307,6 +311,7 @@ def charger(base):
             "source": c["source_url"], "mandats": mandats,
             "positions": positions, "positions_senat": positions_senat,
             "solennels": solennels, "exprimes": exprimes,
+            "programme": dict(programme) if programme else None,
         })
 
     themes = [dict(t) for t in cur.execute(
@@ -608,6 +613,35 @@ PASTILLES = {
     "partiel": ("Couverture partielle", "pastille-partiel"),
     "hors": ("Positions déclaratives", "pastille-decl"),
 }
+
+
+IFRAP_URL = "https://www.ifrap.org/comparateurs/presidentielles-2027"
+
+TYPE_PROGRAMME = {
+    "campagne": "site de campagne",
+    "parti": "site du parti / mouvement (pas de site de campagne personnel identifié)",
+}
+
+
+def bloc_programme(p):
+    pr = p["programme"]
+    if pr:
+        libelle_type = TYPE_PROGRAMME.get(pr["type"], pr["type"])
+        note = f" {e(pr['note'])}" if pr["note"] else ""
+        propre = (f'<p><a href="{e(pr["url"])}" rel="noopener">Programme — {e(p["nom_famille"])}</a> '
+                  f'({libelle_type}, vérifié le {date_fr(pr["verifie_le"])}).{note}</p>')
+    else:
+        propre = ('<p class="couverture couverture-hors">Aucun site de campagne ou de programme '
+                   'identifié et vérifié pour ce candidat — indisponible pour le moment.</p>')
+    return f"""<h2>Programme</h2>
+<p class="note-methode">Positions déclarées (programme, discours sourcés) : particulièrement utile
+pour les candidats sans mandat parlementaire récent. Un lien n'est affiché que vers un site officiel
+(campagne ou parti) vérifié — jamais un résumé ou une interprétation rédigés par ce site.</p>
+{propre}
+<p>Pour comparer les propositions de plusieurs candidats sur un même thème (fiscalité, immigration, défense…) :
+<a href="{IFRAP_URL}" rel="noopener">comparateur de programmes de l'iFRAP →</a>
+<span class="note-methode"> (ressource externe ; l'iFRAP est un think tank orienté libéral-conservateur qui reformule
+les propositions des candidats — ce n'est pas une analyse de Le Vrai Vote).</span></p>"""
 
 
 def avatar(p, prefixe=""):
@@ -1018,12 +1052,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 {bloc_an}
 {bloc_senat}
 {solennels_html}
-<h2>Justice</h2>
-<p class="note-methode">Volet renseigné manuellement, fait par fait, uniquement sur documents publics sourcés,
-après relecture — avec mention systématique de la présomption d'innocence pour toute procédure en cours. À venir.</p>
-<h2>Programme</h2>
-<p class="note-methode">Positions déclarées (programmes, discours sourcés) : à venir — particulièrement utile
-pour les candidats sans mandat parlementaire récent.</p>"""
+{bloc_programme(p)}"""
     return page(p["nom"], "Candidats", contenu, 2, meta)
 
 
@@ -1057,8 +1086,9 @@ def page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_p
         for etat_v in ORDRE_ETATS:
             if etat_v not in groupes:
                 continue
+            classe_lien = f" class=\"lien-{etat_v}\"" if etat_v in ("pour", "contre") else ""
             noms = ", ".join(
-                f'<a href="../../candidats/{s}/">{e(par_slug[s])}</a>' for s in groupes[etat_v])
+                f'<a href="../../candidats/{s}/"{classe_lien}>{e(par_slug[s])}</a>' for s in groupes[etat_v])
             lignes_groupes += f"<li>{badge_etat(etat_v)} {noms}</li>"
         # Nuances attribuées et sourcées pour ce vote.
         lignes_nuances = ""
@@ -1127,8 +1157,9 @@ def page_vote(v, candidats, etats, nuances, justifs_groupes, groupes_par_vote, e
     for etat_v in ORDRE_ETATS:
         if etat_v not in groupes:
             continue
+        classe_lien = f" class=\"lien-{etat_v}\"" if etat_v in ("pour", "contre") else ""
         noms = ", ".join(
-            f'<a href="../../candidats/{s}/">{e(par_slug[s])}</a>' for s in groupes[etat_v])
+            f'<a href="../../candidats/{s}/"{classe_lien}>{e(par_slug[s])}</a>' for s in groupes[etat_v])
         lignes_candidats += f"<li>{badge_etat(etat_v)} {noms}</li>"
     # Justifications personnelles sourcées (rares, votes contre-intuitifs).
     lignes_nuances = ""

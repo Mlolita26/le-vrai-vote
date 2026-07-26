@@ -169,6 +169,12 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .badge-absent     { color:var(--b-absent-fg); background:var(--b-absent-bg); }
 .badge-neutre     { color:var(--b-neutre-fg); background:var(--b-neutre-bg); }
 
+/* Nom du candidat en couleur + gras à côté du badge — seulement pour/contre :
+   ce sont les deux positions personnelles nettes, à distinguer d'un coup d'œil
+   du décompte des partis affiché plus bas. */
+.groupes-etat a.lien-pour   { color:var(--b-pour-fg);   font-weight:700; }
+.groupes-etat a.lien-contre { color:var(--b-contre-fg); font-weight:700; }
+
 /* Recherche */
 #recherche {
   width:100%; max-width:28rem; padding:0.6rem 0.85rem;
