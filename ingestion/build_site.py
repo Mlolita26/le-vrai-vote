@@ -1367,7 +1367,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     var sel = document.createElement("select");
     sel.className = "sel-cmp";
     remplirOptions(sel);
-    sel.addEventListener("change", rendreNouveauCouple);
+    sel.addEventListener("change", function () { majOptionsDisponibles(); rendreNouveauCouple(); });
     label.appendChild(span);
     label.appendChild(sel);
     if (n >= 2) {
@@ -1376,7 +1376,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       retirer.setAttribute("aria-label", "Retirer ce candidat");
       retirer.textContent = "×";
       retirer.addEventListener("click", function () {
-        label.remove(); majBoutonAjouter(); rendreNouveauCouple();
+        label.remove(); majBoutonAjouter(); majOptionsDisponibles(); rendreNouveauCouple();
       });
       label.appendChild(retirer);
     }
@@ -1390,6 +1390,16 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       if (s.value && !vus[s.value]) { vus[s.value] = true; out.push(s.value); }
     });
     return out;
+  }
+  function majOptionsDisponibles() {
+    var sels = tousLesSelects();
+    var choisis = sels.map(function (s) { return s.value; });
+    sels.forEach(function (s) {
+      Array.prototype.forEach.call(s.options, function (o) {
+        if (!o.value) return;
+        o.disabled = o.value !== s.value && choisis.indexOf(o.value) >= 0;
+      });
+    });
   }
   boutonAjouter.addEventListener("click", function () { ajouterSlot(); });
   ajouterSlot(); ajouterSlot();
@@ -1405,6 +1415,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     while (sels.length <= i) { ajouterSlot(); sels = tousLesSelects(); }
     sels[i].value = v;
   });
+  majOptionsDisponibles();
 
   // Filtre par thème : n'affiche que les sections du thème choisi. Délégation
   // posée une fois ; les puces sont reconstruites à chaque comparaison.
@@ -1876,7 +1887,6 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     entete.className = "resultat-comparaison";
     entete.innerHTML = '<p><strong>' + noms.join('</strong>, <strong>').replace(/,([^,]*)$/, ' et$1') + '</strong> '
       + '(vote personnel ou, à défaut, position du parti) :</p>'
-      + '<div id="entete-chiffres">' + texteChiffresMulti(totComp, totAcc) + '</div>'
       + '<p>' + objs.map(function (o) { return '<a href="../candidats/' + o.slug + '/">Fiche ' + o.nom + '</a>'; }).join(' · ') + '</p>'
       + '<p>' + objs.map(function (o, i) { return lienProgramme(o, surnoms[i]); }).join(' · ') + '</p>';
     res.appendChild(entete);
