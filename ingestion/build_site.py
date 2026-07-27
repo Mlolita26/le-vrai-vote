@@ -1491,6 +1491,15 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       groupes.forEach(function (g) {
         g.style.display = (cible === "tous" || g.dataset.axe === cible) ? "" : "none";
       });
+      // Met aussi à jour le gros chiffre en tête de page sur cette sous-catégorie
+      // — seulement si ce thème est actuellement le filtre principal actif
+      // (sinon le gros chiffre représente « tous les thèmes » et ne doit pas
+      // changer au clic sur un sous-filtre qui, de toute façon, n'est visible
+      // que lorsque son thème est sélectionné).
+      if (theme && themeFiltre === theme.dataset.theme) {
+        var chiffres = document.getElementById("entete-chiffres");
+        if (chiffres) chiffres.innerHTML = texteChiffres(Number(chip.dataset.comp || 0), Number(chip.dataset.acc || 0));
+      }
     });
     // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
     function carteVote(v) {
@@ -1553,26 +1562,33 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         // fiches candidats) — sinon la sous-section (ex. « Incendies ») en
         // tête donnerait l'impression que tout le thème ne parle que de ça.
         var slugsSection = d.sous_sections[theme].map(function (s) { return s.slug; });
-        var groupesRendus = [];  // {slug, titre, html}
-        var autres = "";
+        var groupesRendus = [];  // {slug, titre, html, comp, acc}
+        var autres = "", c0 = comp, a0 = acc;
         votesT.filter(function (v) { return slugsSection.indexOf(v.axe) === -1; })
           .forEach(function (v) { autres += ajoute(v); });
-        if (autres) groupesRendus.push({ slug: "_autres", titre: "Autres", html: autres });
+        if (autres) groupesRendus.push({ slug: "_autres", titre: "Autres", html: autres, comp: comp - c0, acc: acc - a0 });
         d.sous_sections[theme].forEach(function (sec) {
           var vA = votesT.filter(function (v) { return v.axe === sec.slug; });
           if (!vA.length) return;
+          var cS = comp, aS = acc;
           var cards = "";
           vA.forEach(function (v) { cards += ajoute(v); });
           if (!cards) return;
-          groupesRendus.push({ slug: sec.slug, titre: sec.titre, html: cards });
+          groupesRendus.push({ slug: sec.slug, titre: sec.titre, html: cards, comp: comp - cS, acc: acc - aS });
         });
         // Sous-filtre : utile seulement si ces deux candidats ont des cartes
-        // dans au moins 2 sous-catégories différentes.
+        // dans au moins 2 sous-catégories différentes. Chaque puce affiche son
+        // propre % de positions identiques, comme les puces de thème principal.
         if (groupesRendus.length > 1) {
+          var pctTout = comp ? Math.round(100 * acc / comp) : null;
           cartes += '<div class="filtres-souscat" role="group" aria-label="Filtrer ' + theme + ' par sous-catégorie">'
-            + '<button type="button" class="filtre-chip actif" data-cible="tous" aria-pressed="true">Tout</button>'
+            + '<button type="button" class="filtre-chip actif" data-cible="tous" data-comp="' + comp + '" data-acc="' + acc + '" aria-pressed="true">'
+            + 'Tout' + (pctTout !== null ? ' · ' + pctTout + ' %' : '') + '</button>'
             + groupesRendus.map(function (g) {
-                return '<button type="button" class="filtre-chip" data-cible="' + g.slug + '" aria-pressed="false">' + g.titre + '</button>';
+                var pct = g.comp ? Math.round(100 * g.acc / g.comp) : null;
+                return '<button type="button" class="filtre-chip" data-cible="' + g.slug + '" '
+                  + 'data-comp="' + g.comp + '" data-acc="' + g.acc + '" aria-pressed="false">'
+                  + g.titre + (pct !== null ? ' · ' + pct + ' %' : '') + '</button>';
               }).join('') + '</div>';
         }
         groupesRendus.forEach(function (g) {
