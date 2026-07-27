@@ -26,15 +26,14 @@
 </header>
 <main>
 
-<h1>Comparer deux candidats</h1>
+<h1>Comparer des candidats</h1>
 <p>Sur les <strong>votes clés</strong>, thème par thème — à l'Assemblée, au Sénat et au Parlement
 européen. Chaque candidat est comparé <strong>au plus précis</strong> : son vote personnel s'il a voté,
-sinon la position de son parti — clairement marquée. Ainsi deux candidats restent comparables même
-lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
-<div class="comparateur">
-  <label>Candidat A <select id="sel-a"></select></label>
-  <label>Candidat B <select id="sel-b"></select></label>
-</div>
+sinon la position de son parti — clairement marquée. Ainsi les candidats restent comparables même
+lorsqu'ils n'ont pas siégé aux mêmes moments. À partir de trois candidats, l'affichage bascule sur un
+regroupement par position (comme sur la page d'un vote), plus lisible qu'un tableau à colonnes.</p>
+<div class="comparateur" id="selecteurs"></div>
+<p><button type="button" id="ajouter-candidat" class="bouton-lien">+ Ajouter un candidat</button></p>
 <div class="mode-compare filtre-compare" role="group" aria-label="Filtrer les votes affichés">
   <button type="button" data-filtre="comparable" class="actif" aria-pressed="true">Votes comparables</button>
   <button type="button" data-filtre="tous" aria-pressed="false">Tous les votes clés</button>
@@ -44,9 +43,12 @@ lorsqu'ils n'ont pas siégé aux mêmes moments.</p>
 <div id="resultat"></div>
 <script>
 fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
-  var selA = document.getElementById("sel-a"), selB = document.getElementById("sel-b");
+  var MAX_CANDIDATS = 6;
+  var conteneurSelects = document.getElementById("selecteurs");
+  var boutonAjouter = document.getElementById("ajouter-candidat");
   var boxThemes = document.getElementById("filtres-cmp");
   var themeFiltre = "tous";
+  var modeMulti = false;
   var totComp = 0, totAcc = 0, themesRendus = [];
   function texteChiffres(comp, acc) {
     var p = comp ? Math.round(100 * acc / comp) : 0;
@@ -54,6 +56,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       ? '<p class="grand-chiffre">' + p + ' %</p><p>de positions identiques sur <strong>' + comp
         + '</strong> votes clés comparables (' + acc + ' accords).</p>'
       : '<p>Aucun vote clé comparable entre ces deux candidats.</p>';
+  }
+  function texteChiffresMulti(comp, acc) {
+    var p = comp ? Math.round(100 * acc / comp) : 0;
+    return comp
+      ? '<p class="grand-chiffre">' + p + ' %</p><p>d’unanimité sur <strong>' + comp
+        + '</strong> votes clés comparables entre les candidats sélectionnés (' + acc + ' unanimes).</p>'
+      : '<p>Aucun vote clé comparable entre ces candidats.</p>';
   }
   // Desktop : tout est deplie (details ouverts) ; mobile : replies.
   var wideCmp = window.matchMedia("(min-width:641px)");
@@ -63,22 +72,74 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     });
   }
   if (wideCmp.addEventListener) wideCmp.addEventListener("change", syncCmpOpen);
-  [selA, selB].forEach(function (s) {
+
+  // Sélecteurs de candidats : dynamiques, de 2 à MAX_CANDIDATS. Les deux
+  // premiers sont fixes (pas de bouton « retirer ») ; au-delà, chaque
+  // sélecteur ajouté peut être retiré. Un changement relance la comparaison.
+  function tousLesSelects() {
+    return Array.prototype.slice.call(conteneurSelects.querySelectorAll(".sel-cmp"));
+  }
+  function remplirOptions(sel) {
     var ph = document.createElement("option");
     ph.value = ""; ph.textContent = "— Choisir un candidat —";
-    s.appendChild(ph);
-  });
-  d.candidats.forEach(function (c) {
-    var o = document.createElement("option");
-    o.value = c.slug; o.textContent = c.nom;
-    selA.appendChild(o.cloneNode(true)); selB.appendChild(o.cloneNode(true));
-  });
-  // Pré-remplissage depuis une fiche candidat : /comparer/?a=slug&b=slug
+    sel.appendChild(ph);
+    d.candidats.forEach(function (c) {
+      var o = document.createElement("option");
+      o.value = c.slug; o.textContent = c.nom;
+      sel.appendChild(o);
+    });
+  }
+  function majBoutonAjouter() {
+    boutonAjouter.hidden = tousLesSelects().length >= MAX_CANDIDATS;
+  }
+  function ajouterSlot() {
+    var n = tousLesSelects().length;
+    if (n >= MAX_CANDIDATS) return null;
+    var label = document.createElement("label");
+    label.className = "cmp-slot";
+    var span = document.createElement("span");
+    span.textContent = "Candidat " + (n + 1);
+    var sel = document.createElement("select");
+    sel.className = "sel-cmp";
+    remplirOptions(sel);
+    sel.addEventListener("change", rendreNouveauCouple);
+    label.appendChild(span);
+    label.appendChild(sel);
+    if (n >= 2) {
+      var retirer = document.createElement("button");
+      retirer.type = "button"; retirer.className = "cmp-retirer";
+      retirer.setAttribute("aria-label", "Retirer ce candidat");
+      retirer.textContent = "×";
+      retirer.addEventListener("click", function () {
+        label.remove(); majBoutonAjouter(); rendreNouveauCouple();
+      });
+      label.appendChild(retirer);
+    }
+    conteneurSelects.appendChild(label);
+    majBoutonAjouter();
+    return sel;
+  }
+  function candidatsChoisis() {
+    var vus = {}, out = [];
+    tousLesSelects().forEach(function (s) {
+      if (s.value && !vus[s.value]) { vus[s.value] = true; out.push(s.value); }
+    });
+    return out;
+  }
+  boutonAjouter.addEventListener("click", function () { ajouterSlot(); });
+  ajouterSlot(); ajouterSlot();
+
+  // Pré-remplissage depuis une fiche candidat : /comparer/?a=slug&b=slug&c=slug…
   var params = new URLSearchParams(window.location.search);
   var slugs = d.candidats.map(function (c) { return c.slug; });
-  var pa = params.get("a"), pb = params.get("b");
-  if (pa && slugs.indexOf(pa) >= 0) selA.value = pa;
-  if (pb && slugs.indexOf(pb) >= 0) selB.value = pb;
+  var lettres = ["a", "b", "c", "d", "e", "f"];
+  var valeurs = lettres.map(function (l) { return params.get(l); })
+    .filter(function (v) { return v && slugs.indexOf(v) >= 0; });
+  valeurs.forEach(function (v, i) {
+    var sels = tousLesSelects();
+    while (sels.length <= i) { ajouterSlot(); sels = tousLesSelects(); }
+    sels[i].value = v;
+  });
 
   // Filtre par thème : n'affiche que les sections du thème choisi. Délégation
   // posée une fois ; les puces sont reconstruites à chaque comparaison.
@@ -97,11 +158,12 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     });
     var chiffres = document.getElementById("entete-chiffres");
     if (chiffres) {
+      var texte = modeMulti ? texteChiffresMulti : texteChiffres;
       if (themeFiltre === "tous") {
-        chiffres.innerHTML = texteChiffres(totComp, totAcc);
+        chiffres.innerHTML = texte(totComp, totAcc);
       } else {
         var t = themesRendus.find(function (x) { return x.ti + "" === themeFiltre; });
-        chiffres.innerHTML = t ? texteChiffres(t.comp, t.acc) : texteChiffres(totComp, totAcc);
+        chiffres.innerHTML = t ? texte(t.comp, t.acc) : texte(totComp, totAcc);
       }
     }
     if (scroller) {
@@ -195,15 +257,14 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       + '<div class="posture-jauge" aria-hidden="true">' + jauge + '</div></div>';
   }
 
-  function rendre() {
-    var a = selA.value, b = selB.value, res = document.getElementById("resultat");
+  function rendreDeux(a, b) {
+    var res = document.getElementById("resultat");
+    modeMulti = false;
     document.getElementById("note-mode").textContent =
       "Vue unique : chaque candidat au niveau le plus précis disponible — son vote personnel s'il a voté, "
       + "sinon la position majoritaire de son groupe (marquée « position du parti »). "
       + "« Aucune donnée » = ni vote personnel ni parti rattaché pour ce scrutin.";
     res.textContent = "";
-    if (!a || !b) { res.textContent = "Choisissez deux candidats à comparer."; boxThemes.hidden = true; return; }
-    if (a === b) { res.textContent = "Choisissez deux candidats différents."; boxThemes.hidden = true; return; }
     var objA = d.candidats.find(function (c) { return c.slug === a; });
     var objB = d.candidats.find(function (c) { return c.slug === b; });
     var nomA = objA.nom, nomB = objB.nom;
@@ -235,7 +296,10 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       // que lorsque son thème est sélectionné).
       if (theme && themeFiltre === theme.dataset.theme) {
         var chiffres = document.getElementById("entete-chiffres");
-        if (chiffres) chiffres.innerHTML = texteChiffres(Number(chip.dataset.comp || 0), Number(chip.dataset.acc || 0));
+        if (chiffres) {
+          var texte = modeMulti ? texteChiffresMulti : texteChiffres;
+          chiffres.innerHTML = texte(Number(chip.dataset.comp || 0), Number(chip.dataset.acc || 0));
+        }
       }
     });
     // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
@@ -382,11 +446,199 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     res.appendChild(sections);
     appliquerThemeFiltre(false);
   }
+
+  // Vue à 3 candidats ou plus : regroupement par position (comme la page
+  // d'un vote), pas de colonnes — ne scale pas au-delà de 4-5 candidats.
+  // « Comparable » = au moins deux candidats ont une position ; « unanime »
+  // = tous ceux qui ont une position sont d'accord.
+  function rendreMulti(slugsChoisis) {
+    var res = document.getElementById("resultat");
+    modeMulti = true;
+    document.getElementById("note-mode").textContent =
+      "Vue à plusieurs candidats : chaque candidat au niveau le plus précis disponible — son vote "
+      + "personnel s'il a voté, sinon la position majoritaire de son groupe (« position du parti »). "
+      + "« Unanime » = tous les candidats ayant une position sont d'accord entre eux.";
+    res.textContent = "";
+    var objs = slugsChoisis.map(function (s) { return d.candidats.find(function (c) { return c.slug === s; }); });
+    var noms = objs.map(function (o) { return o.nom; });
+    var surnoms = objs.map(function (o) { return o.nom_famille || o.nom; });
+
+    totComp = 0; totAcc = 0;
+    themesRendus = [];
+    var sections = document.createElement("div");
+    sections.addEventListener("click", function (ev) {
+      var chip = ev.target.closest(".filtres-souscat .filtre-chip");
+      if (!chip) return;
+      var barre = chip.parentElement;
+      var theme = chip.closest(".cmp-theme");
+      var groupes = theme ? theme.querySelectorAll(".cmp-axe") : [];
+      barre.querySelectorAll(".filtre-chip").forEach(function (x) {
+        x.classList.remove("actif"); x.setAttribute("aria-pressed", "false");
+      });
+      chip.classList.add("actif"); chip.setAttribute("aria-pressed", "true");
+      var cible = chip.dataset.cible;
+      groupes.forEach(function (g) {
+        g.style.display = (cible === "tous" || g.dataset.axe === cible) ? "" : "none";
+      });
+      if (theme && themeFiltre === theme.dataset.theme) {
+        var chiffres = document.getElementById("entete-chiffres");
+        if (chiffres) chiffres.innerHTML = texteChiffresMulti(Number(chip.dataset.comp || 0), Number(chip.dataset.acc || 0));
+      }
+    });
+
+    var ORDRE_POS = ["pour", "contre", "abstention"];
+    // Rend une carte de vote ; renvoie {comparable, unanime, html}.
+    function carteVoteMulti(v) {
+      var infos = slugsChoisis.map(function (s, i) { return { slug: s, surnom: surnoms[i], info: infoDe(s, v.id) }; });
+      var avecPos = infos.filter(function (x) { return x.info.pos; });
+      var comparable = avecPos.length >= 2;
+      var positions = {};
+      avecPos.forEach(function (x) { positions[x.info.pos] = true; });
+      var unanime = comparable && Object.keys(positions).length === 1;
+      var groupes = {};
+      infos.forEach(function (x) {
+        var cle = x.info.pos || "_aucune";
+        (groupes[cle] = groupes[cle] || []).push(x);
+      });
+      var lignes = "";
+      ORDRE_POS.concat(["_aucune"]).forEach(function (cle) {
+        var arr = groupes[cle];
+        if (!arr || !arr.length) return;
+        var mot = cle === "_aucune" ? "Aucune donnée" : d.libelles[cle][0];
+        var classe = cle === "_aucune" ? "badge-neutre" : ("badge-" + cle);
+        var nomsHtml = arr.map(function (x) {
+          var tag = x.info.niveau === "parti" ? ' <span class="cmp-ban-tag">parti</span>' : '';
+          return '<span class="cmp-multi-nom">' + x.surnom + tag + '</span>';
+        }).join(', ');
+        lignes += '<li><span class="badge ' + classe + '">' + mot + '</span> ' + nomsHtml + '</li>';
+      });
+      var sens = (v.sens_pour && v.sens_contre)
+        ? '<p class="sens-vote"><span class="sens-part sens-p"><span class="sens-mot">Pour</span> = '
+          + v.sens_pour + '</span><span class="sens-part sens-c"><span class="sens-mot">Contre</span> = '
+          + v.sens_contre + '</span></p>'
+        : '';
+      var justifs = avecPos.filter(function (x) { return x.info.just; })
+        .map(function (x) { return justifDe(x.surnom, x.info); }).join('');
+      var etat = comparable ? (unanime ? "accord" : "diverge") : "incomp";
+      var html = '<article class="cmp-vote cmp-vote-multi ' + etat + '" data-vote-id="' + (v.uid || '') + '">'
+        + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
+        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<ul class="cmp-multi-positions">' + lignes + '</ul>'
+        + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
+        + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>' + justifs
+        + '</details>'
+        + '</article>';
+      return { comparable: comparable, unanime: unanime, html: html };
+    }
+    d.themes.forEach(function (theme, ti) {
+      var votesT = d.votes.filter(function (v) { return v.theme === theme; });
+      if (!votesT.length) return;
+      var comp = 0, acc = 0, cartes = "";
+      function ajoute(v) {
+        var c = carteVoteMulti(v);
+        if (c.comparable) { comp++; if (c.unanime) acc++; }
+        if (filtre === "comparable" && !c.comparable) return "";
+        return c.html;
+      }
+      if (theme === d.theme_budget || (d.sous_sections && d.sous_sections[theme])) {
+        var sections_axes = theme === d.theme_budget ? (d.axes_budget || []) : d.sous_sections[theme];
+        var slugsSection = sections_axes.map(function (s) { return s.slug; });
+        var groupesRendus = [], autres = "", c0 = comp, a0 = acc;
+        votesT.filter(function (v) { return slugsSection.indexOf(v.axe) === -1; })
+          .forEach(function (v) { autres += ajoute(v); });
+        if (autres) groupesRendus.push({ slug: "_autres", titre: "Autres", html: autres, comp: comp - c0, acc: acc - a0 });
+        sections_axes.forEach(function (sec) {
+          var vA = votesT.filter(function (v) { return v.axe === sec.slug; });
+          if (!vA.length) return;
+          var cS = comp, aS = acc, cards = "";
+          vA.forEach(function (v) { cards += ajoute(v); });
+          if (!cards) return;
+          groupesRendus.push({ slug: sec.slug, titre: sec.titre, html: cards, comp: comp - cS, acc: acc - aS });
+        });
+        if (groupesRendus.length > 1) {
+          var pctTout = comp ? Math.round(100 * acc / comp) : null;
+          cartes += '<div class="filtres-souscat" role="group" aria-label="Filtrer ' + theme + ' par sous-catégorie">'
+            + '<button type="button" class="filtre-chip actif" data-cible="tous" data-comp="' + comp + '" data-acc="' + acc + '" aria-pressed="true">'
+            + 'Tout' + (pctTout !== null ? ' · ' + pctTout + ' %' : '') + '</button>'
+            + groupesRendus.map(function (g) {
+                var pct = g.comp ? Math.round(100 * g.acc / g.comp) : null;
+                return '<button type="button" class="filtre-chip" data-cible="' + g.slug + '" '
+                  + 'data-comp="' + g.comp + '" data-acc="' + g.acc + '" aria-pressed="false">'
+                  + g.titre + (pct !== null ? ' · ' + pct + ' %' : '') + '</button>';
+              }).join('') + '</div>';
+        }
+        groupesRendus.forEach(function (g) {
+          var titreHtml = g.slug === "_autres" ? "" : '<h3 class="axe-titre">' + g.titre + '</h3>';
+          cartes += '<div class="cmp-axe" data-axe="' + g.slug + '">' + titreHtml + g.html + '</div>';
+        });
+      } else {
+        votesT.forEach(function (v) { cartes += ajoute(v); });
+      }
+      totComp += comp; totAcc += acc;
+      if (!cartes) return;
+      var pctT = comp ? Math.round(100 * acc / comp) : null;
+      var resume = comp
+        ? ('<strong>' + pctT + ' %</strong> unanimes · ' + acc + ' / ' + comp
+           + ' comparable' + (comp > 1 ? "s" : ""))
+        : "aucun vote comparable";
+      sections.innerHTML += '<section class="cmp-theme" data-theme="' + ti + '"><h2>' + theme
+        + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
+      themesRendus.push({ ti: ti, lib: theme, comp: comp, acc: acc, pct: pctT });
+    });
+
+    var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
+    if (themeFiltre !== "tous" && !themesRendus.some(function (t) { return t.ti + "" === themeFiltre; }))
+      themeFiltre = "tous";
+    if (themesRendus.length > 1) {
+      var chips = '<button type="button" class="filtre-chip" data-cible="tous" aria-pressed="false">'
+        + 'Tous les thèmes' + (totComp ? ' · ' + pct + ' %' : '') + '</button>';
+      themesRendus.forEach(function (t) {
+        chips += '<button type="button" class="filtre-chip" data-cible="' + t.ti + '" aria-pressed="false">'
+          + t.lib + (t.comp ? ' · ' + t.pct + ' %' : '') + '</button>';
+      });
+      boxThemes.innerHTML = chips;
+      boxThemes.hidden = false;
+    } else {
+      boxThemes.innerHTML = "";
+      boxThemes.hidden = true;
+    }
+
+    function lienProgramme(obj, surnom) {
+      if (!obj.programme) return "Programme " + surnom + " : indisponible";
+      return '<a href="' + obj.programme.url + '" rel="noopener">Programme ' + surnom + '</a>';
+    }
+    var entete = document.createElement("div");
+    entete.className = "resultat-comparaison";
+    entete.innerHTML = '<p><strong>' + noms.join('</strong>, <strong>').replace(/,([^,]*)$/, ' et$1') + '</strong> '
+      + '(vote personnel ou, à défaut, position du parti) :</p>'
+      + '<div id="entete-chiffres">' + texteChiffresMulti(totComp, totAcc) + '</div>'
+      + '<p>' + objs.map(function (o) { return '<a href="../candidats/' + o.slug + '/">Fiche ' + o.nom + '</a>'; }).join(' · ') + '</p>'
+      + '<p>' + objs.map(function (o, i) { return lienProgramme(o, surnoms[i]); }).join(' · ') + '</p>';
+    res.appendChild(entete);
+    res.appendChild(sections);
+    appliquerThemeFiltre(false);
+  }
+
+  function rendre() {
+    var slugsBruts = candidatsChoisis();
+    var res = document.getElementById("resultat");
+    res.textContent = "";
+    if (slugsBruts.length < 2) {
+      res.textContent = "Choisissez au moins deux candidats à comparer.";
+      boxThemes.hidden = true;
+      return;
+    }
+    if (slugsBruts.length === 2 && slugsBruts[0] === slugsBruts[1]) {
+      res.textContent = "Choisissez des candidats différents.";
+      boxThemes.hidden = true;
+      return;
+    }
+    if (slugsBruts.length === 2) rendreDeux(slugsBruts[0], slugsBruts[1]);
+    else rendreMulti(slugsBruts);
+  }
   // Changer de candidat réinitialise le filtre thème (nouvelle comparaison) ;
   // basculer comparable/tous le conserve.
   function rendreNouveauCouple() { themeFiltre = "tous"; rendre(); }
-  selA.addEventListener("change", rendreNouveauCouple);
-  selB.addEventListener("change", rendreNouveauCouple);
   rendre();
 });
 </script>

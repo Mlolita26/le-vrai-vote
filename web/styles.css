@@ -190,6 +190,19 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   padding:0.5rem 0.7rem; border:1px solid var(--lisere); border-radius:8px;
   font-size:1rem; background:var(--carte); color:var(--encre); min-width:16rem; font-family:inherit;
 }
+.cmp-slot { position:relative; }
+.cmp-retirer { position:absolute; top:0; right:0; background:none; border:none; cursor:pointer;
+  color:var(--mute); font-size:1.1rem; line-height:1; padding:.1rem .3rem; }
+.cmp-retirer:hover { color:var(--b-contre-fg); }
+.bouton-lien { background:none; border:none; cursor:pointer; color:var(--accent); font-family:inherit;
+  font-size:.88rem; font-weight:600; padding:.2rem 0; text-decoration:underline; }
+.bouton-lien:hover { opacity:.8; }
+
+/* Comparaison à 3 candidats ou plus : regroupement par position, sans colonnes. */
+.cmp-multi-positions { list-style:none; padding:0; margin:.6rem 0 0; display:grid; gap:.4rem; font-size:.92rem; }
+.cmp-multi-positions li { display:flex; flex-wrap:wrap; align-items:baseline; gap:.4rem; }
+.cmp-multi-nom { font-weight:600; }
+
 .resultat-comparaison {
   background:var(--carte); border:1px solid var(--lisere); border-radius:14px;
   padding:1.3rem 1.5rem; margin-top:1rem;
