@@ -1055,7 +1055,11 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
       c.classList.add("actif"); c.setAttribute("aria-pressed", "true");
       var cible = c.dataset.cible;
       blocs.forEach(function (b) {
-        b.style.display = (cible === "tous" || b.dataset.theme === cible) ? "" : "none";
+        var actif = cible === "tous" || b.dataset.theme === cible;
+        b.style.display = actif ? "" : "none";
+        // Le sous-filtre (ex. Écologie et agriculture) ne s'affiche que si CE
+        // thème précis est sélectionné, pas en vue « Tous les thèmes ».
+        b.classList.toggle("filtre-actif", actif && cible !== "tous");
       });
       // Remonter tout en haut de la page : sinon, après un clic en bas de page,
       // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
@@ -1348,7 +1352,11 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       x.setAttribute("aria-pressed", on ? "true" : "false");
     });
     document.querySelectorAll("#resultat .cmp-theme").forEach(function (s) {
-      s.style.display = (themeFiltre === "tous" || s.dataset.theme === themeFiltre) ? "" : "none";
+      var actif = themeFiltre === "tous" || s.dataset.theme === themeFiltre;
+      s.style.display = actif ? "" : "none";
+      // Le sous-filtre (ex. Écologie et agriculture) ne s'affiche que si CE
+      // thème précis est sélectionné, pas en vue « Tous les thèmes ».
+      s.classList.toggle("filtre-actif", actif && themeFiltre !== "tous");
     });
     var chiffres = document.getElementById("entete-chiffres");
     if (chiffres) {

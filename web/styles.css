@@ -470,8 +470,13 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 /* Sous-filtre à l'intérieur d'un thème qui a plusieurs sous-catégories
    (ex. Écologie et agriculture : Climat, Élevage, Incendies…) — même style
    que le filtre de thème mais plus discret (pas sticky, puces plus petites). */
-.filtres-souscat { display:flex; flex-wrap:wrap; gap:.35rem; margin:.5rem 0 1rem; }
+.filtres-souscat { display:none; flex-wrap:wrap; gap:.35rem; margin:.5rem 0 1rem; }
 .filtres-souscat .filtre-chip { font-size:.78rem; padding:.26rem .65rem; }
+/* Affiché seulement quand ce thème précis est sélectionné dans le filtre
+   principal (pas en vue « Tous les thèmes », où ce serait un bruit inutile
+   au milieu de tous les autres thèmes affichés). */
+.theme-bloc.filtre-actif .filtres-souscat,
+.cmp-theme.filtre-actif .filtres-souscat { display:flex; }
 
 /* Votes clés repliés (candidats jamais parlementaires) */
 .votes-replies { margin:.4rem 0 1rem; }

@@ -89,7 +89,11 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       x.setAttribute("aria-pressed", on ? "true" : "false");
     });
     document.querySelectorAll("#resultat .cmp-theme").forEach(function (s) {
-      s.style.display = (themeFiltre === "tous" || s.dataset.theme === themeFiltre) ? "" : "none";
+      var actif = themeFiltre === "tous" || s.dataset.theme === themeFiltre;
+      s.style.display = actif ? "" : "none";
+      // Le sous-filtre (ex. Écologie et agriculture) ne s'affiche que si CE
+      // thème précis est sélectionné, pas en vue « Tous les thèmes ».
+      s.classList.toggle("filtre-actif", actif && themeFiltre !== "tous");
     });
     var chiffres = document.getElementById("entete-chiffres");
     if (chiffres) {
