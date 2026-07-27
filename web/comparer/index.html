@@ -57,11 +57,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         + '</strong> votes clés comparables (' + acc + ' accords).</p>'
       : '<p>Aucun vote clé comparable entre ces deux candidats.</p>';
   }
+  // Pas de pourcentage à partir de 3 candidats : un seul chiffre de
+  // « similitude » n'a plus vraiment de sens à plusieurs (similaire à qui ?).
+  // On garde un simple décompte.
   function texteChiffresMulti(comp, acc) {
-    var p = comp ? Math.round(100 * acc / comp) : 0;
     return comp
-      ? '<p class="grand-chiffre">' + p + ' %</p><p>d’unanimité sur <strong>' + comp
-        + '</strong> votes clés comparables entre les candidats sélectionnés (' + acc + ' unanimes).</p>'
+      ? '<p class="grand-chiffre">' + acc + ' / ' + comp + '</p><p>votes clés unanimes parmi les candidats '
+        + 'sélectionnés, sur <strong>' + comp + '</strong> votes clés comparables.</p>'
       : '<p>Aucun vote clé comparable entre ces candidats.</p>';
   }
   // Desktop : tout est deplie (details ouverts) ; mobile : replies.
@@ -555,16 +557,16 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           if (!cards) return;
           groupesRendus.push({ slug: sec.slug, titre: sec.titre, html: cards, comp: comp - cS, acc: acc - aS });
         });
+        // Pas de % à plusieurs candidats (voir texteChiffresMulti) : un simple
+        // décompte unanimes/comparables à la place.
         if (groupesRendus.length > 1) {
-          var pctTout = comp ? Math.round(100 * acc / comp) : null;
           cartes += '<div class="filtres-souscat" role="group" aria-label="Filtrer ' + theme + ' par sous-catégorie">'
             + '<button type="button" class="filtre-chip actif" data-cible="tous" data-comp="' + comp + '" data-acc="' + acc + '" aria-pressed="true">'
-            + 'Tout' + (pctTout !== null ? ' · ' + pctTout + ' %' : '') + '</button>'
+            + 'Tout' + (comp ? ' · ' + acc + '/' + comp : '') + '</button>'
             + groupesRendus.map(function (g) {
-                var pct = g.comp ? Math.round(100 * g.acc / g.comp) : null;
                 return '<button type="button" class="filtre-chip" data-cible="' + g.slug + '" '
                   + 'data-comp="' + g.comp + '" data-acc="' + g.acc + '" aria-pressed="false">'
-                  + g.titre + (pct !== null ? ' · ' + pct + ' %' : '') + '</button>';
+                  + g.titre + (g.comp ? ' · ' + g.acc + '/' + g.comp : '') + '</button>';
               }).join('') + '</div>';
         }
         groupesRendus.forEach(function (g) {
@@ -576,25 +578,25 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       }
       totComp += comp; totAcc += acc;
       if (!cartes) return;
-      var pctT = comp ? Math.round(100 * acc / comp) : null;
+      // Pas de % à plusieurs candidats (voir texteChiffresMulti) : juste le
+      // décompte des votes unanimes parmi les comparables.
       var resume = comp
-        ? ('<strong>' + pctT + ' %</strong> unanimes · ' + acc + ' / ' + comp
-           + ' comparable' + (comp > 1 ? "s" : ""))
+        ? ('<strong>' + acc + ' / ' + comp + '</strong> unanime' + (acc > 1 ? "s" : "")
+           + ' · ' + comp + ' comparable' + (comp > 1 ? "s" : ""))
         : "aucun vote comparable";
       sections.innerHTML += '<section class="cmp-theme" data-theme="' + ti + '"><h2>' + theme
         + ' <span class="cmp-compte">' + resume + '</span></h2>' + cartes + '</section>';
-      themesRendus.push({ ti: ti, lib: theme, comp: comp, acc: acc, pct: pctT });
+      themesRendus.push({ ti: ti, lib: theme, comp: comp, acc: acc });
     });
 
-    var pct = totComp ? Math.round(100 * totAcc / totComp) : 0;
     if (themeFiltre !== "tous" && !themesRendus.some(function (t) { return t.ti + "" === themeFiltre; }))
       themeFiltre = "tous";
     if (themesRendus.length > 1) {
       var chips = '<button type="button" class="filtre-chip" data-cible="tous" aria-pressed="false">'
-        + 'Tous les thèmes' + (totComp ? ' · ' + pct + ' %' : '') + '</button>';
+        + 'Tous les thèmes' + (totComp ? ' · ' + totAcc + '/' + totComp : '') + '</button>';
       themesRendus.forEach(function (t) {
         chips += '<button type="button" class="filtre-chip" data-cible="' + t.ti + '" aria-pressed="false">'
-          + t.lib + (t.comp ? ' · ' + t.pct + ' %' : '') + '</button>';
+          + t.lib + (t.comp ? ' · ' + t.acc + '/' + t.comp : '') + '</button>';
       });
       boxThemes.innerHTML = chips;
       boxThemes.hidden = false;
