@@ -1382,6 +1382,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     }
     conteneurSelects.appendChild(label);
     majBoutonAjouter();
+    majOptionsDisponibles();
     return sel;
   }
   function candidatsChoisis() {
