@@ -88,6 +88,15 @@ AXES_DEFENSE = [
     ("proche-orient", "Proche et Moyen-Orient"),
     ("engagements", "Engagements militaires et autres conflits"),
 ]
+# Sous-sections optionnelles À L'INTÉRIEUR d'un thème par ailleurs affiché en
+# liste plate : mêmes slugs/titres que AXES_DEFENSE, mais les votes qui n'ont
+# pas de section (axe_budget NULL) restent affichés normalement en dessous —
+# contrairement à Défense/Budget qui sont ENTIÈREMENT réorganisés par section.
+SOUS_SECTIONS_THEME = {
+    "Écologie et agriculture": [
+        ("incendies", "Incendies et prévention des feux de forêt"),
+    ],
+}
 # En dessous de ce nombre de votes dans un axe, on n'affiche PAS de barre de
 # posture (un « comptage » sur 1 ou 2 votes serait trompeur) : seulement la
 # question et les cartes. La barre n'a de sens que sur un ensemble de votes.
@@ -962,13 +971,33 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                 votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
                                f'<h3>{e(t["libelle"])}</h3>{corps}</section>')
         else:
-            lignes = "".join(_carte(v) for v in votes_t)
-            if lignes:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
-                n_cartes = lignes.count('class="vote-carte"')
+            sous_sections = SOUS_SECTIONS_THEME.get(t["libelle"])
+            corps = ""
+            n_cartes = 0
+            votes_restants = votes_t
+            if sous_sections:
+                axes_couverts = {axe_slug for axe_slug, _ in sous_sections}
+                for axe_slug, axe_titre in sous_sections:
+                    votes_a = [v for v in votes_t if v["axe_budget"] == axe_slug]
+                    if not votes_a:
+                        continue
+                    votes_a = sorted(votes_a, key=lambda v: 0 if _vote_present(v) else 1)
+                    cartes_a = "".join(_carte(v) for v in votes_a)
+                    if not cartes_a:
+                        continue
+                    n_cartes += cartes_a.count('class="vote-carte"')
+                    corps += (f'<div class="axe-bloc" data-axe="{axe_slug}">'
+                              f'<h4 class="axe-titre">{e(axe_titre)}</h4>'
+                              f'<ul class="votes-cles">{cartes_a}</ul></div>')
+                votes_restants = [v for v in votes_t if v["axe_budget"] not in axes_couverts]
+            lignes = "".join(_carte(v) for v in votes_restants)
+            n_cartes += lignes.count('class="vote-carte"')
+            if lignes:
+                corps += f'<ul class="votes-cles">{lignes}</ul>'
+            if corps:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
                 themes_presents.append((slug_t, t["libelle"], n_cartes))
                 votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
-                               f'<h3>{e(t["libelle"])}</h3>'
-                               f'<ul class="votes-cles">{lignes}</ul></section>')
+                               f'<h3>{e(t["libelle"])}</h3>{corps}</section>')
 
     n_an_expr = sum(v for k, v in p["positions"].items() if k in ("pour", "contre", "abstention"))
     bloc_an = ("<h2 id=\"positions-an\">Ensemble des positions de vote \u2014 Assembl\u00e9e nationale, 2012-2026</h2>\n"

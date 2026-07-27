@@ -57,6 +57,12 @@ AXES = {
     "VTANR5L17V3848": ("ecologie-fiscale", "pour"),  # taxe sur les jets privés
     # ── Défense : sections (axe = section ; pas de sens_axe, pas de posture) ──
     "VTANR5L16V2256": ("budget-defense", None),
+    # Sous-section « incendies » du thème Écologie et agriculture.
+    "VTANR5L16V133": ("incendies", None),
+    "VTANR5L16V1509": ("incendies", None),
+    "VTANR5L16V1545": ("incendies", None),
+    "VTANR5L16V1556": ("incendies", None),
+    "VTANR5L17V4114": ("incendies", None),
     "PE-HTV-172867": ("budget-defense", None),
     "PE-HTV-174053": ("budget-defense", None),
     "PE-HTV-181587": ("budget-defense", None),
@@ -96,6 +102,23 @@ VOTES = [
     ("VTANR5L17V8427", "ecologie-agriculture", "Loi d'urgence pour la protection et la souveraineté agricoles (2026)",
      "Vise à soutenir l'agriculture française face aux crises climatiques et à la concurrence internationale : facilite les réserves d'eau pour l'irrigation, renforce les contrôles sur les denrées importées aux frontières et interdit l'achat de produits non-européens pour la restauration collective publique, réduit les délais de négociation entre agriculteurs et premiers acheteurs, et permet aux porteurs de certains projets (agricoles, énergétiques, d'infrastructure) d'obtenir réparation en cas de recours jugé abusif contre leur projet. Autorise aussi, à titre dérogatoire et via une procédure d'évaluation accélérée (60 jours, contre 12 mois habituellement), la réintroduction de produits phytosanitaires interdits en France dont l'acétamipride, un insecticide de la famille des néonicotinoïdes. L'enjeu : la compétitivité de l'agriculture française, mise en balance avec la protection de l'eau, des pollinisateurs et de la santé.",
      "Adopté une première fois le 2 juin 2026 (scrutin n°7259 : 369 pour, 178 contre, 15 abstentions), puis, sur le texte de compromis de la commission mixte paritaire, le 20 juillet 2026 (scrutin n°8427 : 296 pour, 224 contre, 41 abstentions) — c'est ce second vote, définitif à l'Assemblée, qui est affiché ici. Reprend, sur les pesticides, un dispositif proche de celui de la loi Duplomb (2025), partiellement censuré par le Conseil constitutionnel après son adoption. Le Conseil, de nouveau saisi le 24 juillet 2026, ne s'était pas prononcé à la date de mise à jour du site : cette disposition est un candidat plausible à une nouvelle censure."),
+
+    # ── Incendies et prévention des feux de forêt (sous-section, ajout 27/07/2026) ──
+    ("VTANR5L16V133", "ecologie-agriculture", "Recrutement de pompiers professionnels (2022)",
+     "Amendement au budget rectificatif 2022 visant à financer la création d'un programme de recrutement de pompiers professionnels supplémentaires. L'enjeu : renforcer les effectifs de la sécurité civile face à l'intensification des feux de forêt, le débat portant sur le coût budgétaire de la mesure.",
+     None),
+    ("VTANR5L16V1509", "ecologie-agriculture", "Plan d'adaptation de la forêt au changement climatique (2023)",
+     "Amendement à la proposition de loi sur le risque incendie visant à élaborer un plan d'adaptation de la forêt cohérent avec la Stratégie nationale bas-carbone (SNBC), en lien avec le Haut Conseil pour le climat. L'enjeu : anticiper l'évolution des essences et des peuplements forestiers face à un climat plus propice aux incendies.",
+     None),
+    ("VTANR5L16V1545", "ecologie-agriculture", "Entretien des chemins forestiers contre les incendies (2023)",
+     "Amendement à la proposition de loi sur le risque incendie visant à lutter contre la perte de chemins forestiers, jugés nécessaires à la circulation des services de secours et à la prévention des feux. L'enjeu : l'entretien de ces accès, financé notamment par les propriétaires forestiers et les collectivités.",
+     None),
+    ("VTANR5L16V1556", "ecologie-agriculture", "Pare-feux d'arbres feuillus (2023)",
+     "Amendement à la proposition de loi sur le risque incendie visant à imposer la mise en place de pare-feux d'arbres feuillus entre les parcelles de résineux, plus inflammables. L'enjeu : ralentir la propagation des flammes dans les massifs forestiers, la question débattue étant la contrainte imposée aux propriétaires et exploitants forestiers.",
+     None),
+    ("VTANR5L17V4114", "ecologie-agriculture", "Contribution des assurances au financement des pompiers (2025)",
+     "Amendement au budget 2026 visant à relever la part départementale de la taxe sur les conventions d'assurance (TSCA) pour financer les services départementaux d'incendie et de secours (SDIS). L'enjeu : donner aux pompiers des moyens supplémentaires face à des feux plus fréquents et plus intenses, en faisant contribuer davantage les sociétés d'assurance, mis en balance avec le coût pour les assurés.",
+     None),
 
     # ── Pouvoir d'achat et fiscalité ─────────────────────────────────────────
     ("VTANR5L16V186", "travail", "Mesures d'urgence pouvoir d'achat (2022)",
@@ -546,6 +569,16 @@ SENS = {
                        "rejeter le texte"),
     "VTANR5L16V823": ("faciliter et accélérer l'installation d'éoliennes et de panneaux solaires",
                       "rejeter le texte"),
+    "VTANR5L16V133": ("créer un programme de recrutement de pompiers professionnels supplémentaires",
+                      "rejeter cet amendement"),
+    "VTANR5L16V1509": ("adopter un plan d'adaptation de la forêt cohérent avec la SNBC",
+                       "rejeter cet amendement"),
+    "VTANR5L16V1545": ("agir contre la perte de chemins forestiers nécessaires aux secours",
+                       "rejeter cet amendement"),
+    "VTANR5L16V1556": ("imposer des pare-feux d'arbres feuillus entre parcelles de résineux",
+                       "rejeter cet amendement"),
+    "VTANR5L17V4114": ("relever la taxe sur les conventions d'assurance pour financer les SDIS",
+                       "rejeter cet amendement"),
     "PE-HTV-152544": ("interdire la vente de voitures neuves à moteur thermique à partir de 2035",
                       "refuser cette interdiction"),
     "PE-HTV-154173": ("renforcer le marché carbone (quotas d'émission payants, baisse accélérée, fin des quotas gratuits)",
