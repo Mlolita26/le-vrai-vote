@@ -467,6 +467,12 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .filtre-chip:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .theme-bloc h3 { scroll-margin-top:6rem; }
 
+/* Sous-filtre à l'intérieur d'un thème qui a plusieurs sous-catégories
+   (ex. Écologie et agriculture : Climat, Élevage, Incendies…) — même style
+   que le filtre de thème mais plus discret (pas sticky, puces plus petites). */
+.filtres-souscat { display:flex; flex-wrap:wrap; gap:.35rem; margin:.5rem 0 1rem; }
+.filtres-souscat .filtre-chip { font-size:.78rem; padding:.26rem .65rem; }
+
 /* Votes clés repliés (candidats jamais parlementaires) */
 .votes-replies { margin:.4rem 0 1rem; }
 .votes-replies > summary { cursor:pointer; color:var(--accent); font-weight:600; font-size:.9rem;

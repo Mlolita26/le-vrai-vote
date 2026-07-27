@@ -95,8 +95,10 @@ AXES_DEFENSE = [
 # contrairement à Défense/Budget qui sont ENTIÈREMENT réorganisés par section.
 SOUS_SECTIONS_THEME = {
     "Écologie et agriculture": [
-        ("incendies", "Incendies et prévention des feux de forêt"),
+        ("climat-energie", "Climat et transition énergétique"),
+        ("agriculture-alimentation", "Agriculture et alimentation"),
         ("elevage", "Élevage et bien-être animal"),
+        ("incendies", "Incendies et prévention des feux de forêt"),
         ("fiscalite-energie", "Fiscalité de l'énergie et du carbone"),
     ],
 }
@@ -978,6 +980,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             n_cartes = 0
             votes_restants = votes_t
             sous_corps = ""
+            sous_rendues = []  # (axe_slug, axe_titre, nb_cartes) — pour les puces de filtre
             if sous_sections:
                 axes_couverts = {axe_slug for axe_slug, _ in sous_sections}
                 for axe_slug, axe_titre in sous_sections:
@@ -988,17 +991,35 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                     cartes_a = "".join(_carte(v) for v in votes_a)
                     if not cartes_a:
                         continue
-                    n_cartes += cartes_a.count('class="vote-carte"')
+                    n = cartes_a.count('class="vote-carte"')
+                    n_cartes += n
                     sous_corps += (f'<div class="axe-bloc" data-axe="{axe_slug}">'
                                    f'<h4 class="axe-titre">{e(axe_titre)}</h4>'
                                    f'<ul class="votes-cles">{cartes_a}</ul></div>')
+                    sous_rendues.append((axe_slug, axe_titre, n))
                 votes_restants = [v for v in votes_t if v["axe_budget"] not in axes_couverts]
             # Les votes non rattachés à une sous-section passent en premier — sinon
             # la sous-section (ex. « Incendies ») en tête donnerait l'impression
             # que tout le thème ne parle que de ça.
             lignes = "".join(_carte(v) for v in votes_restants)
-            n_cartes += lignes.count('class="vote-carte"')
-            corps = (f'<ul class="votes-cles">{lignes}</ul>' if lignes else "") + sous_corps
+            n_restants = lignes.count('class="vote-carte"')
+            n_cartes += n_restants
+            corps_restants = ""
+            if lignes:
+                corps_restants = f'<div class="axe-bloc" data-axe="_autres"><ul class="votes-cles">{lignes}</ul></div>'
+                sous_rendues.insert(0, ("_autres", "Autres", n_restants))
+            # Sous-filtre : utile seulement si ce candidat a des cartes dans au
+            # moins 2 sous-catégories différentes (sinon rien à filtrer).
+            filtre_sous = ""
+            if len(sous_rendues) > 1:
+                puces = (f'<button type="button" class="filtre-chip actif" data-cible="tous" '
+                         f'aria-pressed="true">Tout ({n_cartes})</button>')
+                for axe_slug, axe_titre, n in sous_rendues:
+                    puces += (f'<button type="button" class="filtre-chip" data-cible="{axe_slug}" '
+                              f'aria-pressed="false">{e(axe_titre)} ({n})</button>')
+                filtre_sous = (f'<div class="filtres-souscat" role="group" '
+                               f'aria-label="Filtrer {e(t["libelle"])} par sous-catégorie">{puces}</div>')
+            corps = filtre_sous + corps_restants + sous_corps
             if corps:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
                 themes_presents.append((slug_t, t["libelle"], n_cartes))
                 votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
@@ -1039,6 +1060,25 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
       // Remonter tout en haut de la page : sinon, après un clic en bas de page,
       // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
       window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+  // Sous-filtre à l'intérieur d'un thème (ex. Écologie et agriculture :
+  // Climat, Agriculture, Élevage, Incendies, Fiscalité énergie…) — ne
+  // touche que les sous-catégories de SON PROPRE thème, pas de scroll
+  // (la liste reste courte, contrairement au filtre de thème principal).
+  document.querySelectorAll(".filtres-souscat").forEach(function (barre) {
+    var bloc = barre.closest(".theme-bloc");
+    var groupes = bloc ? bloc.querySelectorAll(".axe-bloc") : [];
+    var puces = barre.querySelectorAll(".filtre-chip");
+    puces.forEach(function (c) {
+      c.addEventListener("click", function () {
+        puces.forEach(function (x) { x.classList.remove("actif"); x.setAttribute("aria-pressed", "false"); });
+        c.classList.add("actif"); c.setAttribute("aria-pressed", "true");
+        var cible = c.dataset.cible;
+        groupes.forEach(function (g) {
+          g.style.display = (cible === "tous" || g.dataset.axe === cible) ? "" : "none";
+        });
+      });
     });
   });
 })();
@@ -1427,6 +1467,23 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     totComp = 0; totAcc = 0;
     themesRendus = [];
     var sections = document.createElement("div");
+    // Sous-filtre à l'intérieur d'un thème (délégué sur "sections", qui est
+    // recréé à chaque rendu — pas besoin de ré-attacher après coup).
+    sections.addEventListener("click", function (ev) {
+      var chip = ev.target.closest(".filtres-souscat .filtre-chip");
+      if (!chip) return;
+      var barre = chip.parentElement;
+      var theme = chip.closest(".cmp-theme");
+      var groupes = theme ? theme.querySelectorAll(".cmp-axe") : [];
+      barre.querySelectorAll(".filtre-chip").forEach(function (x) {
+        x.classList.remove("actif"); x.setAttribute("aria-pressed", "false");
+      });
+      chip.classList.add("actif"); chip.setAttribute("aria-pressed", "true");
+      var cible = chip.dataset.cible;
+      groupes.forEach(function (g) {
+        g.style.display = (cible === "tous" || g.dataset.axe === cible) ? "" : "none";
+      });
+    });
     // Rend une carte de vote ; renvoie {pa, pb, comparable, html}.
     function carteVote(v) {
       var ia = infoDe(a, v.id), ib = infoDe(b, v.id);
@@ -1488,15 +1545,31 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         // fiches candidats) — sinon la sous-section (ex. « Incendies ») en
         // tête donnerait l'impression que tout le thème ne parle que de ça.
         var slugsSection = d.sous_sections[theme].map(function (s) { return s.slug; });
+        var groupesRendus = [];  // {slug, titre, html}
+        var autres = "";
         votesT.filter(function (v) { return slugsSection.indexOf(v.axe) === -1; })
-          .forEach(function (v) { cartes += ajoute(v); });
+          .forEach(function (v) { autres += ajoute(v); });
+        if (autres) groupesRendus.push({ slug: "_autres", titre: "Autres", html: autres });
         d.sous_sections[theme].forEach(function (sec) {
           var vA = votesT.filter(function (v) { return v.axe === sec.slug; });
           if (!vA.length) return;
           var cards = "";
           vA.forEach(function (v) { cards += ajoute(v); });
           if (!cards) return;
-          cartes += '<div class="cmp-axe"><h3 class="axe-titre">' + sec.titre + '</h3>' + cards + '</div>';
+          groupesRendus.push({ slug: sec.slug, titre: sec.titre, html: cards });
+        });
+        // Sous-filtre : utile seulement si ces deux candidats ont des cartes
+        // dans au moins 2 sous-catégories différentes.
+        if (groupesRendus.length > 1) {
+          cartes += '<div class="filtres-souscat" role="group" aria-label="Filtrer ' + theme + ' par sous-catégorie">'
+            + '<button type="button" class="filtre-chip actif" data-cible="tous" aria-pressed="true">Tout</button>'
+            + groupesRendus.map(function (g) {
+                return '<button type="button" class="filtre-chip" data-cible="' + g.slug + '" aria-pressed="false">' + g.titre + '</button>';
+              }).join('') + '</div>';
+        }
+        groupesRendus.forEach(function (g) {
+          var titreHtml = g.slug === "_autres" ? "" : '<h3 class="axe-titre">' + g.titre + '</h3>';
+          cartes += '<div class="cmp-axe" data-axe="' + g.slug + '">' + titreHtml + g.html + '</div>';
         });
       } else {
         votesT.forEach(function (v) { cartes += ajoute(v); });
