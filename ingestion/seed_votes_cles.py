@@ -94,7 +94,7 @@ AXES = {
     "VTANR5L16V1370": ("elevage", None),
     "VTANR5L16V1377": ("elevage", None),
     "VTANR5L16V3782": ("elevage", None),
-    "VTANR5L17V2957": ("elevage", None),   # loi Duplomb, déjà en base
+    "VTANR5L17V2957": ("agriculture-alimentation", None),   # loi Duplomb, déjà en base
     # Sous-section « fiscalité de l'énergie » du thème Écologie et agriculture.
     "VTANR5L16V517": ("fiscalite-energie", None),
     "VTANR5L17V110": ("fiscalite-energie", None),
