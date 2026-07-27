@@ -264,6 +264,21 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
             + '<p class="axe-question">' + ax.question + '</p>'
             + paire + cards + '</div>';
         });
+      } else if (d.sous_sections && d.sous_sections[theme]) {
+        // Votes non rattachés à une sous-section d'abord (même ordre que les
+        // fiches candidats) — sinon la sous-section (ex. « Incendies ») en
+        // tête donnerait l'impression que tout le thème ne parle que de ça.
+        var slugsSection = d.sous_sections[theme].map(function (s) { return s.slug; });
+        votesT.filter(function (v) { return slugsSection.indexOf(v.axe) === -1; })
+          .forEach(function (v) { cartes += ajoute(v); });
+        d.sous_sections[theme].forEach(function (sec) {
+          var vA = votesT.filter(function (v) { return v.axe === sec.slug; });
+          if (!vA.length) return;
+          var cards = "";
+          vA.forEach(function (v) { cards += ajoute(v); });
+          if (!cards) return;
+          cartes += '<div class="cmp-axe"><h3 class="axe-titre">' + sec.titre + '</h3>' + cards + '</div>';
+        });
       } else {
         votesT.forEach(function (v) { cartes += ajoute(v); });
       }

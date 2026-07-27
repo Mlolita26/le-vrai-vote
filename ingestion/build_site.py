@@ -972,9 +972,9 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                                f'<h3>{e(t["libelle"])}</h3>{corps}</section>')
         else:
             sous_sections = SOUS_SECTIONS_THEME.get(t["libelle"])
-            corps = ""
             n_cartes = 0
             votes_restants = votes_t
+            sous_corps = ""
             if sous_sections:
                 axes_couverts = {axe_slug for axe_slug, _ in sous_sections}
                 for axe_slug, axe_titre in sous_sections:
@@ -986,14 +986,16 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
                     if not cartes_a:
                         continue
                     n_cartes += cartes_a.count('class="vote-carte"')
-                    corps += (f'<div class="axe-bloc" data-axe="{axe_slug}">'
-                              f'<h4 class="axe-titre">{e(axe_titre)}</h4>'
-                              f'<ul class="votes-cles">{cartes_a}</ul></div>')
+                    sous_corps += (f'<div class="axe-bloc" data-axe="{axe_slug}">'
+                                   f'<h4 class="axe-titre">{e(axe_titre)}</h4>'
+                                   f'<ul class="votes-cles">{cartes_a}</ul></div>')
                 votes_restants = [v for v in votes_t if v["axe_budget"] not in axes_couverts]
+            # Les votes non rattachés à une sous-section passent en premier — sinon
+            # la sous-section (ex. « Incendies ») en tête donnerait l'impression
+            # que tout le thème ne parle que de ça.
             lignes = "".join(_carte(v) for v in votes_restants)
             n_cartes += lignes.count('class="vote-carte"')
-            if lignes:
-                corps += f'<ul class="votes-cles">{lignes}</ul>'
+            corps = (f'<ul class="votes-cles">{lignes}</ul>' if lignes else "") + sous_corps
             if corps:  # thème sans aucune carte à montrer (ex. votes PE tous masqués)
                 themes_presents.append((slug_t, t["libelle"], n_cartes))
                 votes_html += (f'<section class="theme-bloc" data-theme="{slug_t}">'
@@ -1478,6 +1480,21 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
             + '<p class="axe-question">' + ax.question + '</p>'
             + paire + cards + '</div>';
         });
+      } else if (d.sous_sections && d.sous_sections[theme]) {
+        // Votes non rattachés à une sous-section d'abord (même ordre que les
+        // fiches candidats) — sinon la sous-section (ex. « Incendies ») en
+        // tête donnerait l'impression que tout le thème ne parle que de ça.
+        var slugsSection = d.sous_sections[theme].map(function (s) { return s.slug; });
+        votesT.filter(function (v) { return slugsSection.indexOf(v.axe) === -1; })
+          .forEach(function (v) { cartes += ajoute(v); });
+        d.sous_sections[theme].forEach(function (sec) {
+          var vA = votesT.filter(function (v) { return v.axe === sec.slug; });
+          if (!vA.length) return;
+          var cards = "";
+          vA.forEach(function (v) { cards += ajoute(v); });
+          if (!cards) return;
+          cartes += '<div class="cmp-axe"><h3 class="axe-titre">' + sec.titre + '</h3>' + cards + '</div>';
+        });
       } else {
         votesT.forEach(function (v) { cartes += ajoute(v); });
       }
@@ -1694,6 +1711,10 @@ def generer(base):
         "axes_budget": [{"slug": a[0], "titre": a[1], "question": a[2],
                          "lab_oui": a[3], "lab_non": a[4]} for a in AXES_BUDGET],
         "theme_budget": "Budget",
+        # Sous-sections d'un thème par ailleurs affiché en liste plate (ex.
+        # « Incendies » dans Écologie et agriculture) : {thème: [{slug, titre}]}.
+        "sous_sections": {theme: [{"slug": s, "titre": titre} for s, titre in axes]
+                          for theme, axes in SOUS_SECTIONS_THEME.items()},
         "libelles": {"pour": ["Pour", "badge-pour"], "contre": ["Contre", "badge-contre"],
                      "abstention": ["Abstention", "badge-abstention"]},
         "meta": meta,
