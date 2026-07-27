@@ -34,6 +34,7 @@ THEMES = [
     ("travail", "Travail"),
     ("logement", "Logement"),
     ("defense", "Défense"),
+    ("femmes", "Droits des femmes"),
 ]
 
 # Thème « Budget » : lu par AXES de questions, pas vote par vote. Chaque axe
@@ -51,8 +52,12 @@ AXES = {
     "VTANR5L17V3187": ("capital", "pour"),   # multinationales 25 %
     "VTANR5L17V3199": ("capital", "pour"),   # doublement taxe GAFAM
     "VTANR5L17V3149": ("capital", "pour"),   # surtaxe grandes entreprises
+    "VTANR5L16V325": ("capital", "pour"),     # rétablissement de l'ISF
+    "VTANR5L17V3335": ("capital", "pour"),    # suppression du PFU
+    "VTANR5L17V3336": ("capital", "pour"),    # relèvement du taux du PFU
     # Axe « pouvoir-achat » : voter POUR = alléger l'impôt des ménages modestes.
     "VTANR5L17V3096": ("pouvoir-achat", "pour"),  # indexation du barème sur l'inflation
+    "VTANR5L17V10": ("pouvoir-achat", "pour"),    # nouvelles tranches, reste à vivre
     # Axe « ecologie-fiscale » : voter POUR = taxer la pollution.
     "VTANR5L17V3848": ("ecologie-fiscale", "pour"),  # taxe sur les jets privés
     # ── Défense : sections (axe = section ; pas de sens_axe, pas de posture) ──
@@ -63,6 +68,20 @@ AXES = {
     "VTANR5L16V1545": ("incendies", None),
     "VTANR5L16V1556": ("incendies", None),
     "VTANR5L17V4114": ("incendies", None),
+    # Sous-section « élevage » du thème Écologie et agriculture.
+    "VTANR5L16V3750": ("elevage", None),
+    "VTANR5L17V3217": ("elevage", None),
+    "VTANR5L16V1370": ("elevage", None),
+    "VTANR5L16V1377": ("elevage", None),
+    "VTANR5L16V3782": ("elevage", None),
+    "VTANR5L17V2957": ("elevage", None),   # loi Duplomb, déjà en base
+    # Sous-section « fiscalité de l'énergie » du thème Écologie et agriculture.
+    "VTANR5L16V517": ("fiscalite-energie", None),
+    "VTANR5L17V110": ("fiscalite-energie", None),
+    "VTANR5L17V3958": ("fiscalite-energie", None),
+    "VTANR5L17V4046": ("fiscalite-energie", None),
+    "VTANR5L17V144": ("fiscalite-energie", None),
+    "VTANR5L17V3830": ("fiscalite-energie", None),
     "PE-HTV-172867": ("budget-defense", None),
     "PE-HTV-174053": ("budget-defense", None),
     "PE-HTV-181587": ("budget-defense", None),
@@ -120,6 +139,48 @@ VOTES = [
      "Amendement au budget 2026 visant à relever la part départementale de la taxe sur les conventions d'assurance (TSCA) pour financer les services départementaux d'incendie et de secours (SDIS). L'enjeu : donner aux pompiers des moyens supplémentaires face à des feux plus fréquents et plus intenses, en faisant contribuer davantage les sociétés d'assurance, mis en balance avec le coût pour les assurés.",
      None),
 
+    # ── Élevage et bien-être animal (sous-section, ajout 27/07/2026) ──────────
+    ("VTANR5L16V3750", "ecologie-agriculture", "Moratoire sur les nouveaux élevages en cage (2024)",
+     "Amendement à la loi d'orientation agricole visant à instaurer un moratoire sur la construction de nouveaux bâtiments d'élevage en cage. L'enjeu : le bien-être animal dans les élevages, mis en balance avec les conséquences pour les filières concernées (poules pondeuses, lapins notamment).",
+     None),
+    ("VTANR5L17V3217", "ecologie-agriculture", "Impôt sur les sociétés renforcé pour les élevages classés à risque (2025)",
+     "Amendement au budget 2026 visant à rétablir un taux d'impôt sur les sociétés de 35 % pour les élevages soumis au régime d'autorisation environnementale (installations classées, généralement les plus grandes). L'enjeu : décourager fiscalement l'agrandissement des élevages industriels, mis en balance avec la compétitivité de ces filières.",
+     None),
+    ("VTANR5L16V1370", "ecologie-agriculture", "Option végétarienne quotidienne en restauration collective (2023)",
+     "Amendement visant à imposer une option végétarienne quotidienne dans la restauration collective (cantines scolaires, administrations). L'enjeu : diversifier l'offre alimentaire et réduire la consommation de viande, mis en balance avec la liberté de gestion des collectivités et le coût de mise en œuvre.",
+     None),
+    ("VTANR5L16V1377", "ecologie-agriculture", "Interdiction progressive des additifs nitrés dans la charcuterie (2023)",
+     "Amendement visant à rétablir l'interdiction progressive des additifs nitrés (nitrites et nitrates) dans les produits de charcuterie, soupçonnés d'augmenter le risque de cancer colorectal. L'enjeu : la santé publique, mis en balance avec les difficultés techniques et économiques invoquées par la filière charcutière pour s'en passer.",
+     None),
+    ("VTANR5L16V3782", "ecologie-agriculture", "Développement de l'élevage en pâturage et plein air (2024)",
+     "Amendement à la loi d'orientation agricole appelant au développement de l'élevage en pâturage et plein air, alternative à l'élevage en bâtiment fermé. L'enjeu : promouvoir des modes d'élevage jugés plus respectueux du bien-être animal, sans y contraindre les exploitants.",
+     None),
+
+    # ── Fiscalité de l'énergie et du carbone (sous-section, ajout 27/07/2026) ──
+    ("VTANR5L16V517", "ecologie-agriculture", "Taxe sur les jets privés et les yachts (2022)",
+     "Amendement au budget 2023 visant à créer une taxe sur les jets privés et les yachts, présentés comme des biens de luxe à forte empreinte carbone. L'enjeu : faire contribuer ces usages à la transition écologique, mis en balance avec l'attractivité économique de ces activités (aviation d'affaires, plaisance).",
+     None),
+    ("VTANR5L17V110", "ecologie-agriculture", "Suppression de la niche fiscale sur le kérosène aérien (2024)",
+     "Amendement au budget 2025 visant à supprimer l'exonération de taxe intérieure de consommation dont bénéficie le kérosène utilisé par l'aviation. L'enjeu : aligner la fiscalité du transport aérien sur celle des autres carburants, mis en balance avec la compétitivité du secteur aérien français face à la concurrence internationale.",
+     None),
+    ("VTANR5L17V3958", "ecologie-agriculture", "Fin de la taxation réduite du charbon pour les entreprises énergo-intensives (2025)",
+     "Amendement au budget 2026 visant à mettre fin au tarif réduit de taxation du charbon dont bénéficient les entreprises grandes consommatrices d'énergie. L'enjeu : renchérir l'usage d'une énergie fossile très émettrice, mis en balance avec la compétitivité de ces industries.",
+     None),
+    ("VTANR5L17V4046", "ecologie-agriculture", "TVA à 5,5 % sur les transports en commun (2025)",
+     "Amendement au budget 2026 visant à abaisser à 5,5 % (taux réduit) la TVA sur les titres de transports en commun, aujourd'hui taxés à 10 %. L'enjeu : rendre les transports collectifs plus abordables pour inciter à leur usage, mis en balance avec la perte de recettes pour l'État.",
+     None),
+    ("VTANR5L17V144", "ecologie-agriculture", "TVA à 5,5 % sur le gaz, l'électricité, le fioul et les carburants (2024)",
+     "Amendement au budget 2025, déposé par un député du Rassemblement national, visant à abaisser à 5,5 % la TVA sur le gaz, l'électricité, le fioul domestique et les carburants. L'enjeu : le pouvoir d'achat des ménages face au coût de l'énergie, mis en balance avec la perte de recettes pour l'État et l'incitation à réduire sa consommation d'énergies fossiles.",
+     None),
+    ("VTANR5L17V3830", "ecologie-agriculture", "Suppression du malus écologique sur les véhicules (2025)",
+     "Amendement au budget 2026 visant à supprimer le malus écologique, une taxe appliquée à l'achat des véhicules neufs les plus émetteurs de CO2. L'enjeu : le pouvoir d'achat des ménages achetant un véhicule thermique, mis en balance avec l'incitation à acheter des véhicules moins polluants.",
+     None),
+
+    # ── Écologie et agriculture : hors sous-section ───────────────────────────
+    ("VTANR5L16V1989", "ecologie-agriculture", "80 000 km de pistes cyclables et voies vertes en 2027 (2023)",
+     "Amendement fixant un objectif national de 80 000 km de pistes cyclables et voies vertes d'ici 2027. L'enjeu : développer une alternative à la voiture pour les trajets du quotidien, la question débattue étant le financement de ces infrastructures par l'État et les collectivités.",
+     None),
+
     # ── Pouvoir d'achat et fiscalité ─────────────────────────────────────────
     ("VTANR5L16V186", "travail", "Mesures d'urgence pouvoir d'achat (2022)",
      "Ensemble de mesures adoptées face à la forte inflation de 2022 : revalorisation anticipée des retraites et de plusieurs prestations sociales, plafonnement temporaire de la hausse des loyers, et primes exonérées de cotisations que les employeurs peuvent verser à leurs salariés. L'enjeu : soutenir rapidement le pouvoir d'achat des ménages, le débat portant sur l'ampleur de ces mesures et leur coût pour les finances publiques.",
@@ -130,6 +191,9 @@ VOTES = [
     ("VTANR5L17V881", "taxe-impots", "Impôt plancher sur les très hauts patrimoines (2025)",
      "Crée un impôt minimum : les foyers dont le patrimoine dépasse 100 millions d'euros devraient payer chaque année au moins 2 % de ce patrimoine en impôt (proposition dite « taxe Zucman », du nom de l'économiste). L'idée de départ est que certaines très grandes fortunes paient aujourd'hui, en proportion, moins d'impôt que le reste de la population. L'enjeu : de nouvelles recettes et davantage de progressivité de l'impôt, mis en regard du risque d'exil fiscal et de la difficulté à taxer un patrimoine qui n'a pas été vendu.",
      "Proposition d'origine parlementaire, adoptée en première lecture à l'Assemblée ; elle n'était pas devenue loi à la date de mise à jour du site."),
+    ("VTANR5L17V3290", "taxe-impots", "Recentrage d'une taxe sur les holdings patrimoniales aux biens de luxe (2025)",
+     "Amendement au budget 2026 qui recentre une taxe sur les holdings patrimoniales — des sociétés utilisées par certains grands patrimoines pour loger leurs actifs — aux seuls biens dits « somptuaires » (yachts, voitures de collection, œuvres d'art), en écartant la trésorerie et les actifs financiers de l'assiette, tout en relevant le taux sur ce périmètre réduit de 2 à 20 %. L'enjeu : le texte discuté avant cet amendement prévoyait une assiette plus large ; l'adopter revient à réduire le champ de cette taxe par rapport à ce qui était proposé, tout en la renforçant sur le seul segment des biens de luxe.",
+     "Amendement porté par un député Les Républicains, adopté avec le soutien du Rassemblement national (31 octobre 2025)."),
     ("VTANR5L17V6319", "taxe-impots", "Lutte contre les fraudes sociales et fiscales (2026)",
      "Renforce les contrôles et les sanctions contre deux types de fraude : la fraude aux prestations sociales (aides perçues indûment) et la fraude fiscale (impôts non payés). L'enjeu : récupérer des sommes dues à la collectivité et faire respecter l'égalité devant l'impôt et les aides, le débat portant sur les moyens consacrés à chacune de ces deux fraudes et sur l'étendue des contrôles.",
      "Vote sur le texte issu de la commission mixte paritaire."),
@@ -466,6 +530,9 @@ VOTES = [
     ("VTANR5L17V2262", "logement", "Encadrement des loyers (2025)",
      "Prolonge et élargit l'expérimentation qui plafonne les loyers dans les zones les plus tendues (déjà appliquée à Paris, Lille, Lyon…), avec un volet spécifique à l'outre-mer : dans ces zones, un loyer ne peut pas dépasser un plafond de référence fixé par l'État. L'enjeu : freiner la hausse des loyers pour les locataires, face au risque de décourager la mise en location et de réduire l'offre de logements.",
      "Première lecture, 5 juin 2025 (proposition de loi expérimentant l'encadrement des loyers et améliorant l'habitat en outre-mer)."),
+    ("VTANR5L16V491", "logement", "Interdiction de la location des passoires thermiques (2022)",
+     "Amendement au budget 2023 relatif au calendrier d'interdiction de mise en location des logements les plus mal isolés (« passoires thermiques »), déjà prévue par la loi Climat et résilience. L'enjeu : accélérer la rénovation énergétique du parc locatif, mis en balance avec le risque de retrait de logements du marché locatif faute de travaux réalisés à temps.",
+     None),
     ("VTANR5L16V2256", "defense", "Loi de programmation militaire 2024-2030 (2023)",
      "Fixe le budget et les priorités des armées pour 2024-2030 : 413 milliards d'euros, en forte hausse, pour moderniser la dissuasion nucléaire, les drones, le cyber et le renseignement, et reconstituer les stocks de munitions, dans le contexte de la guerre en Ukraine. L'enjeu : le réarmement et la souveraineté de défense de la France, mis en regard du poids de cet effort pour les finances publiques.",
      "Texte issu de la commission mixte paritaire, adopté le 12 juillet 2023."),
@@ -497,6 +564,18 @@ VOTES = [
     ("VTANR5L17V3848", "budget", "Taxe sur les jets privés (budget 2026)",
      "Amendement au budget 2026 supprimant l'avantage fiscal sur le carburant (kérosène) des jets privés et de l'aviation d'affaires, la recette étant affectée aux transports en commun d'Île-de-France. L'enjeu : rapprocher la fiscalité du transport aérien privé de celle des autres carburants — un sujet à forte charge symbolique.",
      "Article 15 du PLF 2026, première lecture (17 novembre 2025). Adopté (137 pour, 107 contre) par la gauche et une majorité du Rassemblement national, contre le bloc central et Les Républicains ; rendu caduc par le rejet global de la partie recettes."),
+    ("VTANR5L17V10", "budget", "Réforme du barème de l'impôt sur le revenu pour augmenter le reste à vivre (2024)",
+     "Amendement au budget 2025 créant de nouvelles tranches d'imposition sur le revenu pour alléger l'impôt des foyers aux revenus modestes et moyens (moins de 4 000 € net par mois) et augmenter leur reste à vivre après impôt. L'enjeu : rendre l'impôt sur le revenu plus progressif, le débat portant sur le coût pour les finances publiques et la compensation par d'autres tranches.",
+     None),
+    ("VTANR5L16V325", "budget", "Rétablissement de l'impôt de solidarité sur la fortune (2022)",
+     "Amendement au budget 2023 visant à rétablir l'impôt de solidarité sur la fortune (ISF), supprimé en 2017 et remplacé par l'impôt sur la fortune immobilière (IFI). L'enjeu : taxer à nouveau le patrimoine financier des plus grandes fortunes, mis en balance avec le risque d'exil fiscal invoqué par ses opposants.",
+     None),
+    ("VTANR5L17V3335", "budget", "Suppression du prélèvement forfaitaire unique sur les revenus du capital (2025)",
+     "Amendement au budget 2026 visant à supprimer le prélèvement forfaitaire unique (PFU, ou « flat tax »), taxé à 30 %, pour réintégrer les revenus du capital (dividendes, intérêts, plus-values) au barème progressif de l'impôt sur le revenu, comme les revenus du travail. L'enjeu : une même règle fiscale pour tous les types de revenus, mis en balance avec le risque d'une moindre attractivité de l'épargne et de l'investissement en actions.",
+     None),
+    ("VTANR5L17V3336", "budget", "Relèvement du taux du prélèvement forfaitaire unique (2025)",
+     "Amendement au budget 2026 relevant, sans le supprimer, le taux du volet impôt sur le revenu du prélèvement forfaitaire unique (PFU) sur les revenus du capital, de 12,8 % à 15,8 %. L'enjeu : le même que pour le PFU dans son ensemble, mais par un relèvement du taux plutôt que par sa suppression complète.",
+     None),
     # ── Défense : ajouts issus de l'étude AN + PE (26/07/2026) ───────────────
     ("VTANR5L14V510", "defense", "Intervention militaire au Mali — opération Serval (2013)",
      "Déclaration du Gouvernement (article 35 de la Constitution) autorisant la prolongation de l'intervention militaire française au Mali, lancée en janvier 2013 (opération Serval) pour stopper l'avancée de groupes jihadistes vers Bamako. L'enjeu : engager durablement l'armée française dans la lutte antiterroriste au Sahel.",
@@ -530,6 +609,38 @@ VOTES = [
      None),
     ("PE-HTV-181587", "defense", "Programme pour l'industrie de défense européenne — EDIP (PE, 2025)",
      "Programme européen (EDIP) destiné à financer et coordonner la production d'armement au niveau de l'Union, dans le prolongement du plan « ReArm Europe ». L'enjeu : bâtir une base industrielle de défense européenne commune.",
+     None),
+
+    # ── Droits des femmes (thème créé le 27/07/2026) ──────────────────────────
+    ("VTANR5L17V3061", "femmes", "Inscription du consentement dans la définition pénale du viol (2025)",
+     "Proposition de loi modifiant la définition pénale du viol et des agressions sexuelles pour y inscrire l'absence de consentement, la définition actuelle reposant sur la notion de violence, contrainte, menace ou surprise. L'enjeu : mieux qualifier juridiquement les situations de sidération ou d'emprise, la question débattue étant les conséquences pratiques pour la preuve et l'instruction des affaires.",
+     None),
+    ("VTANR5L17V3620", "femmes", "Extension de la prise en charge des protections périodiques réutilisables au-delà de 26 ans (2025)",
+     "Amendement au budget de la Sécurité sociale 2026 demandant un rapport sur l'extension, au-delà de 26 ans, de la prise en charge des protections périodiques réutilisables pour les personnes en situation de précarité. L'enjeu : lutter contre la précarité menstruelle au-delà des jeunes majeurs déjà couverts, la question débattue étant le coût pour l'Assurance maladie.",
+     None),
+    ("VTANR5L17V4613", "femmes", "Rétablissement de la prise en charge des protections périodiques réutilisables (2025)",
+     "Amendement au budget de la Sécurité sociale 2026 visant à rétablir un article prévoyant la prise en charge des protections périodiques réutilisables pour les moins de 26 ans en situation de précarité, supprimé lors d'une étape antérieure de l'examen du texte. L'enjeu : la lutte contre la précarité menstruelle, mis en balance avec le coût pour l'Assurance maladie.",
+     None),
+    ("VTANR5L17V3656", "femmes", "Interdiction des dépassements d'honoraires sur les consultations de santé sexuelle (2025)",
+     "Amendement au budget de la Sécurité sociale 2026 visant à interdire les dépassements d'honoraires sur les consultations de prévention, de dépistage des infections sexuellement transmissibles, de contraception et de suivi gynécologique. L'enjeu : l'accès financier à la santé sexuelle, mis en balance avec la liberté de fixation des honoraires médicaux.",
+     None),
+    ("VTANR5L16V2137", "femmes", "Renforcement de l'accès des femmes aux responsabilités dans la fonction publique (2023)",
+     "Proposition de loi (texte de la commission mixte paritaire) visant à renforcer l'accès des femmes aux postes de direction et de responsabilité dans les trois versants de la fonction publique. L'enjeu : l'égalité professionnelle dans l'emploi public, la question débattue étant le rythme et les sanctions associées aux objectifs de nominations équilibrées.",
+     None),
+    ("VTANR5L17V3077", "femmes", "Option d'imposition séparée pour les couples mariés ou pacsés (2025)",
+     "Amendement au budget 2026 créant une option d'imposition séparée des revenus pour les couples mariés ou pacsés, aujourd'hui imposés obligatoirement ensemble (foyer fiscal commun). L'enjeu : présenté par ses partisans comme un moyen de renforcer l'autonomie financière au sein du couple, mis en balance avec la simplicité du système actuel et ses effets sur le calcul d'autres prestations.",
+     None),
+    ("VTANR5L16V2814", "femmes", "Extension de la prise en charge de la contraception masculine (2023)",
+     "Amendement au budget de la Sécurité sociale 2024 visant à étendre la prise en charge à des méthodes de contraception masculine (thermique, notamment). L'enjeu : partager davantage la responsabilité contraceptive entre les partenaires, la question débattue étant le nombre restreint de méthodes disponibles et leur niveau de preuve scientifique.",
+     None),
+    ("VTANR5L16V2815", "femmes", "Extension de la prise en charge des préservatifs internes (2023)",
+     "Amendement au budget de la Sécurité sociale 2024 visant à étendre la prise en charge aux préservatifs internes (dits féminins), jusque-là moins accessibles que les préservatifs externes. L'enjeu : élargir les moyens de prévention disponibles, notamment pour les personnes qui ne souhaitent pas ou ne peuvent pas utiliser un préservatif externe.",
+     None),
+    ("VTANR5L16V2259", "femmes", "Formation des magistrats aux violences intrafamiliales (2023)",
+     "Amendement à la loi de programmation du ministère de la justice 2023-2027 visant à inscrire explicitement la prise en charge des violences intrafamiliales dans le champ de la formation des magistrats. L'enjeu : mieux outiller les juges face à ce contentieux spécifique.",
+     None),
+    ("VTANR5L16V1014", "femmes", "Renforcement des pénalités pour les entreprises ne respectant pas l'égalité salariale (2023)",
+     "Amendement au budget rectificatif de la Sécurité sociale 2023 visant à augmenter la pénalité financière applicable aux entreprises qui ne respectent pas leurs objectifs de réduction des écarts de rémunération entre les femmes et les hommes (index de l'égalité professionnelle). L'enjeu : renforcer la portée dissuasive de la sanction, mis en balance avec son impact sur les entreprises déjà engagées dans une démarche de correction.",
      None),
 ]
 
@@ -820,6 +931,45 @@ SENS = {
     "PE-HTV-172867": ("soutenir le renforcement de la défense européenne commune", "s'y opposer"),
     "PE-HTV-174053": ("approuver l'orientation de la politique de défense commune de l'UE", "s'y opposer"),
     "PE-HTV-181587": ("financer une industrie de défense européenne commune", "s'y opposer"),
+
+    # ── Incendies / élevage / fiscalité énergie (sous-sections, 27/07/2026) ──
+    "VTANR5L16V133": ("créer un programme de recrutement de pompiers professionnels supplémentaires", "rejeter cet amendement"),
+    "VTANR5L16V1509": ("adopter un plan d'adaptation de la forêt cohérent avec la SNBC", "rejeter cet amendement"),
+    "VTANR5L16V1545": ("agir contre la perte de chemins forestiers nécessaires aux secours", "rejeter cet amendement"),
+    "VTANR5L16V1556": ("imposer des pare-feux d'arbres feuillus entre parcelles de résineux", "rejeter cet amendement"),
+    "VTANR5L17V4114": ("relever la taxe sur les conventions d'assurance pour financer les SDIS", "rejeter cet amendement"),
+    "VTANR5L16V3750": ("instaurer un moratoire sur les nouveaux élevages en cage", "rejeter ce moratoire"),
+    "VTANR5L17V3217": ("relever l'impôt sur les sociétés pour les élevages classés à risque", "rejeter cet amendement"),
+    "VTANR5L16V1370": ("imposer une option végétarienne quotidienne en restauration collective", "rejeter cette obligation"),
+    "VTANR5L16V1377": ("rétablir l'interdiction progressive des additifs nitrés", "rejeter cette interdiction"),
+    "VTANR5L16V3782": ("appeler au développement du pâturage et du plein air", "rejeter cet amendement"),
+    "VTANR5L16V517": ("créer une taxe sur les jets privés et les yachts", "rejeter cette taxe"),
+    "VTANR5L17V110": ("supprimer la niche fiscale sur le kérosène aérien", "maintenir cette niche fiscale"),
+    "VTANR5L17V3958": ("mettre fin au tarif réduit de taxation du charbon", "maintenir ce tarif réduit"),
+    "VTANR5L17V4046": ("abaisser la TVA sur les transports en commun à 5,5 %", "rejeter cette baisse de TVA"),
+    "VTANR5L17V144": ("abaisser à 5,5 % la TVA sur le gaz, l'électricité, le fioul et les carburants", "rejeter cette baisse de TVA"),
+    "VTANR5L17V3830": ("supprimer le malus écologique sur les véhicules", "maintenir ce malus"),
+    "VTANR5L16V1989": ("fixer un objectif de 80 000 km de pistes cyclables en 2027", "rejeter cet objectif"),
+    "VTANR5L16V491": ("maintenir le calendrier d'interdiction de location des passoires thermiques", "assouplir ce calendrier"),
+
+    # ── Fiscalité du capital et des hauts patrimoines (27/07/2026) ──
+    "VTANR5L17V10": ("créer de nouvelles tranches d'impôt sur le revenu pour augmenter le reste à vivre des ménages modestes", "rejeter cette réforme du barème"),
+    "VTANR5L16V325": ("rétablir l'impôt de solidarité sur la fortune", "rejeter ce rétablissement"),
+    "VTANR5L17V3335": ("supprimer le prélèvement forfaitaire unique sur les revenus du capital", "maintenir le PFU"),
+    "VTANR5L17V3336": ("relever le taux du prélèvement forfaitaire unique", "maintenir le taux actuel"),
+    "VTANR5L17V3290": ("recentrer la taxe sur les holdings patrimoniales aux seuls biens de luxe", "maintenir une assiette plus large pour cette taxe"),
+
+    # ── Droits des femmes (27/07/2026) ──
+    "VTANR5L17V3061": ("inscrire l'absence de consentement dans la définition pénale du viol", "rejeter cette nouvelle définition"),
+    "VTANR5L17V3620": ("étudier l'extension de la prise en charge des protections périodiques au-delà de 26 ans", "rejeter cette demande de rapport"),
+    "VTANR5L17V4613": ("rétablir la prise en charge des protections périodiques réutilisables", "rejeter ce rétablissement"),
+    "VTANR5L17V3656": ("interdire les dépassements d'honoraires sur les consultations de santé sexuelle", "rejeter cette interdiction"),
+    "VTANR5L16V2137": ("renforcer l'accès des femmes aux responsabilités dans la fonction publique", "rejeter le texte"),
+    "VTANR5L17V3077": ("créer une option d'imposition séparée pour les couples mariés ou pacsés", "rejeter cette option"),
+    "VTANR5L16V2814": ("étendre la prise en charge à la contraception masculine", "rejeter cette extension"),
+    "VTANR5L16V2815": ("étendre la prise en charge aux préservatifs internes", "rejeter cette extension"),
+    "VTANR5L16V2259": ("inscrire la formation des magistrats aux violences intrafamiliales", "rejeter cet amendement"),
+    "VTANR5L16V1014": ("augmenter les pénalités pour non-respect de l'égalité salariale", "rejeter cette hausse"),
 }
 
 

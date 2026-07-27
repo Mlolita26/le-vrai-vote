@@ -59,6 +59,7 @@ THEME_SLUGS = {
     "Logement": "logement",
     "Défense": "defense",
     "Budget": "budget",
+    "Droits des femmes": "femmes",
 }
 # Thème « Budget » : axes de lecture (slug DB, titre, question neutre, libellé du
 # sens positif de l'axe, libellé du sens opposé). Ordre d'affichage = cet ordre.
@@ -95,6 +96,8 @@ AXES_DEFENSE = [
 SOUS_SECTIONS_THEME = {
     "Écologie et agriculture": [
         ("incendies", "Incendies et prévention des feux de forêt"),
+        ("elevage", "Élevage et bien-être animal"),
+        ("fiscalite-energie", "Fiscalité de l'énergie et du carbone"),
     ],
 }
 # En dessous de ce nombre de votes dans un axe, on n'affiche PAS de barre de
