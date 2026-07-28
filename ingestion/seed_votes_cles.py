@@ -453,6 +453,15 @@ VOTES = [
     ("VTANR5L17V7261", "sante", "Reconnaissance de la responsabilité de l'État et indemnisation des victimes du chlordécone",
      "Reconnaît la responsabilité de l'État dans le préjudice sanitaire, moral, écologique et économique subi par la Guadeloupe et la Martinique et leurs populations, résultant de l'autorisation du chlordécone — un insecticide utilisé dans les bananeraies antillaises jusqu'en 1993, alors que sa toxicité et sa persistance dans les sols et l'eau étaient déjà documentées — et de son usage prolongé. Donne un an au Gouvernement pour proposer au Parlement les modalités d'indemnisation des victimes, notamment via une extension possible du fonds existant pour les victimes de pesticides. L'enjeu : la réparation d'un préjudice sanitaire de long terme (le chlordécone, un perturbateur endocrinien, reste présent dans les sols antillais pour plusieurs siècles), le débat portant sur l'ampleur et le financement de cette indemnisation.",
      "Adopté une première fois par l'Assemblée le 29 février 2024 (scrutin n°3382 : 100 pour, 1 contre, 80 abstentions), modifié par le Sénat le 12 juin 2025, puis adopté définitivement et à l'unanimité par l'Assemblée le 2 juin 2026 (scrutin n°7261 : 236 pour) — c'est ce second vote qui est affiché ici. Promulguée le 12 juin 2026 (loi n° 2026-491)."),
+    ("VTANR5L17V7303", "sante", "Contamination au cadmium des engrais et de l'alimentation (2026)",
+     "Abaisse la teneur maximale en cadmium — un métal lourd toxique — autorisée dans les engrais phosphatés : de 90 mg/kg actuellement à 40 mg/kg au 1ᵉʳ janvier 2027, puis 20 mg/kg au 1ᵉʳ janvier 2030. L'enjeu : réduire la contamination des sols agricoles et, à terme, de la chaîne alimentaire, mis en balance avec le coût pour les fabricants d'engrais et les agriculteurs d'une mise aux normes plus rapide.",
+     "Adopté en première lecture le 3 juin 2026 (144 pour, 22 contre, 4 abstentions), avis défavorable du Gouvernement. Le texte doit encore être examiné par le Sénat."),
+    ("VTANR5L17V852", "sante", "Interdiction des PFAS, les « polluants éternels » (2025)",
+     "Interdit progressivement la fabrication, l'importation et la vente de produits contenant des PFAS (substances per- et polyfluoroalkylées) dans plusieurs secteurs — textiles d'habillement, cosmétiques, farts de ski — en raison de leur persistance dans l'environnement et de leurs effets sanitaires suspectés. Crée aussi une contribution des industriels rejetant des PFAS, destinée à financer la dépollution de l'eau. L'enjeu : réduire l'exposition à ces polluants durables, mis en balance avec les délais et coûts de reconversion pour les filières concernées.",
+     "Adoption définitive en deuxième lecture le 20 février 2025 (231 pour, 51 contre, 7 abstentions). En première lecture (avril 2024), un amendement avait exempté les ustensiles de cuisine antiadhésifs du champ de l'interdiction."),
+    ("VTANR5L17V4515", "sante", "Nutri-Score obligatoire sur les emballages alimentaires (2025)",
+     "Aurait rendu obligatoire l'affichage du Nutri-Score — l'étiquetage nutritionnel simplifié, noté de A à E — sur les emballages alimentaires ; il est aujourd'hui facultatif, en France comme dans le reste de l'Union européenne. L'enjeu : mieux informer les consommateurs sur la qualité nutritionnelle des produits, mis en balance avec les contraintes pour les industriels et les réticences de certaines filières.",
+     "Amendement au budget de la Sécurité sociale 2026 : adopté une première fois en première lecture, supprimé par le Sénat, puis son rétablissement a été rejeté de justesse en nouvelle lecture le 3 décembre 2025 (117 pour, 120 contre, 6 abstentions)."),
 
     # ── Éducation (thème créé le 25/07/2026) ─────────────────────────────────
     ("VTANR5L15V351", "education", "Parcoursup — accès à l'université (loi ORE, 2018)",
@@ -971,6 +980,9 @@ SENS = {
     "VTANR5L17V3830": ("supprimer le malus écologique sur les véhicules", "maintenir ce malus"),
     "VTANR5L16V1989": ("fixer un objectif de 80 000 km de pistes cyclables en 2027", "rejeter cet objectif"),
     "VTANR5L16V491": ("maintenir le calendrier d'interdiction de location des passoires thermiques", "assouplir ce calendrier"),
+    "VTANR5L17V7303": ("abaisser la teneur en cadmium autorisée dans les engrais phosphatés", "maintenir le seuil actuel de 90 mg/kg"),
+    "VTANR5L17V852": ("interdire progressivement les PFAS dans les produits concernés", "s'opposer à cette interdiction"),
+    "VTANR5L17V4515": ("rendre le Nutri-Score obligatoire sur les emballages alimentaires", "ne pas le rendre obligatoire"),
 
     # ── Fiscalité du capital et des hauts patrimoines (27/07/2026) ──
     "VTANR5L17V10": ("créer de nouvelles tranches d'impôt sur le revenu pour augmenter le reste à vivre des ménages modestes", "rejeter cette réforme du barème"),
