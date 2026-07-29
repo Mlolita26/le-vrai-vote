@@ -557,7 +557,6 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 <script src="{r}communaute.js" defer></script>
 </head>
 <body>
-<div class="bandeau-travail" role="status">Version de travail — chaque fait affiché est sourcé ; ce qui n'est pas encore importé est indiqué comme tel.</div>
 <header class="entete-nav">
   <a class="marque" href="{r}./"><img src="{r}assets/favicon-192.png" alt="" width="32" height="32" class="marque-logo">Le Vrai Vote</a>
   <nav aria-label="Navigation principale">{nav}</nav>
