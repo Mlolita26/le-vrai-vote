@@ -56,7 +56,7 @@ NUANCES = [
      "A voté contre avec l'ensemble du groupe LFI, qui déplorait la faiblesse du texte et non son principe.",
      "lcp_climat"),
     ("delphine-batho", "VTANR5L15V3738",
-     "A voté contre en jugeant la loi « à des années-lumière de ce que disent les scientifiques » — un désaccord sur l'ambition, pas sur l'objectif.",
+     "A voté contre en jugeant la loi « à des années-lumière de ce que disent les scientifiques », un désaccord sur l'ambition, pas sur l'objectif.",
      "politis_batho"),
     # Loi immigration 2023 : le RN annonçait voter contre puis a voté pour.
     ("marine-le-pen", "VTANR5L16V3213",
@@ -76,7 +76,7 @@ NUANCES = [
      "ici_narcotrafic"),
     # Énergies renouvelables 2023 : LFI contre, pour des motifs propres.
     ("francois-ruffin", "VTANR5L16V823",
-     "A voté contre avec le groupe LFI, qui critiquait notamment le classement de la valorisation des déchets parmi les énergies renouvelables et le dispositif des « zones d'accélération » — pas le principe des renouvelables.",
+     "A voté contre avec le groupe LFI, qui critiquait notamment le classement de la valorisation des déchets parmi les énergies renouvelables et le dispositif des « zones d'accélération », pas le principe des renouvelables.",
      "lfa_enr"),
     # Pouvoir d'achat 2022 : la gauche jugeait le paquet insuffisant.
     ("clementine-autain", "VTANR5L16V186",
@@ -93,16 +93,16 @@ NUANCES = [
     #  affichée sous le chip du parti — pas de double emploi.)
     # Fraudes sociales et fiscales 2026 : opposition unanime de la gauche sur l'équilibre du texte.
     ("clementine-autain", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     ("francois-ruffin", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     ("jerome-guedj", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     ("philippe-brun", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires — pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     # Résolution Ukraine 2022 : abstentions LFI et RN, motifs distincts (compte rendu officiel).
     ("clementine-autain", "VTANR5L16V652",
@@ -113,7 +113,7 @@ NUANCES = [
      "cr_ukraine_2022"),
     # Extension L14 (24/07/2026)
     ("edouard-philippe", "VTANR5L14V511",
-     "S'est abstenu — une position intermédiaire dans un groupe UMP qui a très majoritairement voté contre le texte.",
+     "S'est abstenu : une position intermédiaire dans un groupe UMP qui a très majoritairement voté contre le texte.",
      "jdd_philippe"),
     ("edouard-philippe", "VTANR5L14V1109",
      "A voté contre, jugeant que la loi posait « des questions graves en matière de libertés individuelles », malgré le consensus des mois suivant les attentats de janvier 2015.",

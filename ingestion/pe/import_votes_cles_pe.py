@@ -83,9 +83,9 @@ VOTES_CLES_PE = {
 # prétend jamais isoler un « vote de parti » quand la délégation en mêle plusieurs.
 PARTIS_PE = {
     "RN": {"groupes": ["ID", "PFE"],
-           "libelle": "Délégation française — Rassemblement national (groupe Identité et démocratie puis Patriotes pour l'Europe)"},
+           "libelle": "Délégation française du groupe Identité et démocratie puis Patriotes pour l'Europe (Rassemblement national)"},
     "LFI": {"groupes": ["GUE_NGL"],
-            "libelle": "Délégation française — La France insoumise et apparentés (groupe The Left/GUE-NGL)"},
+            "libelle": "Délégation française du groupe The Left/GUE-NGL (La France insoumise et apparentés)"},
     "PS": {"groupes": ["SD"],
            "libelle": "Délégation française du groupe S&D (Parti socialiste, Place publique)"},
     "LR": {"groupes": ["EPP"],

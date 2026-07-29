@@ -18,7 +18,7 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parents[1]
 BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 
-# (slug, url, type, note, date de vérification) — vérifié par ouverture directe
+# (slug, url, type, note, date de vérification) : vérifié par ouverture directe
 # (WebFetch) le 26/07/2026. « aucun trouvé » : pas de ligne, l'absence s'affiche
 # comme telle (« indisponible »).
 PROGRAMMES = [

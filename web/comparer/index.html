@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comparer — Le Vrai Vote</title>
+<title>Comparer · Le Vrai Vote</title>
 <meta name="description" content="Comparez les votes réels de plusieurs candidats à la présidentielle 2027, thème par thème, à partir de leurs scrutins officiels.">
 <meta name="google-site-verification" content="a0RhaqFTyMdeATANiYhspuJ6eGRp0UOoxpvsGYkBJxE" />
 <link rel="canonical" href="https://levraivote.fr/comparer/">
@@ -11,7 +11,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon-512.png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<meta property="og:title" content="Comparer — Le Vrai Vote">
+<meta property="og:title" content="Comparer · Le Vrai Vote">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://levraivote.fr/assets/og-image.png">
 <meta property="og:url" content="https://levraivote.fr/comparer/">
@@ -32,9 +32,9 @@
 <main>
 
 <h1>Comparer des candidats</h1>
-<p>Sur les <strong>votes clés</strong>, thème par thème — à l'Assemblée, au Sénat et au Parlement
+<p>Sur les <strong>votes clés</strong>, thème par thème, à l'Assemblée, au Sénat et au Parlement
 européen. Chaque candidat est comparé <strong>au plus précis</strong> : son vote personnel s'il a voté,
-sinon la position de son parti — clairement marquée. Ainsi les candidats restent comparables même
+sinon la position de son parti (clairement marquée). Ainsi les candidats restent comparables même
 lorsqu'ils n'ont pas siégé aux mêmes moments. À partir de trois candidats, l'affichage bascule sur un
 regroupement par position (comme sur la page d'un vote), plus lisible qu'un tableau à colonnes.</p>
 <div class="comparateur" id="selecteurs"></div>
@@ -88,7 +88,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
   function remplirOptions(sel) {
     var ph = document.createElement("option");
-    ph.value = ""; ph.textContent = "— Choisir un candidat —";
+    ph.value = ""; ph.textContent = "Choisir un candidat…";
     sel.appendChild(ph);
     d.candidats.forEach(function (c) {
       var o = document.createElement("option");
@@ -220,7 +220,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
   brancher(".filtre-compare", function (ds) { filtre = ds.filtre; });
 
-  // Vue unique : pour chaque candidat, le niveau le plus précis disponible —
+  // Vue unique : pour chaque candidat, le niveau le plus précis disponible :
   // vote personnel s'il a voté, sinon position de son groupe (étiquetée).
   function infoDe(slug, vid) {
     var e = (d.positions[slug] || {})[vid] || {};
@@ -242,13 +242,13 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
   function justifDe(surnom, info) {
     if (!info.just) return "";
-    var etiq = info.justParti ? (surnom + " — son parti") : surnom;
-    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> — ' + info.just[0]
+    var etiq = info.justParti ? (surnom + " (son parti)") : surnom;
+    return '<p class="cmp-nuance"><strong>' + etiq + '</strong> : ' + info.just[0]
       + ' (<a href="' + info.just[1] + '" rel="noopener">source</a>)</p>';
   }
 
   // Thème Budget : posture d'un candidat sur un axe (comptage des votes dans le
-  // sens de l'axe — vote perso s'il a voté, sinon position du parti).
+  // sens de l'axe : vote perso s'il a voté, sinon position du parti).
   function postureCompute(slug, votesAxe) {
     var oui = 0, non = 0, abst = 0;
     votesAxe.forEach(function (v) {
@@ -280,7 +280,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     var res = document.getElementById("resultat");
     modeMulti = false;
     document.getElementById("note-mode").textContent =
-      "Vue unique : chaque candidat au niveau le plus précis disponible — son vote personnel s'il a voté, "
+      "Vue unique : chaque candidat au niveau le plus précis disponible, son vote personnel s'il a voté, "
       + "sinon la position majoritaire de son groupe (marquée « position du parti »). "
       + "« Aucune donnée » = ni vote personnel ni parti rattaché pour ce scrutin.";
     res.textContent = "";
@@ -293,7 +293,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     themesRendus = [];
     var sections = document.createElement("div");
     // Sous-filtre à l'intérieur d'un thème (délégué sur "sections", qui est
-    // recréé à chaque rendu — pas besoin de ré-attacher après coup).
+    // recréé à chaque rendu : pas besoin de ré-attacher après coup).
     sections.addEventListener("click", function (ev) {
       var chip = ev.target.closest(".filtres-souscat .filtre-chip");
       if (!chip) return;
@@ -308,8 +308,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       groupes.forEach(function (g) {
         g.style.display = (cible === "tous" || g.dataset.axe === cible) ? "" : "none";
       });
-      // Met aussi à jour le gros chiffre en tête de page sur cette sous-catégorie
-      // — seulement si ce thème est actuellement le filtre principal actif
+      // Met aussi à jour le gros chiffre en tête de page sur cette sous-catégorie,
+      // seulement si ce thème est actuellement le filtre principal actif
       // (sinon le gros chiffre représente « tous les thèmes » et ne doit pas
       // changer au clic sur un sous-filtre qui, de toute façon, n'est visible
       // que lorsque son thème est sélectionné).
@@ -365,7 +365,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
           vA.forEach(function (v) { cards += ajoute(v); });
           if (!cards) return;
           // Barre de posture seulement à partir de 3 votes dans l'axe (sinon
-          // un « comptage » serait trompeur) — même seuil que la fiche.
+          // un « comptage » serait trompeur) : même seuil que la fiche.
           var paire = "";
           if (vA.length >= 3) {
             paire = '<div class="cmp-posture-paire">'
@@ -379,7 +379,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         });
       } else if (d.sous_sections && d.sous_sections[theme]) {
         // Votes non rattachés à une sous-section d'abord (même ordre que les
-        // fiches candidats) — sinon la sous-section (ex. « Incendies ») en
+        // fiches candidats) : sinon la sous-section (ex. « Incendies ») en
         // tête donnerait l'impression que tout le thème ne parle que de ça.
         var slugsSection = d.sous_sections[theme].map(function (s) { return s.slug; });
         var groupesRendus = [];  // {slug, titre, html, comp, acc}
@@ -467,14 +467,14 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   }
 
   // Vue à 3 candidats ou plus : regroupement par position (comme la page
-  // d'un vote), pas de colonnes — ne scale pas au-delà de 4-5 candidats.
+  // d'un vote), pas de colonnes : ne scale pas au-delà de 4-5 candidats.
   // « Comparable » = au moins deux candidats ont une position ; « unanime »
   // = tous ceux qui ont une position sont d'accord.
   function rendreMulti(slugsChoisis) {
     var res = document.getElementById("resultat");
     modeMulti = true;
     document.getElementById("note-mode").textContent =
-      "Vue à plusieurs candidats : chaque candidat au niveau le plus précis disponible — son vote "
+      "Vue à plusieurs candidats : chaque candidat au niveau le plus précis disponible, son vote "
       + "personnel s'il a voté, sinon la position majoritaire de son groupe (« position du parti »). "
       + "« Unanime » = tous les candidats ayant une position sont d'accord entre eux.";
     res.textContent = "";

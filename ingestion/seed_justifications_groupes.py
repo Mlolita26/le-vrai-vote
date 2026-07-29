@@ -1,14 +1,14 @@
 """Justifications éditoriales PAR GROUPE parlementaire : pourquoi chaque parti
 a voté comme il l'a fait sur un scrutin clé. Chacune est ATTRIBUÉE et SOURCÉE
 (règle absolue : un fait sans source ne s'affiche pas) et rapporte la position
-déclarée — elle décrit, elle ne juge pas (CLAUDE.md §4).
+déclarée : elle décrit, elle ne juge pas (CLAUDE.md §4).
 
 Complète les décomptes bruts de `positions_groupes` (miroir des dumps, jamais
 édités) par le « pourquoi » éditorial, parti par parti. Sert surtout les lois
 où les familles politiques divergent nettement (ex. LFI vs RN).
 
 Garde-fou : une justification n'est écrite que si le groupe a réellement un
-décompte en base pour ce scrutin (sinon on refuse — pas de parti fantôme).
+décompte en base pour ce scrutin (sinon on refuse : pas de parti fantôme).
 
 Usage : python ingestion/seed_justifications_groupes.py [chemin_base]
 """
@@ -22,182 +22,182 @@ BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 # clé -> (url, détail). URLs vérifiées le 25/07/2026.
 SOURCES = {
     "lcp_nucleaire": ("https://lcp.fr/actualites/acceleration-du-nucleaire-le-projet-de-loi-definitivement-adopte-par-le-parlement-188296",
-                      "LCP, mai 2023 — adoption définitive de la loi d'accélération du nucléaire, positions des groupes"),
+                      "LCP, mai 2023 : adoption définitive de la loi d'accélération du nucléaire, positions des groupes"),
     "lcp_indverte": ("https://lcp.fr/actualites/assemblee-nationale-adoption-du-projet-de-loi-industrie-verte-fin-de-la-session",
-                     "LCP, juillet 2023 — adoption du projet de loi industrie verte, explications et critiques des groupes"),
+                     "LCP, juillet 2023 : adoption du projet de loi industrie verte, explications et critiques des groupes"),
     "lcp_mineurs": ("https://lcp.fr/actualites/delinquance-des-mineurs-que-contient-la-proposition-de-loi-de-gabriel-attal-que-le",
-                    "LCP, 2025 — contenu et débats de la proposition de loi Attal sur la justice des mineurs"),
+                    "LCP, 2025 : contenu et débats de la proposition de loi Attal sur la justice des mineurs"),
     "lcp_bienvieillir": ("https://lcp.fr/actualites/bien-vieillir-assemblee-nationale-adopte-texte-premiere-lecture-241649",
-                         "LCP, 23/11/2023 — adoption en première lecture de la loi « bien vieillir », positions des groupes"),
+                         "LCP, 23/11/2023 : adoption en première lecture de la loi « bien vieillir », positions des groupes"),
     "lcp_corse": ("https://lcp.fr/actualites/l-assemblee-nationale-vote-en-faveur-de-l-autonomie-de-la-corse-437977",
-                  "LCP, juin 2026 — vote de l'Assemblée sur l'autonomie de la Corse, positions du RN et de LFI"),
+                  "LCP, juin 2026 : vote de l'Assemblée sur l'autonomie de la Corse, positions du RN et de LFI"),
     "lcp_caledonie": ("https://lcp.fr/actualites/nouvelle-caledonie-le-projet-de-loi-constitutionnelle-sur-le-degel-du-corps-electoral",
-                      "LCP, mai 2024 — adoption du dégel du corps électoral calédonien, débats des groupes"),
+                      "LCP, mai 2024 : adoption du dégel du corps électoral calédonien, débats des groupes"),
     "lcp_municipales": ("https://lcp.fr/actualites/municipales-le-parlement-etend-le-scrutin-de-liste-paritaire-aux-petites-communes-a",
-                        "LCP, avril 2025 — extension du scrutin de liste paritaire aux petites communes, débat RN / gauche"),
+                        "LCP, avril 2025 : extension du scrutin de liste paritaire aux petites communes, débat RN / gauche"),
     # Sources des justifications de groupe au Parlement européen (+ loi immigration 2023).
     "aubry_seqe": ("https://manonaubry.eu/mes-combats/vote/revision-du-systeme-dechange-de-quotas-demission-de-gaz-effet-de-serre-dans-lunion",
-                   "manonaubry.eu — fiche de vote de Manon Aubry (LFI/The Left) sur la révision du marché carbone"),
+                   "manonaubry.eu : fiche de vote de Manon Aubry (LFI/The Left) sur la révision du marché carbone"),
     "lfi_electricite": ("https://lafranceinsoumise.fr/2024/04/11/le-parlement-europeen-vote-la-catastrophique-reforme-du-marche-de-lelectricite-seul-le-groupe-lfi-sy-oppose/",
-                        "lafranceinsoumise.fr, 11/04/2024 — opposition de LFI à la réforme du marché de l'électricité"),
+                        "lafranceinsoumise.fr, 11/04/2024 : opposition de LFI à la réforme du marché de l'électricité"),
     "rn_pacte_migration": ("https://rassemblementnational.fr/communiques/communique-de-presse-de-jordan-bardella",
-                           "rassemblementnational.fr — communiqué de Jordan Bardella (RN) contre le « pacte de submersion » (avril 2024)"),
+                           "rassemblementnational.fr : communiqué de Jordan Bardella (RN) contre le « pacte de submersion » (avril 2024)"),
     "rn_ecologie_punitive": ("https://rassemblementnational.fr/communiques/mondial-de-lauto-2024-le-rassemblement-national-se-tient-aux-cotes-des-automobilistes-et-constructeurs-automobiles-francais-victimes-expiatoires-de-lecologie-punitive",
-                             "rassemblementnational.fr — communiqué RN (oct. 2024) contre « l'écologie punitive », défense des automobilistes"),
+                             "rassemblementnational.fr : communiqué RN (oct. 2024) contre « l'écologie punitive », défense des automobilistes"),
     "hayer_pacte": ("https://www.lopinion.fr/international/avec-le-pacte-asile-et-migration-leurope-a-repondu-presente-par-valerie-hayer",
-                    "L'Opinion — tribune de Valérie Hayer (Renaissance) défendant le pacte : « fermeté, humanité et efficacité »"),
+                    "L'Opinion, tribune de Valérie Hayer (Renaissance) défendant le pacte : « fermeté, humanité et efficacité »"),
     "hayer_greendeal": ("https://www.touteleurope.eu/vie-politique-des-etats-membres/elections-europeennes-2024-le-programme-de-valerie-hayer-et-de-renaissance/",
-                        "Touteleurope.eu — programme de Valérie Hayer (Renaissance) : compléter le Pacte vert, cap sur la neutralité 2050"),
+                        "Touteleurope.eu, programme de Valérie Hayer (Renaissance) : compléter le Pacte vert, cap sur la neutralité 2050"),
     "toussaint_pacte": ("https://www.marietoussaint.eu/actualites/pacte-asile-migration",
-                        "marietoussaint.eu — communiqué de Marie Toussaint (Les Écologistes) contre le pacte : « les pires idées de l'extrême droite »"),
+                        "marietoussaint.eu, communiqué de Marie Toussaint (Les Écologistes) contre le pacte : « les pires idées de l'extrême droite »"),
     "toussaint_nature": ("https://www.marietoussaint.eu/actualites/vote-loi-restauration-nature",
-                         "marietoussaint.eu, 27/02/2024 — Marie Toussaint : « une victoire pour le vivant »"),
+                         "marietoussaint.eu, 27/02/2024, Marie Toussaint : « une victoire pour le vivant »"),
     "glucksmann_pacte": ("https://www.franceinfo.fr/elections/europeennes/pacte-europeen-sur-la-migration-et-l-asile-je-vais-voter-contre-la-majorite-des-textes-previent-raphael-glucksmann_6455306.html",
-                         "franceinfo — Raphaël Glucksmann (PS/Place publique) : voter contre la majorité des textes, pacte « pas assez équilibré »"),
+                         "franceinfo, Raphaël Glucksmann (PS/Place publique) : voter contre la majorité des textes, pacte « pas assez équilibré »"),
     "bellamy_co2_2035": ("https://www.fxbellamy.fr/2023/02/14/ppe-contre-l-interdiction-de-la-vente-de-vehicules-a-moteurs-thermiques-en-2035/",
-                         "fxbellamy.fr, 14/02/2023 — F.-X. Bellamy (LR/PPE) : « erreur historique », « désastreuse pour l'industrie », « la grande gagnante est la Chine »"),
+                         "fxbellamy.fr, 14/02/2023, F.-X. Bellamy (LR/PPE) : « erreur historique », « désastreuse pour l'industrie », « la grande gagnante est la Chine »"),
     "lfi_immigration_2023": ("https://lafranceinsoumise.fr/2023/12/15/stop-a-la-loi-immigration/",
-                             "lafranceinsoumise.fr, 15/12/2023 — LFI appelle à rejeter la loi immigration (« xénophobie et racisme »)"),
+                             "lafranceinsoumise.fr, 15/12/2023 : LFI appelle à rejeter la loi immigration (« xénophobie et racisme »)"),
     "ps_immigration_2023": ("https://www.parti-socialiste.paris/communique_loi_immigration_2023",
-                            "Parti socialiste — communiqué contre la loi immigration 2023 (« populisme de la droite et de l'extrême droite »)"),
+                            "Parti socialiste : communiqué contre la loi immigration 2023 (« populisme de la droite et de l'extrême droite »)"),
     "lcp_pouvoir_achat": ("https://lcp.fr/actualites/pouvoir-d-achat-le-parlement-adopte-definitivement-le-texte-133297",
-                          "LCP, 03/08/2022 — adoption définitive du paquet pouvoir d'achat, explications des groupes"),
+                          "LCP, 03/08/2022 : adoption définitive du paquet pouvoir d'achat, explications des groupes"),
     "lfi_mercosur": ("https://lafranceinsoumise.fr/2024/11/26/nous-votons-contre-laccord-de-libre-echange-ue-mercosur/",
-                     "lafranceinsoumise.fr, 26/11/2024 — LFI vote contre la déclaration : refuse l'accord « tout court », pas seulement « en l'état »"),
+                     "lafranceinsoumise.fr, 26/11/2024, LFI vote contre la déclaration : refuse l'accord « tout court », pas seulement « en l'état »"),
     # Lot 2 de justifications (recherche du 25/07/2026). URLs vérifiées.
     "te_zucman": ("https://www.touteleurope.eu/economie-et-social/budget-2026-l-assemblee-nationale-rejette-la-taxe-zucman-tous-les-regards-braques-a-gauche/",
-                  "Touteleurope.eu — débat sur la taxe Zucman : la gauche y voit un « minimum » fiscal, le bloc central un « mirage » inconstitutionnel"),
+                  "Touteleurope.eu, débat sur la taxe Zucman : la gauche y voit un « minimum » fiscal, le bloc central un « mirage » inconstitutionnel"),
     "ddd_legitime": ("https://www.defenseurdesdroits.fr/avis-sur-la-proposition-de-loi-visant-reconnaitre-une-presomption-de-legitime-defense-pour-les-1199",
-                     "Défenseur des droits, juin 2026 — avis : la présomption de légitime défense risque de porter atteinte au droit à la vie"),
+                     "Défenseur des droits, juin 2026, avis : la présomption de légitime défense risque de porter atteinte au droit à la vie"),
     "tc_legitime": ("https://theconversation.com/presomption-de-legitime-defense-pour-les-policiers-une-proposition-de-loi-qui-pose-probleme-287244",
-                    "The Conversation, 2026 — origine (droite/extrême droite, PPL du LR Éric Pauget), soutien du ministre de l'Intérieur"),
+                    "The Conversation, 2026 : origine (droite/extrême droite, PPL du LR Éric Pauget), soutien du ministre de l'Intérieur"),
     "fi_orban": ("https://www.franceinfo.fr/politique/front-national/defaite-de-viktor-orban-en-hongrie-le-rassemblement-national-perd-son-principal-allie-europeen_7934591.html",
-                 "franceinfo — le Rassemblement national, principal allié de Viktor Orbán au Parlement européen"),
+                 "franceinfo : le Rassemblement national, principal allié de Viktor Orbán au Parlement européen"),
     "basta_rn_salaire": ("https://basta.media/parlement-europeen-RN-oppose-droits-des-femmes-salaire-minimum-Bardella-LePen-Elections-UE",
-                         "Basta!, 2024 — récapitulatif des votes du RN au Parlement européen, dont l'opposition au salaire minimum européen"),
+                         "Basta!, 2024 : récapitulatif des votes du RN au Parlement européen, dont l'opposition au salaire minimum européen"),
     # Éducation
     "lfi_antisem_sup": ("https://lafranceinsoumise.fr/2025/07/02/instrumentalisation-de-la-lutte-contre-lantisemitisme-une-loi-adoptee-pour-reprimer-les-mobilisations-etudiantes/",
-                        "lafranceinsoumise.fr, 02/07/2025 — LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme"),
-    # Santé — lot de justifications (recherche 25/07/2026)
+                        "lafranceinsoumise.fr, 02/07/2025 : LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme"),
+    # Santé : lot de justifications (recherche 25/07/2026)
     "wiki_sante_touraine": ("https://fr.wikipedia.org/wiki/Loi_de_modernisation_du_syst%C3%A8me_de_sant%C3%A9",
-                            "Wikipédia — loi de modernisation du système de santé : opposition de la droite et des syndicats de médecins au tiers payant généralisé"),
+                            "Wikipédia, loi de modernisation du système de santé : opposition de la droite et des syndicats de médecins au tiers payant généralisé"),
     "lcp_deserts": ("https://lcp.fr/actualites/deserts-medicaux-l-assemblee-nationale-vote-en-faveur-d-une-regulation-de-l-installation",
-                    "LCP, mai 2025 — l'Assemblée vote la régulation de l'installation des médecins (loi Garot)"),
+                    "LCP, mai 2025 : l'Assemblée vote la régulation de l'installation des médecins (loi Garot)"),
     "ps_ratios": ("https://www.publicsenat.fr/actualites/sante/hopital-adoption-definitive-de-la-proposition-de-loi-pour-un-nombre-minimal-de-soignants-par-patients",
-                  "Public Sénat, janvier 2025 — adoption définitive des ratios de soignants par patient, soutien unanime de la gauche"),
+                  "Public Sénat, janvier 2025 : adoption définitive des ratios de soignants par patient, soutien unanime de la gauche"),
     "lcp_ivg14": ("https://lcp.fr/actualites/allongement-des-delais-de-l-ivg-apres-un-parcours-seme-d-embuches-la-loi-definitivement",
-                  "LCP, février 2022 — adoption définitive de l'allongement du délai d'IVG, opposition de Les Républicains"),
+                  "LCP, février 2022 : adoption définitive de l'allongement du délai d'IVG, opposition de Les Républicains"),
     "gouv_ore": ("https://www.enseignementsup-recherche.gouv.fr/fr/la-loi-ore-en-bref-49643",
-                 "enseignementsup-recherche.gouv.fr — loi ORE : orientation, « attendus » et fin du tirage au sort à l'université"),
+                 "enseignementsup-recherche.gouv.fr, loi ORE : orientation, « attendus » et fin du tirage au sort à l'université"),
     "lfi_lpr": ("https://lafranceinsoumise.fr/2020/09/23/loi-programmation-recherche-autre-projet-est-possible/",
-                "lafranceinsoumise.fr, 23/09/2020 — LFI dénonce une loi recherche qui « institutionnalise la précarité »"),
+                "lafranceinsoumise.fr, 23/09/2020 : LFI dénonce une loi recherche qui « institutionnalise la précarité »"),
     "wiki_lpr": ("https://fr.wikipedia.org/wiki/Loi_de_programmation_de_la_recherche_pour_les_ann%C3%A9es_2021_%C3%A0_2030",
-                 "Wikipédia — loi de programmation de la recherche 2021-2030 : trajectoire budgétaire et débats"),
+                 "Wikipédia, loi de programmation de la recherche 2021-2030 : trajectoire budgétaire et débats"),
     "lfi_ecole_inclusive": ("https://lafranceinsoumise.fr/2025/05/06/projet-de-loi-relatif-a-lecole-inclusive/",
-                            "lafranceinsoumise.fr, 06/05/2025 — LFI vote contre : amendement gouvernemental sur les « pôles d'appui », précarisation des AESH"),
+                            "lafranceinsoumise.fr, 06/05/2025, LFI vote contre : amendement gouvernemental sur les « pôles d'appui », précarisation des AESH"),
     "lcp_egalite_chances": ("https://lcp.fr/actualites/egalite-des-chances-les-deputes-se-prononcent-en-faveur-de-la-prolongation-du-dispositif",
-                            "LCP, février 2025 — prolongation du « concours Talents » ; opposition du RN (Bryan Masson) à la « discrimination positive »"),
+                            "LCP, février 2025 : prolongation du « concours Talents » ; opposition du RN (Bryan Masson) à la « discrimination positive »"),
     # Taxe/impôts et Travail
     "europe1_isf": ("https://www.europe1.fr/politique/lassemblee-a-vote-la-transformation-de-lisf-en-impot-sur-la-fortune-immobiliere-3470117",
-                    "Europe 1, 2017 — transformation de l'ISF en IFI : majorité + LR pour, gauche contre ; 150 M€ d'impôts en moins pour les 100 plus grandes fortunes"),
+                    "Europe 1, 2017, transformation de l'ISF en IFI : majorité + LR pour, gauche contre ; 150 M€ d'impôts en moins pour les 100 plus grandes fortunes"),
     "wiki_ordonnances2017": ("https://fr.wikipedia.org/wiki/R%C3%A9forme_du_code_du_travail_en_2017",
-                             "Wikipédia — réforme du code du travail par ordonnances (2017) : accords d'entreprise, encadrement des prud'hommes ; votes des groupes"),
+                             "Wikipédia, réforme du code du travail par ordonnances (2017) : accords d'entreprise, encadrement des prud'hommes ; votes des groupes"),
     "lcp_france_travail": ("https://lcp.fr/actualites/reforme-du-rsa-france-travail-l-assemblee-nationale-adopte-le-projet-de-loi-pour-le",
-                           "LCP, octobre 2023 — adoption du projet de loi « plein emploi » (RSA conditionné) ; RN et Nupes contre, majorité + LR pour"),
+                           "LCP, octobre 2023 : adoption du projet de loi « plein emploi » (RSA conditionné) ; RN et Nupes contre, majorité + LR pour"),
     "lcp_partage_valeur": ("https://lcp.fr/actualites/interessement-primes-participation-l-assemblee-a-adopte-le-projet-de-loi-sur-le-partage",
-                           "LCP, juin 2023 — partage de la valeur : seuls LFI et le communiste de son groupe contre (Marianne Maximi)"),
+                           "LCP, juin 2023, partage de la valeur : seuls LFI et le communiste de son groupe contre (Marianne Maximi)"),
     # Ajouts (cancer, transports, femmes)
     "carenews_cancer": ("https://www.carenews.com/grandir-sans-cancer/news/medicaments-contre-les-cancers-et-maladies-rares-de-l-enfant-la-loi-votee",
-                        "Grandir Sans Cancer / Carenews, mai 2026 — loi médicaments cancers de l'enfant votée par tous les groupes sauf le RN (opposé à la taxe sur les laboratoires)"),
+                        "Grandir Sans Cancer / Carenews, mai 2026 : loi médicaments cancers de l'enfant votée par tous les groupes sauf le RN (opposé à la taxe sur les laboratoires)"),
     # ── Ajouts (recherche web sourcée, 26/07/2026) ──
     "lcp_antisquat": ("https://lcp.fr/actualites/loi-anti-squat-les-deputes-adoptent-le-texte-en-deuxieme-lecture-178239",
-                      "LCP, avril 2023 — adoption en deuxième lecture de la loi anti-squat, votes et oppositions des groupes"),
+                      "LCP, avril 2023 : adoption en deuxième lecture de la loi anti-squat, votes et oppositions des groupes"),
     "fi_pacte": ("https://lafranceinsoumise.fr/2019/03/13/privatisations-votre-modele-est-fini/",
-                 "lafranceinsoumise.fr, 13/03/2019 — opposition de LFI aux privatisations de la loi PACTE (ADP, FDJ)"),
+                 "lafranceinsoumise.fr, 13/03/2019 : opposition de LFI aux privatisations de la loi PACTE (ADP, FDJ)"),
     "france24_pacte": ("https://www.france24.com/fr/20190411-france-adoption-loi-pacte-privatisation-aeroport-paris-adp",
-                       "France 24, 11/04/2019 — adoption définitive de la loi PACTE et privatisation d'Aéroports de Paris"),
+                       "France 24, 11/04/2019 : adoption définitive de la loi PACTE et privatisation d'Aéroports de Paris"),
     "lcp_jo_vsa": ("https://lcp.fr/actualites/jeux-olympiques-l-assemblee-valide-le-recours-a-la-videosurveillance-algorithmique",
-                   "LCP, mars 2023 — l'Assemblée valide la vidéosurveillance algorithmique pour les JO, défense du gouvernement"),
+                   "LCP, mars 2023 : l'Assemblée valide la vidéosurveillance algorithmique pour les JO, défense du gouvernement"),
     "lcp_lpm": ("https://lcp.fr/actualites/la-loi-de-programmation-militaire-definitivement-adoptee-par-le-parlement-203997",
-                "LCP, juillet 2023 — adoption définitive de la loi de programmation militaire 2024-2030, positions des groupes"),
+                "LCP, juillet 2023 : adoption définitive de la loi de programmation militaire 2024-2030, positions des groupes"),
     "lcp_palestine": ("https://lcp.fr/actualites/en-2014-l-assemblee-se-prononcait-en-faveur-d-une-reconnaissance-de-l-etat-de-palestine",
-                      "LCP — vote du 2 décembre 2014 : l'Assemblée en faveur de la reconnaissance de l'État de Palestine (PS pour, UMP contre)"),
+                      "LCP, vote du 2 décembre 2014 : l'Assemblée en faveur de la reconnaissance de l'État de Palestine (PS pour, UMP contre)"),
     # ── Justifications LFI en écologie/agriculture (ajout 26/07/2026) ──
     "an_egalim_lfi": ("https://www.assemblee-nationale.fr/dyn/15/comptes-rendus/seance/2e-session-extraordinaire-de-2017-2018/deuxieme-seance-du-mercredi-12-septembre-2018",
-                      "Compte rendu AN, 12/09/2018 — LFI juge la loi EGalim insuffisante sur le revenu agricole et demande son renvoi en commission"),
+                      "Compte rendu AN, 12/09/2018 : LFI juge la loi EGalim insuffisante sur le revenu agricole et demande son renvoi en commission"),
     "f24_climat_lfi": ("https://www.france24.com/fr/info-en-continu/20210329-m%C3%A9lenchon-rejette-la-loi-climat-et-ses-manques-dangereux-dans-un-h%C3%A9micycle-agit%C3%A9",
-                       "France 24, 29/03/2021 — J.-L. Mélenchon rejette la loi Climat, jugée « inutile » voire « dangereuse » et très en deçà de la Convention citoyenne"),
+                       "France 24, 29/03/2021 : J.-L. Mélenchon rejette la loi Climat, jugée « inutile » voire « dangereuse » et très en deçà de la Convention citoyenne"),
     "reporterre_enr_lfi": ("https://reporterre.net/Clemence-Guette-Le-projet-de-loi-sur-les-energies-renouvelables-manque-de-logique",
-                           "Reporterre — Clémence Guetté (LFI) explique l'opposition du groupe à la loi d'accélération des EnR (marché libéralisé, veto des maires, pôle public)"),
+                           "Reporterre : Clémence Guetté (LFI) explique l'opposition du groupe à la loi d'accélération des EnR (marché libéralisé, veto des maires, pôle public)"),
     # ── Loi d'urgence agricole, 2026 (L17) ────────────────────────────────────
     "basta_urgence_agricole": ("https://basta.media/Adoption-loi-urgence-agricole-quels-deputes-vote-pour-reintroduire-des-pesticides-dangereux",
-                               "Basta!, juillet 2026 — détail du vote par groupe sur la loi d'urgence agricole, citation d'Aurélie Trouvé (LFI) interpellant Attal, Philippe et Le Pen"),
+                               "Basta!, juillet 2026 : détail du vote par groupe sur la loi d'urgence agricole, citation d'Aurélie Trouvé (LFI) interpellant Attal, Philippe et Le Pen"),
     "maireinfo_urgence_agricole": ("https://www.maire-info.com/agriculture/l'assemblee-nationale-adopte-le-projet-de-loi-d'urgence-agricole-dans-l'agitation-et-la-division-article-31002",
-                                   "Maire-Info, juillet 2026 — citation de Gabriel Attal (« sentiment de gâchis ») et division du groupe EPR"),
+                                   "Maire-Info, juillet 2026 : citation de Gabriel Attal (« sentiment de gâchis ») et division du groupe EPR"),
 
     # ── Corrections d'audit (26/07/2026) : sources de remplacement ou complémentaires,
     # vérifiées une à une par WebFetch après qu'une citation s'est révélée absente,
     # mal attribuée ou insuffisamment précise dans la source d'origine. ──
     "rn_nucleaire": ("https://deputes-rn.fr/article/loi-energie-climat-la-victoire-politique-du-rassemblement-national-montre-que-la-prosperite-de-la-france-et-linteret",
-                     "deputes-rn.fr — le RN revendique le nucléaire comme énergie permettant de « retrouver sa souveraineté énergétique », décarbonée et pilotable"),
+                     "deputes-rn.fr : le RN revendique le nucléaire comme énergie permettant de « retrouver sa souveraineté énergétique », décarbonée et pilotable"),
     "cf_indverte": ("https://charlesfournier.fr/retour-sur-une-loi-industrie-verte-qui-na-de-verte-que-le-nom/",
-                    "charlesfournier.fr — le député écologiste Charles Fournier : « une terrible occasion manquée »"),
+                    "charlesfournier.fr, le député écologiste Charles Fournier : « une terrible occasion manquée »"),
     "lcp_zfe_vote": ("https://lcp.fr/actualites/la-suppression-des-zfe-confirmee-lors-de-l-ultime-vote-sur-la-loi-de-simplification-a-l",
-                     "LCP — vote final loi de simplification : RN et Union des droites pour, EPR divisé en trois blocs (30 contre, 25 pour, 19 abstentions)"),
+                     "LCP, vote final loi de simplification : RN et Union des droites pour, EPR divisé en trois blocs (30 contre, 25 pour, 19 abstentions)"),
     "lcp_mineurs_rn": ("https://lcp.fr/actualites/delinquance-des-mineurs-la-proposition-de-loi-de-gabriel-attal-pour-restaurer-l-autorite",
-                       "LCP — la députée RN Sylvie Josserand vote le texte comme un « signal », tout en le jugeant insuffisant"),
+                       "LCP : la députée RN Sylvie Josserand vote le texte comme un « signal », tout en le jugeant insuffisant"),
     "an_cr_mineurs_soc": ("https://www.assemblee-nationale.fr/dyn/17/comptes-rendus/seance/session-ordinaire-de-2024-2025/deuxieme-seance-du-mercredi-12-fevrier-2025",
-                          "Compte rendu intégral AN, 12/02/2025 — Hervé Saulignac (SOC) : texte « injuste, régressif et, sans aucun doute, aussi incomplet qu'inefficace »"),
+                          "Compte rendu intégral AN, 12/02/2025, Hervé Saulignac (SOC) : texte « injuste, régressif et, sans aucun doute, aussi incomplet qu'inefficace »"),
     "theconv_rn_climat": ("https://theconversation.com/elections-legislatives-et-climat-avec-le-rn-une-triple-sortie-de-route-233000",
-                          "The Conversation — le RN rejette les normes « punitives » de l'UE (dont l'interdiction des thermiques 2035) et met en avant la souveraineté énergétique"),
+                          "The Conversation : le RN rejette les normes « punitives » de l'UE (dont l'interdiction des thermiques 2035) et met en avant la souveraineté énergétique"),
     "datan_vote2957": ("https://datan.fr/votes/legislature-17/vote_2957",
-                       "datan.fr — décompte par groupe du scrutin sur la loi Duplomb (2025)"),
+                       "datan.fr : décompte par groupe du scrutin sur la loi Duplomb (2025)"),
     "franceinfo_duplomb": ("https://www.franceinfo.fr/politique/parlement-francais/assemblee-nationale/infographies-loi-duplomb-decouvrez-si-votre-depute-a-vote-pour-ou-contre-ce-texte-souhaite-par-les-agriculteurs-et-critique-par-les-ecologistes_7365096.html",
-                           "franceinfo — loi Duplomb, un texte « souhaité par les agriculteurs et critiqué par les écologistes »"),
+                           "franceinfo : loi Duplomb, un texte « souhaité par les agriculteurs et critiqué par les écologistes »"),
     "jss_zucman_sas": ("https://jss.fr/post/projet-taxe-zucman-largement-rejete-assemblee-nationale",
-                       "JSS — Éva Sas (EcoS), auteure de l'amendement sur l'impôt plancher, dénonce l'optimisation fiscale des grandes fortunes"),
+                       "JSS : Éva Sas (EcoS), auteure de l'amendement sur l'impôt plancher, dénonce l'optimisation fiscale des grandes fortunes"),
     "publicsenat_zucman_constit": ("https://www.publicsenat.fr/actualites/parlementaire/rejet-de-la-taxe-zucman-a-lassemblee-nationale-est-elle-inconstitutionnelle",
-                                   "Public Sénat — la ministre Amélie de Montchalin invoque l'avis du Conseil d'État sur la constitutionnalité de la taxe Zucman"),
+                                   "Public Sénat : la ministre Amélie de Montchalin invoque l'avis du Conseil d'État sur la constitutionnalité de la taxe Zucman"),
     "an_dossier_legitime": ("https://www.assemblee-nationale.fr/dyn/17/dossiers/presomption_legitime_defense_forces_ordre",
-                            "Assemblée nationale — dossier législatif : proposition de loi du député Éric Pauget (LR/DR) sur la présomption de légitime défense"),
+                            "Assemblée nationale, dossier législatif : proposition de loi du député Éric Pauget (LR/DR) sur la présomption de légitime défense"),
     "cncdh_rsa": ("https://www.cncdh.fr/actualite/le-rsa-conditionne-une-atteinte-aux-droits-humains",
-                  "CNCDH — le RSA conditionné à des heures d'activité, « une atteinte aux droits humains »"),
+                  "CNCDH : le RSA conditionné à des heures d'activité, « une atteinte aux droits humains »"),
     "releve_peste_cancer_rn": ("https://lareleveetlapeste.fr/le-rn-a-vote-contre-la-taxe-permettant-de-financer-la-recherche-contre-les-cancers-pediatriques/",
-                               "La Relève et La Peste — le RN justifie son vote contre en disant préférer un crédit d'impôt pour les groupes pharmaceutiques"),
+                               "La Relève et La Peste : le RN justifie son vote contre en disant préférer un crédit d'impôt pour les groupes pharmaceutiques"),
     "an_scrutin_619": ("https://www.assemblee-nationale.fr/dyn/15/scrutins/619",
-                       "Assemblée nationale — décompte officiel du scrutin n°619 (loi Schiappa) : LaREM 101 pour, FI 14 contre, Nouvelle Gauche 10 contre, LR abstention"),
+                       "Assemblée nationale, décompte officiel du scrutin n°619 (loi Schiappa) : LaREM 101 pour, FI 14 contre, Nouvelle Gauche 10 contre, LR abstention"),
     "europe1_separatisme_melenchon": ("https://www.europe1.fr/societe/le-parlement-adopte-definitivement-le-projet-de-loi-contre-le-separatisme-4059275",
-                                      "Europe 1 — Jean-Luc Mélenchon dénonce une loi « antirépublicaine » à « vocation anti-musulmane »"),
+                                      "Europe 1 : Jean-Luc Mélenchon dénonce une loi « antirépublicaine » à « vocation anti-musulmane »"),
     "europe1_separatisme_vote": ("https://www.europe1.fr/politique/separatisme-lassemblee-nationale-adopte-le-projet-de-loi-en-premiere-lecture-4025693",
-                                 "Europe 1 — adoption en première lecture du projet de loi contre le séparatisme (16/02/2021)"),
+                                 "Europe 1 : adoption en première lecture du projet de loi contre le séparatisme (16/02/2021)"),
     "placegrenet_jo_martin": ("https://www.placegrenet.fr/2023/03/08/jo-de-paris-2024-elisa-martin-et-les-deputes-lfi-denoncent-un-projet-de-loi-olympique-liberticide-et-climaticide/595632",
-                              "Place Gre'net — Elisa Martin (LFI) dénonce le « sacrifice de nos libertés fondamentales et de notre État de droit »"),
+                              "Place Gre'net : Elisa Martin (LFI) dénonce le « sacrifice de nos libertés fondamentales et de notre État de droit »"),
     "lejdd_jo_regol": ("https://www.lejdd.fr/politique/videosurveillance-aux-jo-2024-est-en-train-de-franchir-un-cap-denonce-la-deputee-sandra-regol-133970",
-                       "Le JDD — Sandra Regol (Écologiste) : la vidéosurveillance algorithmique permettrait « de cibler les gens sur leur couleur de peau, leurs habits »"),
+                       "Le JDD, Sandra Regol (Écologiste) : la vidéosurveillance algorithmique permettrait « de cibler les gens sur leur couleur de peau, leurs habits »"),
     "franceinfo_trouve_criminelle": ("https://www.franceinfo.fr/environnement/loi-duplomb/loi-d-urgence-agricole-c-est-une-loi-criminelle-estime-aurelie-trouve-deputee-lfi-de-seine-saint-denis_8111291.html",
-                                     "franceinfo — Aurélie Trouvé (LFI) : « une loi criminelle », les responsables « en rendront compte à tous les Français »"),
+                                     "franceinfo, Aurélie Trouvé (LFI) : « une loi criminelle », les responsables « en rendront compte à tous les Français »"),
     "datan_vote600": ("https://datan.fr/votes/legislature-17/vote_600",
-                      "datan.fr — décompte par groupe du scrutin sur les ratios de soignants par patient (2025)"),
+                      "datan.fr : décompte par groupe du scrutin sur les ratios de soignants par patient (2025)"),
     "lcp_ratios_ouvert": ("https://lcp.fr/actualites/hopital-les-deputes-adoptent-un-texte-visant-a-instaurer-un-nombre-minimum-de-soignants",
-                          "LCP — adoption des ratios de soignants ; le groupe Ensemble juge le texte « inopérant » et voit son amendement de report rejeté"),
+                          "LCP : adoption des ratios de soignants ; le groupe Ensemble juge le texte « inopérant » et voit son amendement de report rejeté"),
     "an_scrutin_2760": ("https://www.assemblee-nationale.fr/dyn/15/scrutins/2760",
-                        "Assemblée nationale — décompte officiel du scrutin n°2760 : GDR et FI unanimement pour, SOC pour, LaREM contre"),
+                        "Assemblée nationale, décompte officiel du scrutin n°2760 : GDR et FI unanimement pour, SOC pour, LaREM contre"),
     "gdr_bruneel_segur": ("https://groupe-communiste.assemblee-nationale.fr/interventions/discussions-ge%CC%81ne%CC%81rales/article/loi-de-programmation-pour-l-hopital-public-et-les-etablissements-d-hebergement",
-                          "Groupe GDR — Alain Bruneel reproche au Gouvernement de renvoyer au « Ségur de la santé » plutôt que de voter cette programmation"),
+                          "Groupe GDR : Alain Bruneel reproche au Gouvernement de renvoyer au « Ségur de la santé » plutôt que de voter cette programmation"),
     "lqm_ivg_difilippo": ("https://www.lequotidiendumedecin.fr/actus-medicales/sante-publique/lassemblee-vote-lallongement-des-delais-dacces-livg-jusqua-14-semaines-de-grossesse-sans-toucher-la",
-                          "Le Quotidien du médecin — Fabien Di Filippo (LR) : l'acte d'IVG « change de nature, avec des conséquences gynécologiques qui peuvent être graves »"),
+                          "Le Quotidien du médecin, Fabien Di Filippo (LR) : l'acte d'IVG « change de nature, avec des conséquences gynécologiques qui peuvent être graves »"),
     "datan_vote5845": ("https://datan.fr/votes/legislature-17/vote_5845",
-                       "datan.fr — décompte par groupe du scrutin sur l'enseignement de la défense nationale à l'école (2026)"),
+                       "datan.fr : décompte par groupe du scrutin sur l'enseignement de la défense nationale à l'école (2026)"),
     "an_cr_defense_ecole": ("https://www.assemblee-nationale.fr/dyn/17/comptes-rendus/seance/session-ordinaire-de-2025-2026/troisieme-seance-du-jeudi-26-mars-2026",
-                            "Compte rendu intégral AN, 26/03/2026 — Emmanuel Fernandes (LFI-NFP) chiffre à environ 1 000 le nombre d'enseignants nécessaires"),
+                            "Compte rendu intégral AN, 26/03/2026 : Emmanuel Fernandes (LFI-NFP) chiffre à environ 1 000 le nombre d'enseignants nécessaires"),
     "an_scrutin_1550": ("https://www.assemblee-nationale.fr/dyn/17/scrutins/1550",
-                        "Assemblée nationale — décompte officiel du scrutin n°1550 (école inclusive, première lecture)"),
+                        "Assemblée nationale : décompte officiel du scrutin n°1550 (école inclusive, première lecture)"),
     "an_scrutin_2880": ("https://www.assemblee-nationale.fr/dyn/17/scrutins/2880",
-                        "Assemblée nationale — décompte officiel du scrutin n°2880 (antisémitisme dans l'enseignement supérieur)"),
+                        "Assemblée nationale : décompte officiel du scrutin n°2880 (antisémitisme dans l'enseignement supérieur)"),
     "an_scrutin_351": ("https://www.assemblee-nationale.fr/dyn/15/scrutins/351",
-                       "Assemblée nationale — décompte officiel du scrutin n°351 (loi ORE/Parcoursup, 2018)"),
+                       "Assemblée nationale : décompte officiel du scrutin n°351 (loi ORE/Parcoursup, 2018)"),
     "ps_sante_touraine": ("https://www.parti-socialiste.fr/projet-de-loi-sante-la-modernisation-du-systeme-au-coeur-de-la-reforme/",
-                          "Parti socialiste — position officielle sur la loi de modernisation du système de santé (tiers payant généralisé)"),
+                          "Parti socialiste : position officielle sur la loi de modernisation du système de santé (tiers payant généralisé)"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -217,7 +217,7 @@ JUSTIFS = [
 
     # ── Loi industrie verte, 2023 (L16) ──────────────────────────────────────
     ("VTANR5L16V2721", "RN",
-     "A voté pour, en soutien à la réindustrialisation, tout en jugeant le texte insuffisant — « la montagne accouche d'une souris » (Alexandre Loubet).",
+     "A voté pour, en soutien à la réindustrialisation, tout en jugeant le texte insuffisant : « la montagne accouche d'une souris » (Alexandre Loubet).",
      "lcp_indverte"),
     ("VTANR5L16V2721", "LFI - NUPES",
      "A voté contre : le groupe jugeait les moyens de l'État très inférieurs à l'effort d'autres pays (le plan américain IRA) et le texte trop peu contraignant sur l'environnement.",
@@ -231,7 +231,7 @@ JUSTIFS = [
      "A voté pour, avec l'Union des droites, en soutien à l'allègement des contraintes sur les entreprises et à la suppression des zones à faibles émissions (ZFE).",
      "lcp_zfe_vote"),
     ("VTANR5L17V6184", "LFI-NFP",
-     "A voté contre l'ensemble du texte, jugé porteur de régressions — tout en étant, de longue date, favorable à la suppression des ZFE qu'il contient.",
+     "A voté contre l'ensemble du texte, jugé porteur de régressions, tout en étant, de longue date, favorable à la suppression des ZFE qu'il contient.",
      "lcp_zfe_vote"),
     ("VTANR5L17V6184", "EPR",
      "Le groupe s'est divisé en trois blocs (30 contre, 25 pour, 19 abstentions) après l'échec, en séance, du compromis du Gouvernement qui laissait aux collectivités le choix de maintenir ou non les ZFE.",
@@ -259,7 +259,7 @@ JUSTIFS = [
      "A voté contre, avec LFI, jugeant le texte très en deçà des besoins du grand âge et du financement de l'autonomie.",
      "lcp_bienvieillir"),
 
-    # ── Autonomie de la Corse, 2026 (L17) — rôles inversés ───────────────────
+    # ── Autonomie de la Corse, 2026 (L17), rôles inversés ───────────────────
     ("VTANR5L17V7454", "RN",
      "A voté contre : le RN s'oppose à une autonomie normative de la Corse, qu'il juge contraire à l'unité de la République.",
      "lcp_corse"),
@@ -275,7 +275,7 @@ JUSTIFS = [
      "A voté contre, refusant un dégel unilatéral et partiel hors d'un accord global avec les forces calédoniennes ; Alexis Corbière a averti que le texte « mettra l'archipel dans une tension où l'irréparable risque d'avoir lieu ».",
      "lcp_caledonie"),
 
-    # ── Parité dans les petites communes, 2025 (L17) — rôles inversés ────────
+    # ── Parité dans les petites communes, 2025 (L17), rôles inversés ────────
     ("VTANR5L17V1303", "RN",
      "A voté contre : Jordan Guitton a fait valoir que, dans beaucoup de petites communes, « il n'y aura qu'une liste, donc il n'y aura aucun choix pour les électeurs », jugeant difficile d'y constituer des listes paritaires.",
      "lcp_municipales"),
@@ -285,7 +285,7 @@ JUSTIFS = [
 
     # ── Parlement européen ────────────────────────────────────────────────────
     ("PE-HTV-154173", "LFI",
-     "A voté contre : LFI rejette le marché carbone, fondé selon elle sur des « logiques spéculatives » et l'échange de « droits à polluer », et dénonçait un texte affaibli par « l'alliance des droites » — un désaccord sur le mécanisme, pas sur l'objectif climatique.",
+     "A voté contre : LFI rejette le marché carbone, fondé selon elle sur des « logiques spéculatives » et l'échange de « droits à polluer », et dénonçait un texte affaibli par « l'alliance des droites » : un désaccord sur le mécanisme, pas sur l'objectif climatique.",
      "aubry_seqe"),
     ("PE-HTV-167334", "LFI",
      "A voté contre, dénonçant la fin des tarifs réglementés, le maintien de l'indexation de l'électricité sur le gaz et un risque de privatisation ; le groupe défend un contrôle public des prix de l'énergie.",
@@ -342,14 +342,14 @@ JUSTIFS = [
 
     # ── Accord UE-Mercosur, déclaration du Gouvernement, 2024 (L17) ──────────
     # « Contre » ici ne veut PAS dire soutenir l'accord : LFI voulait un rejet
-    # plus net que celui du Gouvernement — d'où l'explication, indispensable.
+    # plus net que celui du Gouvernement, d'où l'explication, indispensable.
     ("VTANR5L17V456", "LFI-NFP",
-     "A voté contre la déclaration du Gouvernement — non pour soutenir l'accord, mais parce qu'elle se bornait à refuser l'accord « en l'état » : LFI réclamait un rejet « tout court » et reprochait au Gouvernement une « absence de stratégie ».",
+     "A voté contre la déclaration du Gouvernement (non pour soutenir l'accord, mais parce qu'elle se bornait à refuser l'accord « en l'état ») : LFI réclamait un rejet « tout court » et reprochait au Gouvernement une « absence de stratégie ».",
      "lfi_mercosur"),
 
     # ── Loi Duplomb, 2025 (L17) ──────────────────────────────────────────────
     ("VTANR5L17V2957", "EcoS",
-     "A voté contre, en raison de la réintroduction d'un néonicotinoïde interdit depuis 2018 et des reculs environnementaux du texte (eau, élevages) — un texte « critiqué par les écologistes ».",
+     "A voté contre, en raison de la réintroduction d'un néonicotinoïde interdit depuis 2018 et des reculs environnementaux du texte (eau, élevages) : un texte « critiqué par les écologistes ».",
      "franceinfo_duplomb"),
     ("VTANR5L17V2957", "SOC",
      "A voté contre, avec le reste de la gauche, qui a ensuite saisi le Conseil constitutionnel sur ce texte.",
@@ -358,7 +358,7 @@ JUSTIFS = [
      "A voté contre, pour les mêmes motifs environnementaux que le reste de la gauche (néonicotinoïdes, eau).",
      "datan_vote2957"),
     ("VTANR5L17V2957", "RN",
-     "A voté pour, en soutien à la levée de contraintes réclamée par une partie de la profession agricole — un texte « souhaité par les agriculteurs ».",
+     "A voté pour, en soutien à la levée de contraintes réclamée par une partie de la profession agricole : un texte « souhaité par les agriculteurs ».",
      "franceinfo_duplomb"),
     ("VTANR5L17V2957", "DR",
      "A voté pour ce texte issu d'une proposition de son sénateur Laurent Duplomb, présenté comme un allègement des contraintes pesant sur les agriculteurs.",
@@ -369,7 +369,7 @@ JUSTIFS = [
      "A voté pour, présentant cet impôt minimum comme un « plancher » corrigeant une injustice : les très hauts patrimoines paient proportionnellement moins d'impôt que le reste de la population.",
      "te_zucman"),
     ("VTANR5L17V881", "EcoS",
-     "A voté pour — la proposition émane d'Éva Sas, membre du groupe — pour instaurer un impôt minimum sur les grandes fortunes et lutter contre leur optimisation fiscale.",
+     "A voté pour (la proposition émane d'Éva Sas, membre du groupe) pour instaurer un impôt minimum sur les grandes fortunes et lutter contre leur optimisation fiscale.",
      "jss_zucman_sas"),
     ("VTANR5L17V881", "SOC",
      "A voté pour, en soutien à un impôt plancher sur les très hauts patrimoines.",
@@ -378,7 +378,7 @@ JUSTIFS = [
      "A voté pour cet impôt minimum sur les ultra-riches.",
      "te_zucman"),
     ("VTANR5L17V881", "EPR",
-     "A voté contre : la ministre Amélie de Montchalin a invoqué l'avis du Conseil d'État sur une constitutionnalité incertaine de la mesure, jugée aussi risquée pour l'investissement — un « mirage » fiscal selon le bloc central.",
+     "A voté contre : la ministre Amélie de Montchalin a invoqué l'avis du Conseil d'État sur une constitutionnalité incertaine de la mesure, jugée aussi risquée pour l'investissement : un « mirage » fiscal selon le bloc central.",
      "publicsenat_zucman_constit"),
     ("VTANR5L17V881", "HOR",
      "A voté contre, estimant l'impôt inconstitutionnel et menaçant pour l'investissement.",
@@ -417,7 +417,7 @@ JUSTIFS = [
      "A voté contre : le RN s'oppose à un cadre salarial fixé au niveau européen, la question des rémunérations relevant selon lui d'une « compétence exclusivement nationale » (Dominique Bilde).",
      "basta_rn_salaire"),
 
-    # ── Antisémitisme dans l'enseignement supérieur, 2025 (L17) — sensible ────
+    # ── Antisémitisme dans l'enseignement supérieur, 2025 (L17), sensible ────
     ("VTANR5L17V2880", "LFI-NFP",
      "A voté contre : LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme, y voyant un moyen de « criminaliser le militantisme étudiant » (notamment les mobilisations pro-palestiniennes), tout en affirmant condamner l'antisémitisme.",
      "lfi_antisem_sup"),
@@ -425,15 +425,15 @@ JUSTIFS = [
      "A voté pour, avec la majorité et la droite, en soutien au renforcement des mesures contre l'antisémitisme à l'université.",
      "an_scrutin_2880"),
 
-    # ── Santé : modernisation du système de santé — loi Touraine, 2016 (L14) ──
+    # ── Santé : modernisation du système de santé, loi Touraine, 2016 (L14) ──
     ("VTANR5L14V1200", "SRC",
      "A voté pour : le groupe socialiste défendait un meilleur accès aux soins, notamment via la généralisation du tiers payant (ne plus avancer les frais chez le médecin).",
      "ps_sante_touraine"),
     ("VTANR5L14V1200", "Les Républicains",
-     "A voté contre, dénonçant surtout la généralisation du tiers payant — combattue par les syndicats de médecins (crainte d'une bureaucratisation de la médecine).",
+     "A voté contre, dénonçant surtout la généralisation du tiers payant, combattue par les syndicats de médecins (crainte d'une bureaucratisation de la médecine).",
      "wiki_sante_touraine"),
 
-    # ── Santé : déserts médicaux — loi Garot, 2025 (L17) ─────────────────────
+    # ── Santé : déserts médicaux, loi Garot, 2025 (L17) ─────────────────────
     ("VTANR5L17V1607", "LFI-NFP",
      "A voté pour la régulation de l'installation des médecins pour combattre les déserts médicaux.",
      "lcp_deserts"),
@@ -446,7 +446,7 @@ JUSTIFS = [
      "A voté pour, avec l'ensemble de la gauche, pour garantir un niveau minimum de personnel au chevet des patients.",
      "datan_vote600"),
     ("VTANR5L17V600", "SOC",
-     "A voté pour, en soutien à des ratios protégeant patients et soignants — le texte reprend une proposition d'origine sénatoriale socialiste.",
+     "A voté pour, en soutien à des ratios protégeant patients et soignants : le texte reprend une proposition d'origine sénatoriale socialiste.",
      "ps_ratios"),
     ("VTANR5L17V600", "RN",
      "S'est abstenu : le député Serge Muller, ancien aide-soignant, a dénoncé la pression déjà subie par les soignants, réclamant surtout une revalorisation des métiers.",
@@ -455,7 +455,7 @@ JUSTIFS = [
      "S'est abstenu : la députée Annie Vidal jugeait le texte « inopérant » et a tenté, en vain, d'en repousser l'échéance.",
      "lcp_ratios_ouvert"),
 
-    # ── Santé : programmation pour l'hôpital public, 2020 (L15) — rejetée ─────
+    # ── Santé : programmation pour l'hôpital public, 2020 (L15), rejetée ─────
     ("VTANR5L15V2760", "GDR",
      "A voté pour cette proposition, d'origine communiste, prévoyant un plan pluriannuel d'investissement et d'embauches pour l'hôpital public et les EHPAD.",
      "an_scrutin_2760"),
@@ -495,7 +495,7 @@ JUSTIFS = [
 
     # ── Éducation : défense nationale à l'école, 2026 (L17) ──────────────────
     ("VTANR5L17V5845", "LFI-NFP",
-     "A voté contre : le député Emmanuel Fernandes a jugé le texte sans moyens réels — environ 1 000 enseignants supplémentaires seraient nécessaires, alors que le budget 2026 supprime des postes — et alourdissant des emplois du temps déjà chargés.",
+     "A voté contre : le député Emmanuel Fernandes a jugé le texte sans moyens réels (environ 1 000 enseignants supplémentaires seraient nécessaires, alors que le budget 2026 supprime des postes) et alourdissant des emplois du temps déjà chargés.",
      "an_cr_defense_ecole"),
     ("VTANR5L17V5845", "RN",
      "A voté pour, en soutien au renforcement du lien entre l'armée et la Nation.",
@@ -550,7 +550,7 @@ JUSTIFS = [
      "A voté pour : réduire le chômage et mieux accompagner les allocataires du RSA vers l'emploi.",
      "lcp_france_travail"),
     ("VTANR5L16V2965", "LFI - NUPES",
-     "A voté contre, dénonçant une « casse sociale » et le principe d'un RSA conditionné à des heures d'activité — la CNCDH y a vu une « atteinte aux droits humains ».",
+     "A voté contre, dénonçant une « casse sociale » et le principe d'un RSA conditionné à des heures d'activité : la CNCDH y a vu une « atteinte aux droits humains ».",
      "cncdh_rsa"),
     ("VTANR5L16V2965", "RN",
      "A voté contre, s'opposant au conditionnement du RSA prévu par le texte.",
@@ -569,7 +569,7 @@ JUSTIFS = [
 
     # ── Santé : médicaments cancers de l'enfant, 2026 (L17) ──────────────────
     ("VTANR5L17V6572", "RN",
-     "A voté contre — seul groupe à s'y opposer : le RN refusait la taxe sur les laboratoires pharmaceutiques prévue pour financer le fonds de recherche sur les cancers et maladies rares de l'enfant, lui préférant un crédit d'impôt pour ces groupes.",
+     "A voté contre (seul groupe à s'y opposer) : le RN refusait la taxe sur les laboratoires pharmaceutiques prévue pour financer le fonds de recherche sur les cancers et maladies rares de l'enfant, lui préférant un crédit d'impôt pour ces groupes.",
      "releve_peste_cancer_rn"),
     ("VTANR5L17V6572", "EPR",
      "A voté pour, avec l'ensemble des autres groupes, ce texte transpartisan salué par les associations de familles.",
@@ -630,7 +630,7 @@ JUSTIFS = [
      "A voté pour : la résolution, déposée par le groupe socialiste, invite le gouvernement à reconnaître l'État de Palestine pour favoriser une solution à deux États.",
      "lcp_palestine"),
     ("VTANR5L14V981", "UMP",
-     "A voté contre : le groupe UMP, alors dans l'opposition, s'est opposé à la résolution — neuf de ses députés ont toutefois voté pour.",
+     "A voté contre : le groupe UMP, alors dans l'opposition, s'est opposé à la résolution. Neuf de ses députés ont toutefois voté pour.",
      "lcp_palestine"),
     # ── LFI en écologie/agriculture : votes contre sans justification ──
     ("VTANR5L15V729", "FI",
@@ -676,7 +676,7 @@ def seed(base: Path) -> None:
     con.execute("PRAGMA foreign_keys = ON")
     cur = con.cursor()
 
-    # Table créée à la demande (idempotent) — permet d'exécuter ce seed sur une
+    # Table créée à la demande (idempotent) : permet d'exécuter ce seed sur une
     # base initialisée avant l'ajout de la table au schéma.
     cur.execute("""
         CREATE TABLE IF NOT EXISTS justifications_groupes (
@@ -690,8 +690,8 @@ def seed(base: Path) -> None:
 
     # (scrutin_id, groupe) -> (id de la ligne, texte actuel, source_id actuel).
     # Permet de CORRIGER une justification déjà semée (texte ou source changés),
-    # pas seulement d'en ajouter — indispensable après un audit qui corrige des
-    # citations mal sourcées, sans quoi les corrections ne seraient jamais appliquées.
+    # pas seulement d'en ajouter (ce qui est indispensable après un audit qui corrige des
+    # citations mal sourcées, sans quoi les corrections ne seraient jamais appliquées).
     existantes = {(sid, ab): (id_, texte, source_id) for id_, sid, ab, texte, source_id in cur.execute(
         "SELECT id, scrutin_id, groupe_abrege, texte, source_id FROM justifications_groupes")}
 
