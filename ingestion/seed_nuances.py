@@ -17,8 +17,6 @@ RACINE = Path(__file__).resolve().parents[1]
 BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 
 SOURCES = {
-    "lcp_climat": ("https://lcp.fr/actualites/loi-climat-l-assemblee-nationale-adopte-le-texte-en-premiere-lecture-64120",
-                   "LCP, 04/05/2021 — adoption de la loi Climat en première lecture, positions des groupes"),
     "politis_batho": ("https://www.politis.fr/articles/2021/04/delphine-batho-concilier-productivisme-et-ecologie-nest-pas-possible-43029/",
                       "Politis, avril 2021 — entretien avec Delphine Batho sur la loi Climat"),
     "f24_immigration": ("https://www.france24.com/fr/france/20231220-loi-immigration-le-jour-o%C3%B9-emmanuel-macron-a-offert-une-victoire-politique-%C3%A0-l-extr%C3%AAme-droite",
@@ -46,15 +44,9 @@ SOURCES = {
 # (slug personne, uid scrutin, texte de la nuance PERSONNELLE, clé source)
 NUANCES = [
     # Loi Climat 2021 : le groupe LFI a voté contre en jugeant le texte trop faible.
-    ("jean-luc-melenchon", "VTANR5L15V3738",
-     "A voté contre avec l'ensemble du groupe LFI, qui déplorait la faiblesse du texte et non son principe.",
-     "lcp_climat"),
-    ("clementine-autain", "VTANR5L15V3738",
-     "A voté contre avec l'ensemble du groupe LFI, qui déplorait la faiblesse du texte et non son principe.",
-     "lcp_climat"),
-    ("francois-ruffin", "VTANR5L15V3738",
-     "A voté contre avec l'ensemble du groupe LFI, qui déplorait la faiblesse du texte et non son principe.",
-     "lcp_climat"),
+    # (Les nuances de Mélenchon, Autain et Ruffin sur ce vote ont été retirées :
+    #  elles répétaient la justification du groupe LFI, déjà affichée sous le chip
+    #  du parti, en moins précis — pas de double emploi.)
     ("delphine-batho", "VTANR5L15V3738",
      "A voté contre en jugeant la loi « à des années-lumière de ce que disent les scientifiques », un désaccord sur l'ambition, pas sur l'objectif.",
      "politis_batho"),
