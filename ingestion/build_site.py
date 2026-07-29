@@ -555,6 +555,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 <script src="{r}theme.js" defer></script>
 <script src="{r}config.js"></script>
 <script src="{r}communaute.js" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "108e55dc9e4243dfbb640340cb4cde03"}}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
 <header class="entete-nav">
