@@ -338,7 +338,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         : '';
       var html = '<article class="cmp-vote ' + etat + '" data-vote-id="' + (v.uid || '') + '">'
         + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
-        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<span class="cmp-tete-meta"><span class="cmp-chambre">' + v.chambre + '</span>'
+        + (v.resultat ? '<span class="cmp-resultat">' + v.resultat + '</span>' : '') + '</span></div>'
         + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
         + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
         + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
@@ -542,7 +543,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       var etat = comparable ? (unanime ? "accord" : "diverge") : "incomp";
       var html = '<article class="cmp-vote cmp-vote-multi ' + etat + '" data-vote-id="' + (v.uid || '') + '">'
         + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
-        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<span class="cmp-tete-meta"><span class="cmp-chambre">' + v.chambre + '</span>'
+        + (v.resultat ? '<span class="cmp-resultat">' + v.resultat + '</span>' : '') + '</span></div>'
         + '<ul class="cmp-multi-positions">' + lignes + '</ul>'
         + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
         + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>' + justifs

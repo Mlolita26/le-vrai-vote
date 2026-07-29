@@ -217,8 +217,14 @@ def rail_perso(p, v, etat_v, equiv_senat, est_pe, a_vote_perso):
 
 def resultat_texte(v):
     """Résultat officiel en texte court (pas de pastille) pour la ligne meta."""
-    if v["sort"] not in ("adopté", "rejeté") or v["total_pour"] is None:
+    if v["total_pour"] is None:
         return ""
+    if v["sort"] not in ("adopté", "rejeté"):
+        # Sort absent de la source (cas de certains votes du Parlement européen) :
+        # on publie le décompte réel sans en déduire l'issue, qui n'est pas sourcée.
+        if v["total_contre"] is None:
+            return ""
+        return f"{v['total_pour']} pour, {v['total_contre']} contre"
     if v["est_censure"]:
         if v["sort"] == "rejeté":
             return (f"Censure rejetée · {v['total_pour']} voix pour"
@@ -1613,7 +1619,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         : '';
       var html = '<article class="cmp-vote ' + etat + '" data-vote-id="' + (v.uid || '') + '">'
         + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
-        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<span class="cmp-tete-meta"><span class="cmp-chambre">' + v.chambre + '</span>'
+        + (v.resultat ? '<span class="cmp-resultat">' + v.resultat + '</span>' : '') + '</span></div>'
         + '<div class="cmp-bannieres">' + banniere(surA, ia) + banniere(surB, ib) + '</div>'
         + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
         + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>'
@@ -1817,7 +1824,8 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
       var etat = comparable ? (unanime ? "accord" : "diverge") : "incomp";
       var html = '<article class="cmp-vote cmp-vote-multi ' + etat + '" data-vote-id="' + (v.uid || '') + '">'
         + '<div class="cmp-tete"><span class="cmp-titre">' + v.titre + '</span>'
-        + '<span class="cmp-chambre">' + v.chambre + '</span></div>'
+        + '<span class="cmp-tete-meta"><span class="cmp-chambre">' + v.chambre + '</span>'
+        + (v.resultat ? '<span class="cmp-resultat">' + v.resultat + '</span>' : '') + '</span></div>'
         + '<ul class="cmp-multi-positions">' + lignes + '</ul>'
         + '<details class="cmp-det"' + (wideCmp.matches ? ' open' : '') + '><summary>Description du vote</summary>'
         + sens + '<p class="cmp-desc-texte">' + v.resume + '</p>' + justifs
@@ -2093,6 +2101,7 @@ def generer(base):
                    "chambre": CHAMBRE_LABEL.get(v["chambre"], v["chambre"]),
                    "sens_pour": v.get("sens_pour"), "sens_contre": v.get("sens_contre"),
                    "axe": v.get("axe_budget"), "sens_axe": v.get("sens_axe"),
+                   "resultat": resultat_texte(v),
                    "date": v["date"]} for v in votes_cles],
         "positions": positions_comparaison(candidats, votes_cles, etats, nuances, justifs_groupes, equiv_senat,
                                            groupes_par_vote, groupe_du_candidat),

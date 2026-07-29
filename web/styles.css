@@ -553,6 +553,13 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .cmp-titre { font-family:'Spectral',Georgia,serif; font-weight:600; font-size:1.08rem; }
 .cmp-chambre { font-family:system-ui; font-size:.7rem; font-weight:600; text-transform:uppercase;
   letter-spacing:.06em; color:var(--mute); white-space:nowrap; }
+/* Chambre et résultat officiel groupés à droite du titre (le conteneur .cmp-tete
+   répartit ses enfants aux extrémités). */
+.cmp-tete-meta { display:flex; flex-wrap:wrap; align-items:baseline; gap:.15rem .55rem; }
+/* Résultat officiel du scrutin (adopté/rejeté et décompte), comme sur la fiche
+   candidat : information factuelle, jamais portée par la seule couleur. */
+.cmp-resultat { font-family:system-ui; font-size:.72rem; font-weight:600; color:var(--encre-douce);
+  white-space:nowrap; }
 .cmp-desc-texte { font-size:.88rem; color:var(--encre-douce); margin:.45rem 0 .8rem; }
 
 .cmp-bannieres { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
@@ -695,6 +702,18 @@ img, svg, table { max-width:100%; }
   .entete-nav nav{ order:3; width:100%; margin-left:0;
     justify-content:space-between; gap:.1rem; flex-wrap:nowrap; }
   .entete-nav nav a{ padding:.5rem .3rem; font-size:.88rem; }
+}
+
+/* Sous ~430px, les cinq entrées de menu ne tiennent plus sur une ligne à la
+   taille précédente : on resserre le texte plutôt que de laisser la page
+   déborder horizontalement (la hauteur tactile de 44px est préservée). */
+@media (max-width:430px){
+  .entete-nav nav{ gap:0; }
+  .entete-nav nav a{ padding:.5rem .12rem; font-size:.8rem; letter-spacing:-.01em; }
+}
+@media (max-width:350px){
+  .entete-nav{ padding-left:.6rem; padding-right:.6rem; }
+  .entete-nav nav a{ padding:.5rem .1rem; font-size:.72rem; }
 }
 
 /* ============================================================
