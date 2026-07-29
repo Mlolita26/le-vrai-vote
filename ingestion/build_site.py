@@ -537,6 +537,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{titre_page}</title>
 <meta name="description" content="{meta_description}">
+<meta name="google-site-verification" content="a0RhaqFTyMdeATANiYhspuJ6eGRp0UOoxpvsGYkBJxE" />
 <link rel="canonical" href="{canonical}">
 <link rel="icon" type="image/png" sizes="32x32" href="{r}assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="{r}assets/favicon-192.png">
