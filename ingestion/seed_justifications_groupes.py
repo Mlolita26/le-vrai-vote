@@ -25,8 +25,6 @@ SOURCES = {
                       "LCP, mai 2023 : adoption définitive de la loi d'accélération du nucléaire, positions des groupes"),
     "lcp_indverte": ("https://lcp.fr/actualites/assemblee-nationale-adoption-du-projet-de-loi-industrie-verte-fin-de-la-session",
                      "LCP, juillet 2023 : adoption du projet de loi industrie verte, explications et critiques des groupes"),
-    "lcp_mineurs": ("https://lcp.fr/actualites/delinquance-des-mineurs-que-contient-la-proposition-de-loi-de-gabriel-attal-que-le",
-                    "LCP, 2025 : contenu et débats de la proposition de loi Attal sur la justice des mineurs"),
     "lcp_bienvieillir": ("https://lcp.fr/actualites/bien-vieillir-assemblee-nationale-adopte-texte-premiere-lecture-241649",
                          "LCP, 23/11/2023 : adoption en première lecture de la loi « bien vieillir », positions des groupes"),
     "lcp_corse": ("https://lcp.fr/actualites/l-assemblee-nationale-vote-en-faveur-de-l-autonomie-de-la-corse-437977",
@@ -71,16 +69,14 @@ SOURCES = {
                      "Défenseur des droits, juin 2026, avis : la présomption de légitime défense risque de porter atteinte au droit à la vie"),
     "tc_legitime": ("https://theconversation.com/presomption-de-legitime-defense-pour-les-policiers-une-proposition-de-loi-qui-pose-probleme-287244",
                     "The Conversation, 2026 : origine (droite/extrême droite, PPL du LR Éric Pauget), soutien du ministre de l'Intérieur"),
-    "fi_orban": ("https://www.franceinfo.fr/politique/front-national/defaite-de-viktor-orban-en-hongrie-le-rassemblement-national-perd-son-principal-allie-europeen_7934591.html",
-                 "franceinfo : le Rassemblement national, principal allié de Viktor Orbán au Parlement européen"),
+    "rn_hongrie_garraud": ("https://rassemblementnational.fr/communiques/hongrie-halte-a-lingerence-ideologique-de-bruxelles",
+                           "Communiqué de la délégation RN au Parlement européen (Jean-Paul Garraud) : soutien au gouvernement hongrois face aux mises en cause de l'état de droit"),
     "basta_rn_salaire": ("https://basta.media/parlement-europeen-RN-oppose-droits-des-femmes-salaire-minimum-Bardella-LePen-Elections-UE",
                          "Basta!, 2024 : récapitulatif des votes du RN au Parlement européen, dont l'opposition au salaire minimum européen"),
     # Éducation
     "lfi_antisem_sup": ("https://lafranceinsoumise.fr/2025/07/02/instrumentalisation-de-la-lutte-contre-lantisemitisme-une-loi-adoptee-pour-reprimer-les-mobilisations-etudiantes/",
                         "lafranceinsoumise.fr, 02/07/2025 : LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme"),
     # Santé : lot de justifications (recherche 25/07/2026)
-    "wiki_sante_touraine": ("https://fr.wikipedia.org/wiki/Loi_de_modernisation_du_syst%C3%A8me_de_sant%C3%A9",
-                            "Wikipédia, loi de modernisation du système de santé : opposition de la droite et des syndicats de médecins au tiers payant généralisé"),
     "lcp_deserts": ("https://lcp.fr/actualites/deserts-medicaux-l-assemblee-nationale-vote-en-faveur-d-une-regulation-de-l-installation",
                     "LCP, mai 2025 : l'Assemblée vote la régulation de l'installation des médecins (loi Garot)"),
     "ps_ratios": ("https://www.publicsenat.fr/actualites/sante/hopital-adoption-definitive-de-la-proposition-de-loi-pour-un-nombre-minimal-de-soignants-par-patients",
@@ -142,6 +138,12 @@ SOURCES = {
                      "deputes-rn.fr : le RN revendique le nucléaire comme énergie permettant de « retrouver sa souveraineté énergétique », décarbonée et pilotable"),
     "cf_indverte": ("https://charlesfournier.fr/retour-sur-une-loi-industrie-verte-qui-na-de-verte-que-le-nom/",
                     "charlesfournier.fr, le député écologiste Charles Fournier : « une terrible occasion manquée »"),
+    "an_cr_simplification_2026": ("https://www.assemblee-nationale.fr/dyn/17/comptes-rendus/seance/session-ordinaire-de-2025-2026/premiere-seance-du-mardi-14-avril-2026",
+                                  "Compte rendu intégral AN, 14/04/2026 : Anne Stambach-Terrenoir (LFI-NFP) dénonce une attaque du droit de l'environnement et appelle à rejeter le texte"),
+    "an_cr_mineurs_lfi": ("https://www.assemblee-nationale.fr/dyn/17/comptes-rendus/seance/session-ordinaire-de-2024-2025/premiere-seance-du-mardi-13-mai-2025",
+                          "Compte rendu intégral AN, 13/05/2025 : Gabrielle Cathala (LFI-NFP) défend une motion de rejet, invoquant l'ordonnance de 1945 sur l'enfance délinquante"),
+    "lcp_rsa_simonnet": ("https://lcp.fr/actualites/reforme-du-rsa-france-travail-l-assemblee-nationale-adopte-le-projet-de-loi-pour-le",
+                         "LCP : Danielle Simonnet (LFI) dénonce « une loi de maltraitance et de régression sociale sans précédent »"),
     "lcp_zfe_vote": ("https://lcp.fr/actualites/la-suppression-des-zfe-confirmee-lors-de-l-ultime-vote-sur-la-loi-de-simplification-a-l",
                      "LCP, vote final loi de simplification : RN et Union des droites pour, EPR divisé en trois blocs (30 contre, 25 pour, 19 abstentions)"),
     "e1_mineurs_rn": ("https://www.europe1.fr/politique/lassemblee-nationale-adopte-le-texte-de-gabriel-attal-pour-durcir-la-justice-des-mineurs-305364",
@@ -160,8 +162,6 @@ SOURCES = {
                                    "Public Sénat : la ministre Amélie de Montchalin invoque l'avis du Conseil d'État sur la constitutionnalité de la taxe Zucman"),
     "an_dossier_legitime": ("https://www.assemblee-nationale.fr/dyn/17/dossiers/presomption_legitime_defense_forces_ordre",
                             "Assemblée nationale, dossier législatif : proposition de loi du député Éric Pauget (LR/DR) sur la présomption de légitime défense"),
-    "cncdh_rsa": ("https://www.cncdh.fr/actualite/le-rsa-conditionne-une-atteinte-aux-droits-humains",
-                  "CNCDH : le RSA conditionné à des heures d'activité, « une atteinte aux droits humains »"),
     "releve_peste_cancer_rn": ("https://lareleveetlapeste.fr/le-rn-a-vote-contre-la-taxe-permettant-de-financer-la-recherche-contre-les-cancers-pediatriques/",
                                "La Relève et La Peste : le RN justifie son vote contre en disant préférer un crédit d'impôt pour les groupes pharmaceutiques"),
     "an_scrutin_619": ("https://www.assemblee-nationale.fr/dyn/15/scrutins/619",
@@ -182,8 +182,8 @@ SOURCES = {
                           "LCP : adoption des ratios de soignants ; le groupe Ensemble juge le texte « inopérant » et voit son amendement de report rejeté"),
     "an_scrutin_2760": ("https://www.assemblee-nationale.fr/dyn/15/scrutins/2760",
                         "Assemblée nationale, décompte officiel du scrutin n°2760 : GDR et FI unanimement pour, SOC pour, LaREM contre"),
-    "gdr_bruneel_segur": ("https://groupe-communiste.assemblee-nationale.fr/interventions/discussions-ge%CC%81ne%CC%81rales/article/loi-de-programmation-pour-l-hopital-public-et-les-etablissements-d-hebergement",
-                          "Groupe GDR : Alain Bruneel reproche au Gouvernement de renvoyer au « Ségur de la santé » plutôt que de voter cette programmation"),
+    "an_cr_hopital_2020": ("https://www.assemblee-nationale.fr/dyn/15/comptes-rendus/seance/session-ordinaire-de-2019-2020/deuxieme-seance-du-jeudi-18-juin-2020",
+                           "Compte rendu intégral AN, 18/06/2020 : Monique Iborra (LaREM) renvoie aux conclusions du Ségur de la santé et juge le texte « trop réducteur et centralisé »"),
     "lqm_ivg_difilippo": ("https://www.lequotidiendumedecin.fr/actus-medicales/sante-publique/lassemblee-vote-lallongement-des-delais-dacces-livg-jusqua-14-semaines-de-grossesse-sans-toucher-la",
                           "Le Quotidien du médecin, Fabien Di Filippo (LR) : l'acte d'IVG « change de nature, avec des conséquences gynécologiques qui peuvent être graves »"),
     "datan_vote5845": ("https://datan.fr/votes/legislature-17/vote_5845",
@@ -196,8 +196,8 @@ SOURCES = {
                         "Assemblée nationale : décompte officiel du scrutin n°2880 (antisémitisme dans l'enseignement supérieur)"),
     "an_scrutin_351": ("https://www.assemblee-nationale.fr/dyn/15/scrutins/351",
                        "Assemblée nationale : décompte officiel du scrutin n°351 (loi ORE/Parcoursup, 2018)"),
-    "ps_sante_touraine": ("https://www.parti-socialiste.fr/projet-de-loi-sante-la-modernisation-du-systeme-au-coeur-de-la-reforme/",
-                          "Parti socialiste : position officielle sur la loi de modernisation du système de santé (tiers payant généralisé)"),
+    "an_cr_sante_2015": ("https://www.assemblee-nationale.fr/14/cri/2015-2016/20160073.asp",
+                         "Compte rendu intégral AN, 01/12/2015, explications de vote : Christophe Sirugue (SRC) défend l'accès aux soins et le tiers payant, Arnaud Robinet (LR) annonce le rejet du texte"),
 }
 
 # (uid scrutin, groupe_abrege EXACT tel qu'en base, texte de la justification, clé source)
@@ -231,8 +231,8 @@ JUSTIFS = [
      "A voté pour, avec l'Union des droites, en soutien à l'allègement des contraintes sur les entreprises et à la suppression des zones à faibles émissions (ZFE).",
      "lcp_zfe_vote"),
     ("VTANR5L17V6184", "LFI-NFP",
-     "A voté contre l'ensemble du texte, jugé porteur de régressions, tout en étant, de longue date, favorable à la suppression des ZFE qu'il contient.",
-     "lcp_zfe_vote"),
+     "A voté contre l'ensemble du texte, son oratrice Anne Stambach-Terrenoir estimant que « c'est surtout le droit de l'environnement que vous attaquez massivement ». Le groupe demande par ailleurs, depuis 2019, la suspension des ZFE tant qu'aucune alternative de transport n'est offerte.",
+     "an_cr_simplification_2026"),
     ("VTANR5L17V6184", "EPR",
      "Le groupe s'est divisé en trois blocs (30 contre, 25 pour, 19 abstentions) après l'échec, en séance, du compromis du Gouvernement qui laissait aux collectivités le choix de maintenir ou non les ZFE.",
      "lcp_zfe_vote"),
@@ -242,8 +242,8 @@ JUSTIFS = [
      "A voté pour : la députée Sylvie Josserand a jugé le texte « mièvre », une « coquille vide », mais l'a voté comme « un signal » face à la délinquance des mineurs.",
      "e1_mineurs_rn"),
     ("VTANR5L17V1624", "LFI-NFP",
-     "A voté contre, avec toute la gauche, estimant que le texte remet en cause le principe fondateur de la justice des mineurs : la primauté de l'éducation sur la répression.",
-     "lcp_mineurs"),
+     "A voté contre : son oratrice Gabrielle Cathala a défendu une motion de rejet, invoquant l'ordonnance de 1945 sur l'enfance délinquante et estimant que le texte « préfère, une nouvelle fois, choisir la répression » et remet en cause le principe d'atténuation des peines pour les mineurs.",
+     "an_cr_mineurs_lfi"),
     ("VTANR5L17V1624", "SOC",
      "A voté contre, son orateur Hervé Saulignac qualifiant le texte d'« injuste, régressif et, sans aucun doute, aussi incomplet qu'inefficace ».",
      "an_cr_mineurs_soc"),
@@ -261,7 +261,7 @@ JUSTIFS = [
 
     # ── Autonomie de la Corse, 2026 (L17), rôles inversés ───────────────────
     ("VTANR5L17V7454", "RN",
-     "A voté contre : le RN s'oppose à une autonomie normative de la Corse, qu'il juge contraire à l'unité de la République.",
+     "A voté contre : pour Stéphane Rambaud, « le texte soumis à notre vote ne permettra nullement à la Corse de répondre aux difficultés particulières qui sont les siennes ».",
      "lcp_corse"),
     ("VTANR5L17V7454", "LFI-NFP",
      "A voté pour : Éric Coquerel y a salué « un signal fort et positif » envoyé à la Corse, le groupe étant favorable à la reconnaissance de ses spécificités.",
@@ -279,8 +279,8 @@ JUSTIFS = [
     ("VTANR5L17V1303", "RN",
      "A voté contre : Jordan Guitton a fait valoir que, dans beaucoup de petites communes, « il n'y aura qu'une liste, donc il n'y aura aucun choix pour les électeurs », jugeant difficile d'y constituer des listes paritaires.",
      "lcp_municipales"),
-    ("VTANR5L17V1303", "LFI-NFP",
-     "A voté pour, en soutien à la parité ; la gauche a fustigé des « discours réactionnaires » comparables, selon elle, aux arguments opposés à la parité au début des années 2000.",
+    ("VTANR5L17V1303", "EcoS",
+     "A voté pour : Benjamin Lucas a fustigé des « discours ringards, réactionnaires » chez les opposants à l'extension de la parité.",
      "lcp_municipales"),
 
     # ── Parlement européen ────────────────────────────────────────────────────
@@ -297,7 +297,7 @@ JUSTIFS = [
      "A voté contre, refusant une « écologie punitive » qui ferait des automobilistes et de l'industrie automobile française des « victimes expiatoires » ; le RN met en avant le pouvoir d'achat et l'emploi.",
      "rn_ecologie_punitive"),
     ("PE-HTV-118521", "RN",
-     "A voté contre : le RN rejette les normes climatiques jugées « punitives » de l'Union (dont l'interdiction des véhicules thermiques en 2035), leur préférant une « souveraineté énergétique » fondée sur le nucléaire.",
+     "A voté contre : le RN rejette les normes climatiques jugées « punitives » de l'Union (dont l'interdiction des véhicules thermiques en 2035), leur préférant une « offre électrique souveraine » fondée sur le nucléaire.",
      "theconv_rn_climat"),
     ("PE-HTV-167531", "RE",
      "A voté pour, défendant un pacte fondé sur « fermeté, humanité et efficacité » : réponse européenne coordonnée, maîtrise des frontières et lutte contre l'immigration illégale.",
@@ -344,7 +344,7 @@ JUSTIFS = [
     # « Contre » ici ne veut PAS dire soutenir l'accord : LFI voulait un rejet
     # plus net que celui du Gouvernement, d'où l'explication, indispensable.
     ("VTANR5L17V456", "LFI-NFP",
-     "A voté contre la déclaration du Gouvernement (non pour soutenir l'accord, mais parce qu'elle se bornait à refuser l'accord « en l'état ») : LFI réclamait un rejet « tout court » et reprochait au Gouvernement une « absence de stratégie ».",
+     "A voté contre la déclaration du Gouvernement, non pour soutenir l'accord mais parce qu'elle était jugée trop faible : selon LFI, « faute de volonté, [le Gouvernement] n'a aucune stratégie concrète pour mettre fin à l'accord UE-Mercosur ».",
      "lfi_mercosur"),
 
     # ── Loi Duplomb, 2025 (L17) ──────────────────────────────────────────────
@@ -378,11 +378,8 @@ JUSTIFS = [
      "A voté pour cet impôt minimum sur les ultra-riches.",
      "te_zucman"),
     ("VTANR5L17V881", "EPR",
-     "A voté contre : la ministre Amélie de Montchalin a invoqué l'avis du Conseil d'État sur une constitutionnalité incertaine de la mesure, jugée aussi risquée pour l'investissement : un « mirage » fiscal selon le bloc central.",
+     "A voté contre : la ministre Amélie de Montchalin a invoqué l'avis du Conseil d'État sur une constitutionnalité incertaine de la mesure, jugée aussi risquée pour l'investissement.",
      "publicsenat_zucman_constit"),
-    ("VTANR5L17V881", "HOR",
-     "A voté contre, estimant l'impôt inconstitutionnel et menaçant pour l'investissement.",
-     "te_zucman"),
 
     # ── Présomption de légitime défense des forces de l'ordre, 2026 (L17) ────
     ("VTANR5L17V7987", "LFI-NFP",
@@ -409,8 +406,8 @@ JUSTIFS = [
 
     # ── État de droit en Hongrie, article 7 (Parlement européen, 2024) ───────
     ("PE-HTV-168862", "RN",
-     "A voté contre : le RN est le principal allié de Viktor Orbán au Parlement européen, dont la Hongrie est la cible de cette procédure de l'article 7.",
-     "fi_orban"),
+     "A voté contre : la délégation RN exprime son soutien au gouvernement hongrois et juge que « ces accusations répétées contre l'État de droit relèvent d'un deux poids, deux mesures insupportable ».",
+     "rn_hongrie_garraud"),
 
     # ── Salaire minimum européen (Parlement européen, 2022) ──────────────────
     ("PE-HTV-147342", "RN",
@@ -419,7 +416,7 @@ JUSTIFS = [
 
     # ── Antisémitisme dans l'enseignement supérieur, 2025 (L17), sensible ────
     ("VTANR5L17V2880", "LFI-NFP",
-     "A voté contre : LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme, y voyant un moyen de « criminaliser le militantisme étudiant » (notamment les mobilisations pro-palestiniennes), tout en affirmant condamner l'antisémitisme.",
+     "A voté contre : LFI dénonce une « instrumentalisation » de la lutte contre l'antisémitisme, estimant que la loi vise à « réprimer les mobilisations » étudiantes, notamment celles de soutien à la Palestine, tout en affirmant condamner l'antisémitisme.",
      "lfi_antisem_sup"),
     ("VTANR5L17V2880", "RN",
      "A voté pour, avec la majorité et la droite, en soutien au renforcement des mesures contre l'antisémitisme à l'université.",
@@ -427,11 +424,11 @@ JUSTIFS = [
 
     # ── Santé : modernisation du système de santé, loi Touraine, 2016 (L14) ──
     ("VTANR5L14V1200", "SRC",
-     "A voté pour : le groupe socialiste défendait un meilleur accès aux soins, notamment via la généralisation du tiers payant (ne plus avancer les frais chez le médecin).",
-     "ps_sante_touraine"),
+     "A voté pour : son orateur Christophe Sirugue a présenté le texte comme une politique de proximité et d'accès aux soins, dont le tiers payant (ne plus avancer les frais chez le médecin), « revendiqué par sept Français sur dix ».",
+     "an_cr_sante_2015"),
     ("VTANR5L14V1200", "Les Républicains",
-     "A voté contre, dénonçant surtout la généralisation du tiers payant, combattue par les syndicats de médecins (crainte d'une bureaucratisation de la médecine).",
-     "wiki_sante_touraine"),
+     "A voté contre : son orateur Arnaud Robinet a ciblé la généralisation du tiers payant, estimant qu'elle transformerait le cabinet médical en « secrétariat administratif et financier », et annoncé sa suppression.",
+     "an_cr_sante_2015"),
 
     # ── Santé : déserts médicaux, loi Garot, 2025 (L17) ─────────────────────
     ("VTANR5L17V1607", "LFI-NFP",
@@ -449,7 +446,7 @@ JUSTIFS = [
      "A voté pour, en soutien à des ratios protégeant patients et soignants : le texte reprend une proposition d'origine sénatoriale socialiste.",
      "ps_ratios"),
     ("VTANR5L17V600", "RN",
-     "S'est abstenu : le député Serge Muller, ancien aide-soignant, a dénoncé la pression déjà subie par les soignants, réclamant surtout une revalorisation des métiers.",
+     "S'est abstenu, avec l'ensemble du groupe (30 députés).",
      "datan_vote600"),
     ("VTANR5L17V600", "EPR",
      "S'est abstenu : la députée Annie Vidal jugeait le texte « inopérant » et a tenté, en vain, d'en repousser l'échéance.",
@@ -466,8 +463,8 @@ JUSTIFS = [
      "A voté pour cette programmation pour l'hôpital public.",
      "an_scrutin_2760"),
     ("VTANR5L15V2760", "LaREM",
-     "A voté contre : le groupe communiste (Alain Bruneel) a reproché à la majorité de renvoyer au « Ségur de la santé », alors en cours, plutôt que de voter cette programmation.",
-     "gdr_bruneel_segur"),
+     "A voté contre : son oratrice Monique Iborra a renvoyé aux conclusions du Ségur de la santé, alors attendues, estimant que « votre proposition de loi arrive donc trop tôt ou trop tard » et jugeant le texte « trop réducteur et centralisé ».",
+     "an_cr_hopital_2020"),
 
     # ── Santé : allongement du délai d'IVG à 14 semaines, 2022 (L15) ─────────
     ("VTANR5L15V4414", "LR",
@@ -550,8 +547,8 @@ JUSTIFS = [
      "A voté pour : réduire le chômage et mieux accompagner les allocataires du RSA vers l'emploi.",
      "lcp_france_travail"),
     ("VTANR5L16V2965", "LFI - NUPES",
-     "A voté contre, dénonçant une « casse sociale » et le principe d'un RSA conditionné à des heures d'activité : la CNCDH y a vu une « atteinte aux droits humains ».",
-     "cncdh_rsa"),
+     "A voté contre : pour Danielle Simonnet, c'est « une loi de maltraitance et de régression sociale sans précédent ». Le groupe s'oppose à l'obligation de quinze heures d'activité hebdomadaire pour percevoir le RSA.",
+     "lcp_rsa_simonnet"),
     ("VTANR5L16V2965", "RN",
      "A voté contre, s'opposant au conditionnement du RSA prévu par le texte.",
      "lcp_france_travail"),
@@ -597,7 +594,7 @@ JUSTIFS = [
      "A voté contre, avec la NUPES, jugeant que le texte aggrave la précarité des locataires au lieu de répondre au mal-logement.",
      "lcp_antisquat"),
     ("VTANR5L15V3421", "FI",
-     "A voté contre : Jean-Luc Mélenchon a dénoncé une loi « antirépublicaine » à « vocation anti-musulmane » ; le groupe a saisi le Conseil constitutionnel, y voyant une « atteinte manifestement disproportionnée à la liberté d'association ».",
+     "A voté contre : Jean-Luc Mélenchon a dénoncé une loi « antirépublicaine » à « vocation anti-musulmane » ; la gauche et la droite ont annoncé saisir le Conseil constitutionnel, pointant les risques pour la liberté d'association.",
      "europe1_separatisme_melenchon"),
     ("VTANR5L15V3421", "LaREM",
      "A voté pour : la majorité présidentielle défend un texte présenté comme un outil de lutte contre le « séparatisme » islamiste et de renforcement de la laïcité.",
@@ -609,13 +606,13 @@ JUSTIFS = [
      "A voté pour : la majorité défend une loi censée faciliter la croissance et le financement des entreprises et recentrer l'État sur ses missions stratégiques.",
      "france24_pacte"),
     ("VTANR5L16V1305", "LFI - NUPES",
-     "A voté contre : Elisa Martin (LFI) a dénoncé le « sacrifice de nos libertés fondamentales et de notre État de droit ».",
+     "A voté contre : avant le vote, Elisa Martin et les députés LFI s'opposaient au « sacrifice de nos libertés fondamentales et de notre État de droit ».",
      "placegrenet_jo_martin"),
     ("VTANR5L16V1305", "Ecolo - NUPES",
      "A voté contre : Sandra Regol (Écologistes) a averti que cette vidéosurveillance algorithmique « pourrait devenir une norme » permettant de « cibler les gens sur leur couleur de peau, leurs habits ».",
      "lejdd_jo_regol"),
     ("VTANR5L16V1305", "RN",
-     "A voté pour, en soutien aux moyens de sécurité déployés pour les Jeux, dont la vidéosurveillance algorithmique.",
+     "A voté pour (77 voix), tout en critiquant la durée prévue de l'expérimentation de la vidéosurveillance algorithmique.",
      "lcp_jo_vsa"),
     ("VTANR5L16V1305", "RE",
      "A voté pour : la majorité et le gouvernement (Gérald Darmanin) défendent une expérimentation encadrée, excluant la reconnaissance faciale.",
@@ -637,15 +634,15 @@ JUSTIFS = [
      "A voté contre : le groupe a jugé la loi très en deçà de son ambition initiale, estimant qu'elle ne garantissait pas un revenu suffisant aux agriculteurs (mécanisme de fixation des prix jugé insatisfaisant), et a demandé le renvoi du texte en commission.",
      "an_egalim_lfi"),
     ("VTANR5L15V3738", "FI",
-     "A voté contre : Jean-Luc Mélenchon a rejeté un texte jugé « sans doute inutile », voire « dangereux » et très en deçà de l'urgence climatique et des propositions de la Convention citoyenne (notée 2,5/10 par ses membres), déplorant l'absence de mesures sur les accords de libre-échange, le 100 % renouvelable ou l'interdiction du glyphosate.",
+     "A voté contre : Jean-Luc Mélenchon a rejeté un texte jugé « sans doute inutile », voire « dangereux », déplorant l'absence de moratoire sur les accords de libre-échange, d'objectif de 100 % renouvelable et d'interdiction du glyphosate.",
      "f24_climat_lfi"),
     ("VTANR5L16V823", "LFI - NUPES",
-     "A voté contre : le groupe (Clémence Guetté) a dénoncé une logique de « marché libéralisé » et le quasi-droit de veto laissé aux maires.",
+     "A voté contre : pour Clémence Guetté, le texte « laisse les mains libres au secteur privé, sans réelle planification publique » du développement des énergies renouvelables.",
      "reporterre_enr_lfi"),
 
     # ── Loi d'urgence pour la protection et la souveraineté agricoles, 2026 (L17) ──
     ("VTANR5L17V8427", "LFI-NFP",
-     "A voté contre à l'unanimité : Aurélie Trouvé a dénoncé « une loi criminelle qui empoisonne nos enfants », avertissant les responsables qu'ils en « rendront compte à tous les Français ».",
+     "A voté contre à l'unanimité : Aurélie Trouvé a dénoncé « une loi criminelle », estimant que « la loi agricole vient d'être transformée en loi criminelle pour nos enfants ».",
      "franceinfo_trouve_criminelle"),
     ("VTANR5L17V8427", "EPR",
      "Groupe divisé (51 pour, 15 contre) : son président Gabriel Attal a voté pour tout en exprimant un « sentiment de gâchis » et en critiquant la méthode du Gouvernement sur les amendements de suppression.",
@@ -666,8 +663,8 @@ JUSTIFS = [
      "A voté contre, avec le reste de la gauche, pour les mêmes motifs environnementaux (pesticides, gestion de l'eau).",
      "basta_urgence_agricole"),
     ("VTANR5L17V8427", "Dem",
-     "Groupe divisé (19 pour, 11 contre, 6 abstentions) : son président Marc Fesneau, qui avait publiquement critiqué les mesures du texte relatives à l'eau, a néanmoins voté pour son adoption.",
-     "basta_urgence_agricole"),
+     "Groupe divisé (19 pour, 11 contre) : son président Marc Fesneau, qui avait publiquement critiqué les mesures du texte relatives à l'eau, a néanmoins voté pour son adoption.",
+     "maireinfo_urgence_agricole"),
 ]
 
 

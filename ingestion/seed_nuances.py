@@ -93,16 +93,16 @@ NUANCES = [
     #  affichée sous le chip du parti — pas de double emploi.)
     # Fraudes sociales et fiscales 2026 : opposition unanime de la gauche sur l'équilibre du texte.
     ("clementine-autain", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, s'en prenant aux « plus précaires », pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     ("francois-ruffin", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, s'en prenant aux « plus précaires », pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     ("jerome-guedj", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, s'en prenant aux « plus précaires », pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     ("philippe-brun", "VTANR5L17V6319",
-     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, et une « suspicion généralisée » envers les allocataires, pas la lutte contre la fraude en soi.",
+     "A voté contre, comme l'ensemble de la gauche, qui dénonçait un texte trop centré sur la fraude sociale et pas assez sur la fraude fiscale, s'en prenant aux « plus précaires », pas la lutte contre la fraude en soi.",
      "fi_fraudes"),
     # Résolution Ukraine 2022 : abstentions LFI et RN, motifs distincts (compte rendu officiel).
     ("clementine-autain", "VTANR5L16V652",
@@ -119,7 +119,7 @@ NUANCES = [
      "A voté contre, jugeant que la loi posait « des questions graves en matière de libertés individuelles », malgré le consensus des mois suivant les attentats de janvier 2015.",
      "jdd_philippe"),
     ("jerome-guedj", "VTANR5L14V30",
-     "A voté contre avec une vingtaine de députés de l'aile gauche du PS, contre la position de son propre gouvernement, refusant que l'austérité soit « gravée dans le marbre ».",
+     "A voté contre avec une vingtaine de députés de l'aile gauche du PS, contre la position de son propre gouvernement : « C'est un traité Merkozie, pas un traité Hollande. C'est un remède qui tue le malade. »",
      "e1_tscg"),
 ]
 
