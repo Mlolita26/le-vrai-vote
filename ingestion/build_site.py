@@ -26,6 +26,9 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parents[1]
 BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 WEB = RACINE / "web"
+BASE_URL = "https://levraivote.fr"
+DESCRIPTION_SITE = ("Le Vrai Vote : les votes réels des candidats à la présidentielle 2027 "
+                     "au Parlement, à partir de données publiques officielles.")
 
 LIBELLES_MANDAT = {
     "depute": "Député", "senateur": "Sénateur", "eurodepute": "Eurodéputé",
@@ -514,23 +517,27 @@ def concordances(candidats):
 
 # ── Gabarit ──────────────────────────────────────────────────────────────────
 
-def page(titre, actif, contenu, profondeur, meta):
+def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
     r = "../" * profondeur
     nav_items = [("", "Accueil"), ("candidats/", "Candidats"),
                  ("comparer/", "Comparer"), ("communaute/", "Communauté"),
                  ("methode/", "Méthode")]
     nav = "".join(
-        f'<a href="{r}{chemin if chemin else "./"}"'
+        f'<a href="{r}{c if c else "./"}"'
         f'{" aria-current=\"page\"" if libelle == actif else ""}>{libelle}</a>'
-        for chemin, libelle in nav_items)
+        for c, libelle in nav_items)
     titre_page = f"{e(titre)} — Le Vrai Vote"
-    og_image = f"https://mlolita26.github.io/le-vrai-vote/{r.replace('../', '')}assets/og-image.png" if r else "https://mlolita26.github.io/le-vrai-vote/assets/og-image.png"
+    og_image = f"{BASE_URL}/{r.replace('../', '')}assets/og-image.png" if r else f"{BASE_URL}/assets/og-image.png"
+    canonical = f"{BASE_URL}/{chemin}"
+    meta_description = e(description or DESCRIPTION_SITE)
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{titre_page}</title>
+<meta name="description" content="{meta_description}">
+<link rel="canonical" href="{canonical}">
 <link rel="icon" type="image/png" sizes="32x32" href="{r}assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="{r}assets/favicon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="{r}assets/favicon-512.png">
@@ -538,8 +545,11 @@ def page(titre, actif, contenu, profondeur, meta):
 <meta property="og:title" content="{titre_page}">
 <meta property="og:type" content="website">
 <meta property="og:image" content="{og_image}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:description" content="{meta_description}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{og_image}">
+<meta name="twitter:description" content="{meta_description}">
 <link rel="stylesheet" href="{r}styles.css">
 <script src="{r}theme.js" defer></script>
 <script src="{r}config.js"></script>
@@ -726,7 +736,7 @@ document.getElementById("recherche").addEventListener("input", function () {{
     carte.style.display = carte.dataset.nom.includes(q) ? "" : "none";
 }});
 </script>"""
-    return page("Accueil", "Accueil", contenu, 0, meta)
+    return page("Accueil", "Accueil", contenu, 0, meta, chemin="", description=DESCRIPTION_SITE)
 
 
 def page_liste(candidats, meta):
@@ -743,7 +753,9 @@ document.getElementById("recherche").addEventListener("input", function () {{
     carte.style.display = carte.dataset.nom.includes(q) ? "" : "none";
 }});
 </script>"""
-    return page("Candidats", "Candidats", contenu, 1, meta)
+    return page("Candidats", "Candidats", contenu, 1, meta, chemin="candidats/",
+                description="Tous les candidats à la présidentielle 2027 suivis par Le Vrai Vote, "
+                            "avec leurs votes réels au Parlement.")
 
 
 def switcher_candidat(p, candidats):
@@ -1128,7 +1140,9 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
 {bloc_senat}
 {solennels_html}
 {bloc_programme(p)}"""
-    return page(p["nom"], "Candidats", contenu, 2, meta)
+    return page(p["nom"], "Candidats", contenu, 2, meta, chemin=f"candidats/{p['slug']}/",
+                description=f"{p['nom']} ({p['parti']}) : votes réels au Parlement, présence et "
+                            "parcours, à partir de données publiques officielles.")
 
 
 def page_themes_index(themes, votes_cles, meta):
@@ -1146,7 +1160,7 @@ def page_themes_index(themes, votes_cles, meta):
 avec pour chaque candidat sa position — ou son état : non concerné, indisponible, à importer.
 La sélection suit la <a href="../methode/">grille de critères publiée</a>, identique pour tous.</p>
 <div class="grille-cartes">{cartes}</div>"""
-    return page("Thèmes", "Thèmes", contenu, 1, meta)
+    return page("Thèmes", "Thèmes", contenu, 1, meta, chemin="themes/")
 
 
 def page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_par_vote, equiv_senat, meta):
@@ -1215,7 +1229,7 @@ def page_theme(t, votes_t, candidats, etats, nuances, justifs_groupes, groupes_p
 dans la chambre à la date du scrutin ; « indisponible » : jamais parlementaire ; « absent (déduit) » :
 mandat actif mais aucune mention au scrutin ; « à importer » : donnée pas encore chargée (ex. Sénat).</p>
 {blocs}"""
-    return page(t["libelle"], "Thèmes", contenu, 2, meta)
+    return page(t["libelle"], "Thèmes", contenu, 2, meta, chemin=f"themes/{t.get('slug', '')}/")
 
 
 def page_vote(v, candidats, etats, nuances, justifs_groupes, groupes_par_vote, equiv_senat, meta):
@@ -1283,7 +1297,10 @@ La position d'un parti n'est pas le vote personnel d'un candidat — voir la sec
 {groupes_html}
 {nuances_html}
 </article>"""
-    return page(v["titre"], "Communauté", contenu, 2, meta)
+    resume_court = v["resume"][:157].rsplit(" ", 1)[0] + "…" if len(v["resume"]) > 157 else v["resume"]
+    return page(v["titre"], "Communauté", contenu, 2, meta, chemin=f"votes/{v['slug']}/",
+                description=f"{v['titre']} — comment les candidats à la présidentielle 2027 ont "
+                            f"voté : {resume_court}")
 
 
 def page_comparer(meta):
@@ -1918,7 +1935,9 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   rendre();
 });
 </script>"""
-    return page("Comparer", "Comparer", contenu, 1, meta)
+    return page("Comparer", "Comparer", contenu, 1, meta, chemin="comparer/",
+                description="Comparez les votes réels de plusieurs candidats à la présidentielle "
+                            "2027, thème par thème, à partir de leurs scrutins officiels.")
 
 def page_methode(meta, noms):
     contenu = f"""
@@ -1958,7 +1977,9 @@ def page_methode(meta, noms):
 <h2>Sources et références</h2>
 <p>Assemblée nationale, données ouvertes — scrutins, acteurs, mandats et organes, sous Licence ouverte (<a href="https://data.assemblee-nationale.fr" rel="noopener">data.assemblee-nationale.fr</a>). Parlement européen, scrutins republiés sous licence ODbL (<a href="https://howtheyvote.eu" rel="noopener">HowTheyVote.eu</a>). Déclarations d'intérêts et de patrimoine des responsables publics (<a href="https://www.hatvp.fr" rel="noopener">HATVP</a>). Sénat, intégration en cours (<a href="https://data.senat.fr" rel="noopener">data.senat.fr</a>). Code source et journal des corrections (<a href="https://github.com/Mlolita26/le-vrai-vote" rel="noopener">github.com/Mlolita26/le-vrai-vote</a>).</p>
 {credits_photos_html(noms)}"""
-    return page("Méthode", "Méthode", contenu, 1, meta)
+    return page("Méthode", "Méthode", contenu, 1, meta, chemin="methode/",
+                description="Méthode et sources de Le Vrai Vote : comment les votes des candidats "
+                            "sont collectés, sourcés et vérifiés.")
 
 
 def credits_photos_html(noms):
@@ -2014,7 +2035,9 @@ votre choix. Les votes les plus signalés remontent dans le classement ci-dessou
   <a href="../methode/">grille de sélection</a> — les mêmes critères objectifs pour tous les
   candidats. On décrit ce que fait un texte ; on ne le juge pas.</p>
 </section>"""
-    return page("Communauté", "Communauté", contenu, 1, meta)
+    return page("Communauté", "Communauté", contenu, 1, meta, chemin="communaute/",
+                description="Votez utile et proposez une loi : la fonctionnalité communautaire "
+                            "de Le Vrai Vote.")
 
 
 # ── Génération ───────────────────────────────────────────────────────────────
@@ -2085,8 +2108,27 @@ def generer(base):
         "meta": meta,
     }, ensure_ascii=False), encoding="utf-8")
 
+    # ── SEO : domaine, sitemap, robots ────────────────────────────────────────
+    (WEB / "CNAME").write_text("levraivote.fr\n", encoding="utf-8")
+
+    chemins = ["", "candidats/", "comparer/", "communaute/", "methode/"]
+    chemins += [f"candidats/{c['slug']}/" for c in candidats]
+    chemins += [f"votes/{v['slug']}/" for v in votes_cles]
+    urls_sitemap = "\n".join(
+        f"  <url><loc>{BASE_URL}/{c}</loc></url>" for c in chemins)
+    (WEB / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls_sitemap}\n"
+        "</urlset>\n", encoding="utf-8")
+
+    (WEB / "robots.txt").write_text(
+        "User-agent: *\nAllow: /\n"
+        f"Sitemap: {BASE_URL}/sitemap.xml\n", encoding="utf-8")
+
     print(f"Site généré : accueil + {len(candidats)} fiches + comparer/methode "
-          f"(pages thème retirées). {len(votes_cles)} votes clés. Comparateur : vue unique.")
+          f"(pages thème retirées). {len(votes_cles)} votes clés. Comparateur : vue unique. "
+          f"Sitemap : {len(chemins)} URLs.")
 
 
 if __name__ == "__main__":
