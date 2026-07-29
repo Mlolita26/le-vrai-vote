@@ -1977,9 +1977,6 @@ def page_methode(meta, noms):
 <h2>Sélection des votes clés</h2>
 <p>Tous les scrutins n'ont pas le même poids : le site n'en retient qu'un nombre restreint, jugés structurants, regroupés par thème. Chaque vote clé pointe un scrutin réellement importé et renvoie à sa page officielle ; son résumé est descriptif et neutre, sans reprendre le vocabulaire des promoteurs ni celui des opposants du texte. La sélection applique des critères objectifs, identiques pour tous les candidats, et demeure ouverte : elle s'enrichit à mesure que de nouveaux scrutins sont intégrés puis vérifiés un à un contre les données officielles.</p>
 
-<h2>Volet judiciaire</h2>
-<p>Ce volet est renseigné manuellement, fait par fait, uniquement à partir de documents publics sourcés, et avec la mention systématique de la présomption d'innocence pour toute procédure en cours. Aucun croisement automatique de bases judiciaires n'est effectué : les décisions publiées en open data sont pseudonymisées, et un tel croisement serait illégal.</p>
-
 <h2>Corrections et code source</h2>
 <p>La méthode comme le code de traitement sont publics. Une donnée vous semble erronée ? Un signalement peut être ouvert sur le <a href="https://github.com/Mlolita26/le-vrai-vote" rel="noopener">dépôt public du projet</a>, avec le lien de la source : toute correction est tracée.</p>
 
