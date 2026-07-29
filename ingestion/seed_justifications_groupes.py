@@ -144,8 +144,8 @@ SOURCES = {
                     "charlesfournier.fr, le député écologiste Charles Fournier : « une terrible occasion manquée »"),
     "lcp_zfe_vote": ("https://lcp.fr/actualites/la-suppression-des-zfe-confirmee-lors-de-l-ultime-vote-sur-la-loi-de-simplification-a-l",
                      "LCP, vote final loi de simplification : RN et Union des droites pour, EPR divisé en trois blocs (30 contre, 25 pour, 19 abstentions)"),
-    "lcp_mineurs_rn": ("https://lcp.fr/actualites/delinquance-des-mineurs-la-proposition-de-loi-de-gabriel-attal-pour-restaurer-l-autorite",
-                       "LCP : la députée RN Sylvie Josserand vote le texte comme un « signal », tout en le jugeant insuffisant"),
+    "e1_mineurs_rn": ("https://www.europe1.fr/politique/lassemblee-nationale-adopte-le-texte-de-gabriel-attal-pour-durcir-la-justice-des-mineurs-305364",
+                      "Europe 1 : la députée RN Sylvie Josserand juge le texte « mièvre », une « coquille vide », mais votée comme « un signal »"),
     "an_cr_mineurs_soc": ("https://www.assemblee-nationale.fr/dyn/17/comptes-rendus/seance/session-ordinaire-de-2024-2025/deuxieme-seance-du-mercredi-12-fevrier-2025",
                           "Compte rendu intégral AN, 12/02/2025, Hervé Saulignac (SOC) : texte « injuste, régressif et, sans aucun doute, aussi incomplet qu'inefficace »"),
     "theconv_rn_climat": ("https://theconversation.com/elections-legislatives-et-climat-avec-le-rn-une-triple-sortie-de-route-233000",
@@ -239,8 +239,8 @@ JUSTIFS = [
 
     # ── Justice des mineurs (loi Attal), 2025 (L17) ──────────────────────────
     ("VTANR5L17V1624", "RN",
-     "A voté pour : la députée Sylvie Josserand a voté le texte comme un « signal », tout en le jugeant insuffisant face à la délinquance des mineurs.",
-     "lcp_mineurs_rn"),
+     "A voté pour : la députée Sylvie Josserand a jugé le texte « mièvre », une « coquille vide », mais l'a voté comme « un signal » face à la délinquance des mineurs.",
+     "e1_mineurs_rn"),
     ("VTANR5L17V1624", "LFI-NFP",
      "A voté contre, avec toute la gauche, estimant que le texte remet en cause le principe fondateur de la justice des mineurs : la primauté de l'éducation sur la répression.",
      "lcp_mineurs"),
