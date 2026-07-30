@@ -48,8 +48,13 @@ VOTES_CLES_PE = {
     "marche_carbone": 154173,
     "transparence_salariale": 154076,
     "marche_electricite": 167334,
-    "preuves_electroniques": 155918,
-    "logiciels_espions": 150367,
+    # Corrigés le 30/07/2026 après audit : l'ancien id 155918 pointait sur la
+    # directive « représentants légaux » et non sur le règlement de fond, et
+    # l'ancien id 150367 était un amendement sur la Libye, sans rapport avec les
+    # logiciels espions (la recommandation PEGA de juin 2023 n'a pas fait l'objet
+    # d'un vote nominatif ; on retient la résolution de suivi de novembre 2023).
+    "preuves_electroniques": 155928,
+    "logiciels_espions": 161873,
     "armes_a_feu": 168301,
     "eurodac": 166929,
     "filtrage_frontieres": 166904,
