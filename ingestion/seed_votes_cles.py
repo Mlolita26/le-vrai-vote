@@ -516,6 +516,12 @@ VOTES = [
     ("PE-HTV-155946", "travail", "Stages de qualité dans l'Union (2023)",
      "Position du Parlement européen pour un cadre garantissant des stages de qualité : lutte contre les stages non ou mal rémunérés et contre les stages répétés se substituant à un véritable emploi. L'enjeu : protéger les jeunes en stage contre la précarité, la question débattue étant le degré de contrainte imposé aux employeurs.",
      "Position adoptée au Parlement européen ; la délégation du RN a voté contre."),
+    ("VTANR5L17V3690", "travail", "Création du congé supplémentaire de naissance (2025)",
+     "Crée un congé indemnisé de deux mois maximum pour chacun des deux parents, qui s'ajoute aux congés de maternité, de paternité et d'adoption existants. Il est ouvert à l'ensemble des actifs (salariés, indépendants, agriculteurs, fonctionnaires) et indemnisé de façon dégressive : 70 % du salaire net le premier mois, 60 % le second, dans la limite du plafond de la Sécurité sociale. Il peut être pris à la suite du congé de naissance ou dans les neuf mois, par les deux parents ensemble ou l'un après l'autre. L'enjeu : allonger le temps passé auprès d'un nouveau-né et mieux répartir ce temps entre les parents, mis en balance avec le coût pour la Sécurité sociale (estimé à 0,3 milliard d'euros la première année, 0,6 milliard à terme) et l'organisation des entreprises.",
+     "Vote sur l'article 42 du budget de la Sécurité sociale pour 2026, en première lecture. Tous les groupes ont voté pour, sauf Les Républicains (majoritairement contre) et Horizons (divisé). Le taux d'indemnisation ne figurait pas dans le texte lui-même mais était renvoyé à un décret. L'article a été adopté de nouveau en nouvelle lecture (220 voix contre 2)."),
+    ("VTANR5L17V3686", "travail", "Congé de naissance réservé aux couples dont un parent est français (2025)",
+     "Amendement au budget de la Sécurité sociale 2026 visant à n'ouvrir le congé supplémentaire de naissance qu'« aux personnes d'un couple dont au moins l'un des membres est de nationalité française ». Son exposé des motifs avance que la solidarité nationale doit être « prioritairement orientée vers les familles qui ont un lien stable, durable et reconnu avec la communauté nationale ». L'enjeu : conditionner l'accès à une prestation sociale à la nationalité, ce que la rapporteure et la ministre ont jugé contraire à la Constitution.",
+     "Amendement déposé par la députée Angélique Ranc (Rassemblement national) avec 159 cosignataires, rejeté par 147 voix contre 68. Seuls le Rassemblement national et l'Union des droites pour la République l'ont soutenu ; tous les autres groupes ont voté contre."),
 
     # ── Ajouts du 25/07/2026 (cancer, transports, femmes, handicap) ──────────
     ("VTANR5L17V6572", "sante", "Médicaments contre les cancers de l'enfant (2026)",
@@ -901,6 +907,10 @@ SENS = {
                        "s'y opposer"),
     "PE-HTV-155946": ("soutenir un encadrement des stages contre la précarité",
                       "s'y opposer"),
+    "VTANR5L17V3690": ("créer un congé indemnisé de deux mois par parent après une naissance",
+                       "rejeter la création de ce congé"),
+    "VTANR5L17V3686": ("réserver ce congé aux couples dont au moins un parent est de nationalité française",
+                       "ouvrir ce congé sans condition de nationalité"),
     # ── Ajouts (cancer, transports, femmes, handicap) ──
     "VTANR5L17V6572": ("adopter le cadre de soutien aux médicaments contre les cancers de l'enfant (financé par une contribution des laboratoires)",
                        "rejeter le texte"),
