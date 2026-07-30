@@ -36,6 +36,7 @@ Un site qui montre, pour chaque candidat à la présidentielle 2027, **ce qu'il 
 |---|---|
 | `CLAUDE.md` | Contexte et règles pour Claude Code — **à lire en premier** |
 | `docs/concept-methode.md` | L'idée détaillée et la méthodologie |
+| `docs/verification-editoriale.md` | Comment vérifier une description de vote clé (pièges relevés par l'audit de juillet 2026) |
 | `docs/arborescence.md` | Structure du site, pages, composants, URLs |
 | `docs/modele-donnees.md` | Schéma de base de données |
 | `docs/acquisition-donnees.md` | Sources et pipeline de collecte |

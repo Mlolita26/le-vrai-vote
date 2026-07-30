@@ -24,6 +24,8 @@ Ce projet manipule des données sur des personnes réelles dans un contexte éle
 
 6. **Affichage à trois états.** Pour chaque candidat et chaque vote clé, calculer et afficher : *position connue* / *non concerné* (pas en poste à la date du scrutin) / *indisponible* (n'a jamais été parlementaire). Ne jamais laisser une case vide et ambiguë.
 
+7. **Décrire le texte voté, pas l'intention.** Une description de vote clé porte sur le texte tel qu'il a été voté ce jour-là : ni le projet initial, ni l'exposé des motifs de l'amendement, ni la loi finale. Lire le texte adopté (« T.A. n° … ») ou le dispositif de l'amendement, jamais le dossier de presse. **Avant d'ajouter ou de modifier un vote clé, lire `docs/verification-editoriale.md`** : l'audit du 30 juillet 2026 a trouvé une erreur de fond dans 71 des 165 descriptions, et ce document liste les pièges avec les cas réels.
+
 ## Conventions de code
 
 - Langue de l'interface et du contenu : **français**.
@@ -38,6 +40,8 @@ Ce projet manipule des données sur des personnes réelles dans un contexte éle
 - La collecte de masse nécessite un accès réseau ouvert vers les domaines de données publiques (data.assemblee-nationale.fr, data.senat.fr, PE, HATVP, data.gouv.fr, PISTE). Les scripts d'ingestion tournent côté serveur, pas dans un bac à sable restreint.
 - Toujours horodater et archiver les dumps bruts avant transformation (traçabilité et reproductibilité).
 - Prévoir une supervision : alerter si une source change de format ou si un import échoue.
+- **Choix des scrutins du Parlement européen** (`VOTES_CLES_PE` dans `ingestion/pe/import_votes_cles_pe.py`) : avant d'ajouter un identifiant, vérifier dans `votes.csv` de l'export HowTheyVote que `display_title` correspond bien au sujet **et** que `is_main` vaut `True`. Deux votes clés ont longtemps pointé sur des lignes `is_main=False`, dont un amendement sur la Libye affiché comme un vote sur les logiciels espions.
+- **Un rapport de recherche n'est pas une source.** Les chiffres, citations et unités issus d'une recherche préalable doivent être relus sur le document primaire avant publication : deux erreurs de l'audit de juillet 2026 venaient de rapports détaillés mais inexacts sur un détail.
 
 ## Ce qui reste à faire (voir README pour l'état complet)
 
