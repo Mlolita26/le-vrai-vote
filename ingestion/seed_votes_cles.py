@@ -202,7 +202,7 @@ VOTES = [
      None),
 
     # ── Pouvoir d'achat et fiscalité ─────────────────────────────────────────
-    ("VTANR5L16V186", "travail", "Mesures d'urgence pouvoir d'achat (2022)",
+    ("VTANR5L16V186", "pouvoir-achat-fiscalite", "Mesures d'urgence pouvoir d'achat (2022)",
      "Ensemble de mesures adoptées face à la forte inflation de 2022 : revalorisation anticipée des retraites et de plusieurs prestations sociales, plafonnement temporaire de la hausse des loyers, et primes exonérées de cotisations que les employeurs peuvent verser à leurs salariés. L'enjeu : soutenir rapidement le pouvoir d'achat des ménages, le débat portant sur l'ampleur de ces mesures et leur coût pour les finances publiques.",
      "Vote sur le texte issu de la commission mixte paritaire."),
     ("VTANR5L16V1240", "travail", "Réforme des retraites : motion de censure (2023)",
