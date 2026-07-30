@@ -16,6 +16,7 @@ Usage : python ingestion/build_site.py [chemin_base]
 import html
 import json
 import re
+import shutil
 import sqlite3
 import sys
 import unicodedata
@@ -2115,6 +2116,20 @@ def generer(base):
         "meta": meta,
     }, ensure_ascii=False), encoding="utf-8")
 
+    # ── Purge des pages orphelines ────────────────────────────────────────────
+    # Le générateur écrit par-dessus les fichiers existants mais ne supprime rien :
+    # renommer un vote clé (donc son slug) laissait en ligne l'ancienne page, avec
+    # son ancien contenu. Ces pages fantômes restaient accessibles et indexables,
+    # alors qu'elles ne figuraient plus dans le sitemap. On supprime donc tout
+    # dossier qui ne correspond plus à un slug généré.
+    orphelines = []
+    for parent, slugs_valides in ((WEB / "votes", {v["slug"] for v in votes_cles}),
+                                  (WEB / "candidats", {c["slug"] for c in candidats})):
+        for dossier in parent.iterdir():
+            if dossier.is_dir() and dossier.name not in slugs_valides:
+                shutil.rmtree(dossier)
+                orphelines.append(f"{parent.name}/{dossier.name}")
+
     # ── SEO : domaine, sitemap, robots ────────────────────────────────────────
     (WEB / "CNAME").write_text("levraivote.fr\n", encoding="utf-8")
 
@@ -2136,6 +2151,9 @@ def generer(base):
     print(f"Site généré : accueil + {len(candidats)} fiches + comparer/methode "
           f"(pages thème retirées). {len(votes_cles)} votes clés. Comparateur : vue unique. "
           f"Sitemap : {len(chemins)} URLs.")
+    if orphelines:
+        print(f"Pages orphelines supprimées ({len(orphelines)}) : "
+              + ", ".join(orphelines[:6]) + (" …" if len(orphelines) > 6 else ""))
 
 
 if __name__ == "__main__":
