@@ -93,7 +93,20 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .marque { font-family:'Spectral', Georgia, serif; font-weight:700; font-size:1.3rem;
   letter-spacing:-0.01em; color:var(--encre); text-decoration:none;
   display:flex; align-items:center; gap:0.45rem; }
+/* La rosace existe en deux déclinaisons (filaments marine sur fond clair,
+   filaments pâles sur fond sombre). On les charge toutes les deux et on
+   masque celle qui ne correspond pas au thème : une requête media seule ne
+   suivrait pas la bascule manuelle de theme.js. */
 .marque-logo { display:block; flex:none; }
+.marque-logo-sombre { display:none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .marque-logo-clair { display:none; }
+  :root:not([data-theme="light"]) .marque-logo-sombre { display:block; }
+}
+:root[data-theme="dark"] .marque-logo-clair { display:none; }
+:root[data-theme="dark"] .marque-logo-sombre { display:block; }
+:root[data-theme="light"] .marque-logo-clair { display:block; }
+:root[data-theme="light"] .marque-logo-sombre { display:none; }
 .entete-nav nav { display:flex; flex-wrap:wrap; align-items:center; gap:0.2rem 0.35rem; margin-left:auto; }
 .entete-nav nav a { text-decoration:none; color:var(--encre-douce); font-size:0.92rem;
   padding:0.35rem 0.6rem; border-radius:7px; }

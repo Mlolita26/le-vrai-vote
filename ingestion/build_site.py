@@ -546,6 +546,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 <meta name="description" content="{meta_description}">
 <meta name="google-site-verification" content="a0RhaqFTyMdeATANiYhspuJ6eGRp0UOoxpvsGYkBJxE" />
 <link rel="canonical" href="{canonical}">
+<link rel="icon" type="image/png" sizes="16x16" href="{r}assets/favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="{r}assets/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="{r}assets/favicon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="{r}assets/favicon-512.png">
@@ -566,7 +567,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 </head>
 <body>
 <header class="entete-nav">
-  <a class="marque" href="{r}./"><img src="{r}assets/favicon-192.png" alt="" width="32" height="32" class="marque-logo">Le Vrai Vote</a>
+  <a class="marque" href="{r}./"><img src="{r}assets/marque-clair.png" alt="" width="32" height="32" class="marque-logo marque-logo-clair"><img src="{r}assets/marque-sombre.png" alt="" width="32" height="32" class="marque-logo marque-logo-sombre">Le Vrai Vote</a>
   <nav aria-label="Navigation principale">{nav}</nav>
 </header>
 <main>

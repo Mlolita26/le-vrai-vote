@@ -8,6 +8,19 @@ out/
 *.sqlite3
 data/dumps/
 
+# Visualisations : images produites par les scripts du dossier. Volumineuses
+# (la pièce plastique fait à elle seule 69 Mo) et régénérables depuis la base.
+# Les sources de la marque, elles, sont suivies : visualisations/marque/.
+visualisations/*.png
+visualisations/graphe.json
+visualisations/*.ancrages.json
+visualisations/carousel/
+visualisations/carousel_portrait/
+visualisations/post_insta/
+
+# Cache de déploiement du worker Cloudflare
+worker/.wrangler/
+
 # Environnements Python
 .venv/
 __pycache__/
