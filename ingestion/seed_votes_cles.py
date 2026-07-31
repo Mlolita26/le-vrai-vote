@@ -1,5 +1,5 @@
 """Couche éditoriale : thématiques et votes clés, selon la grille publiée
-(docs/grille-selection.md) et la sélection validée le 23/07/2026
+(connaissance/07-choisir-un-vote-cle.md) et la sélection validée le 23/07/2026
 (coffre : notes_projet/PROPOSITION_VOTES_CLES.md).
 
 Règles appliquées :

@@ -6,7 +6,7 @@ Ce fichier oriente tout travail automatisé sur le dépôt. Lis-le entièrement 
 
 Une plateforme web de transparence pour la présidentielle française de 2027. Elle affiche, par candidat, ses votes réels au Parlement, sa présence, son parcours et un volet judiciaire, à partir de données publiques officielles. Objectif : aider les citoyens à décider sur des faits vérifiables, pas sur des promesses.
 
-Consulte `README.md` pour la vision et `docs/` pour le détail (méthode, arborescence, modèle de données, acquisition, stack).
+Consulte `README.md` pour la vision et **`connaissance/00-index.md`** pour tout le reste : ce dossier rassemble la documentation du projet (sources, pipeline, modèle de données, règles éditoriales, contrôles qualité, journal des problèmes rencontrés). Sa table « par où entrer » indique quoi lire selon la tâche.
 
 ## Règles absolues (ne jamais transgresser)
 
@@ -22,9 +22,9 @@ Ce projet manipule des données sur des personnes réelles dans un contexte éle
 
 5. **Volet judiciaire : manuel et prudent.** Aucune automatisation. Distinguer condamnation définitive et procédure en cours. Toute procédure en cours porte la mention de présomption d'innocence. Ne pas croiser automatiquement des bases judiciaires (les décisions en open data sont pseudonymisées — ce croisement est illégal et techniquement bloqué par conception).
 
-6. **Affichage à trois états.** Pour chaque candidat et chaque vote clé, calculer et afficher : *position connue* / *non concerné* (pas en poste à la date du scrutin) / *indisponible* (n'a jamais été parlementaire). Ne jamais laisser une case vide et ambiguë.
+6. **Affichage à quatre états.** Pour chaque candidat et chaque vote clé, calculer et afficher : *position connue* / *non concerné* (pas en poste à la date du scrutin) / *indisponible* (n'a jamais été parlementaire) / *à importer* (source pas encore collectée). Ne jamais laisser une case vide et ambiguë. Ces états sont calculés par la vue SQL `couverture`, pas en Python : voir `connaissance/10-etats-daffichage.md`.
 
-7. **Décrire le texte voté, pas l'intention.** Une description de vote clé porte sur le texte tel qu'il a été voté ce jour-là : ni le projet initial, ni l'exposé des motifs de l'amendement, ni la loi finale. Lire le texte adopté (« T.A. n° … ») ou le dispositif de l'amendement, jamais le dossier de presse. **Avant d'ajouter ou de modifier un vote clé, lire `docs/verification-editoriale.md`** : l'audit du 30 juillet 2026 a trouvé une erreur de fond dans 71 des 165 descriptions, et ce document liste les pièges avec les cas réels.
+7. **Décrire le texte voté, pas l'intention.** Une description de vote clé porte sur le texte tel qu'il a été voté ce jour-là : ni le projet initial, ni l'exposé des motifs de l'amendement, ni la loi finale. Lire le texte adopté (« T.A. n° … ») ou le dispositif de l'amendement, jamais le dossier de presse. **Avant d'ajouter ou de modifier un vote clé, lire `connaissance/08-rediger-et-verifier-un-vote.md`** : l'audit du 30 juillet 2026 a trouvé une erreur de fond dans 71 des 165 descriptions, et ce document liste les pièges avec les cas réels.
 
 ## Conventions de code
 
@@ -33,7 +33,7 @@ Ce projet manipule des données sur des personnes réelles dans un contexte éle
 - Les libellés d'état sont centralisés (une seule source de vérité pour « pour / contre / abstention / absent / non concerné / indisponible »).
 - L'information n'est jamais codée par la seule couleur (accessibilité RGAA) : toujours un texte dans le badge.
 - Mobile-first : la majorité du trafic viendra de liens partagés sur mobile. Tester d'abord en ~380 px de large.
-- URLs lisibles et stables : `/candidats/{slug}`, `/themes/{slug}`, `/votes/{slug}`, `/comparer/{a}-vs-{b}`.
+- URLs lisibles et stables : `/candidats/{slug}`, `/votes/{slug}`, `/comparer/`, `/communaute/`, `/methode/`. Les pages par thème ont été retirées en juillet 2026 (le filtrage par thème vit dans le comparateur et les fiches) : leurs fonctions de génération subsistent en code mort, signalé comme tel.
 
 ## Garde-fous techniques
 
@@ -43,15 +43,15 @@ Ce projet manipule des données sur des personnes réelles dans un contexte éle
 - **Choix des scrutins du Parlement européen** (`VOTES_CLES_PE` dans `ingestion/pe/import_votes_cles_pe.py`) : avant d'ajouter un identifiant, vérifier dans `votes.csv` de l'export HowTheyVote que `display_title` correspond bien au sujet **et** que `is_main` vaut `True`. Deux votes clés ont longtemps pointé sur des lignes `is_main=False`, dont un amendement sur la Libye affiché comme un vote sur les logiciels espions.
 - **Un rapport de recherche n'est pas une source.** Les chiffres, citations et unités issus d'une recherche préalable doivent être relus sur le document primaire avant publication : deux erreurs de l'audit de juillet 2026 venaient de rapports détaillés mais inexacts sur un détail.
 
-## Ce qui reste à faire (voir README pour l'état complet)
+## Où en est le projet (voir README pour l'état complet)
 
-- Finaliser la grille de sélection des votes clés (critères objectifs, publiés).
-- Implémenter le pipeline de collecte (commencer par l'Assemblée nationale).
-- Brancher le front sur une vraie API alimentée par la base.
+Le site est **en production sur `levraivote.fr`** : 165 votes clés, 15 thèmes, 25 candidats, l'Assemblée, le Sénat et le Parlement européen importés, la grille de sélection appliquée et publiée, le comparateur et la fonctionnalité Communauté en service.
 
-## Contexte local de ce dépôt (ajouté le 23 juillet 2026)
+## Contexte local de ce dépôt (ajouté le 23 juillet 2026, revu le 31 juillet 2026)
 
-Ce dépôt contient le code : `db/` (schéma SQLite), `ingestion/` (pipelines Python par source), `web/` (front Next.js statique), `docs/` et `prototype/` (références). Architecture retenue : SQLite locale → export JSON → site 100 % statique sur GitHub Pages ; migration PostgreSQL possible plus tard.
+Ce dépôt contient le code : `db/` (schéma SQLite), `ingestion/` (pipelines Python par source et générateur du site), `web/` (le site publié), `connaissance/` (la documentation), `visualisations/` (cartes et posts), `worker/` (API Communauté) et `prototype/` (référence de design).
+
+Architecture réelle, à ne pas confondre avec ce qui avait été envisagé au départ : SQLite locale, puis `ingestion/build_site.py` qui écrit du **HTML, CSS et JavaScript vanille** dans `web/`, publié tel quel par GitHub Pages. Il n'y a **ni Next.js, ni React, ni étape de compilation, ni serveur applicatif, ni base de données en production**. La génération tourne en local et `web/` est commité : un commit qui modifie un script d'ingestion sans régénérer `web/` ne change rien au site en ligne.
 
 Les données brutes déjà téléchargées, les tableurs d'analyse hérités et la feuille de route (`FEUILLE_DE_ROUTE.md`, `ETAT_DES_LIEUX.md`) vivent dans le coffre OneDrive : `C:\Users\mlolita\OneDrive - CGIAR\Documents\presidentielles`. Pièges connus : les CSV Civix AN de ce coffre sont des échantillons de 100 lignes (jamais les importer en base) ; les captures Datan.fr servent au recoupement, pas de source ; le MEP ID de Bardella est 131580 (pas 197819) ; HowTheyVote ne couvre pas les votes de Mélenchon.
 
