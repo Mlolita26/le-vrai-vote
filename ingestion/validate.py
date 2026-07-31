@@ -18,12 +18,42 @@ RACINE = Path(__file__).resolve().parents[1]
 SCHEMA = RACINE / "db" / "schema.sql"
 BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 
+# La console Windows utilise par défaut une page de code qui ne sait pas écrire
+# les caractères typographiques employés dans les libellés de contrôle. Sans
+# cette reconfiguration, le script s'interrompait sur une UnicodeEncodeError
+# AVANT d'afficher ses résultats, ce qui donnait l'illusion d'un plantage alors
+# que les données allaient bien.
+for _flux in (sys.stdout, sys.stderr):
+    try:
+        _flux.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
+# ── Effectifs attendus ──────────────────────────────────────────────────────
+# Ces nombres décrivent l'état éditorial courant : ils changent à chaque ajout
+# de vote clé ou de justification, et doivent être mis à jour ici même. Les
+# regrouper évite ce qui s'est produit en juillet 2026 : sept contrôles en échec
+# pour des compteurs périmés, ce qui rendait le script inutilisable puisqu'on ne
+# distinguait plus un vrai défaut d'un chiffre à rafraîchir.
+ATTENDU = {
+    "personnes": 26,
+    "candidatures_declarees": 18,
+    "candidatures_primaire": 6,
+    "thematiques": 15,
+    "votes_cles": 165,
+    "nuances": 18,
+    "justifications_groupes": 129,
+    "groupes_reference": 50,
+    "axes_et_sous_sections": 62,  # votes portant un axe budget OU une sous-section
+    "axe_capital_min": 5,         # base de la barre de posture, seuil plancher
+}
+
 ECHECS = []
 
 
 def verifier(nom: str, condition: bool, detail: str = ""):
-    statut = "OK " if condition else "ÉCHEC"
-    print(f"  [{statut}] {nom}" + (f" — {detail}" if detail and not condition else ""))
+    statut = "OK " if condition else "ECHEC"
+    print(f"  [{statut}] {nom}" + (f" : {detail}" if detail and not condition else ""))
     if not condition:
         ECHECS.append(nom)
 
@@ -93,11 +123,13 @@ def controles_base_reelle(base: Path):
              cur.execute("PRAGMA foreign_key_check").fetchall() == [])
     verifier("aucune donnée fictive TEST dans la base réelle",
              cur.execute("SELECT COUNT(*) FROM personnes WHERE nom LIKE 'TEST-%'").fetchone()[0] == 0)
-    verifier("26 personnes en base (25 candidats recensés + Bardella sans candidature)",
-             cur.execute("SELECT COUNT(*) FROM personnes").fetchone()[0] == 26)
-    verifier("candidatures : 18 déclarées + 7 en primaire, toutes sourcées",
-             cur.execute("SELECT COUNT(*) FROM candidatures WHERE statut='declaree'").fetchone()[0] == 18
-             and cur.execute("SELECT COUNT(*) FROM candidatures WHERE statut='primaire'").fetchone()[0] == 7)
+    verifier(f"{ATTENDU['personnes']} personnes en base (candidats recensés, plus les personnes gardées à titre historique)",
+             cur.execute("SELECT COUNT(*) FROM personnes").fetchone()[0] == ATTENDU["personnes"])
+    verifier(f"candidatures : {ATTENDU['candidatures_declarees']} déclarées + {ATTENDU['candidatures_primaire']} en primaire, toutes sourcées",
+             cur.execute("SELECT COUNT(*) FROM candidatures WHERE statut='declaree'").fetchone()[0]
+             == ATTENDU["candidatures_declarees"]
+             and cur.execute("SELECT COUNT(*) FROM candidatures WHERE statut='primaire'").fetchone()[0]
+             == ATTENDU["candidatures_primaire"])
     verifier("Bardella : aucune candidature (Marine Le Pen déclarée pour le RN)",
              cur.execute("SELECT COUNT(*) FROM candidatures c JOIN personnes p ON p.id = c.personne_id "
                          "WHERE p.slug='jordan-bardella'").fetchone()[0] == 0)
@@ -254,8 +286,10 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
     # Couche éditoriale : votes clés (sélection validée le 23/07/2026).
     n_vc = cur.execute("SELECT COUNT(*) FROM votes_cles").fetchone()[0]
     if n_vc:
-        verifier("115 votes clés répartis sur 15 thématiques",
-                 n_vc == 115 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == 15)
+        verifier(f"{ATTENDU['votes_cles']} votes clés répartis sur {ATTENDU['thematiques']} thématiques",
+                 n_vc == ATTENDU["votes_cles"]
+                 and cur.execute("SELECT COUNT(*) FROM thematiques").fetchone()[0] == ATTENDU["thematiques"],
+                 f"{n_vc} votes clés en base")
         verifier("chaque vote clé a un titre, un résumé et une source non vides",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE titre='' OR resume='' "
                              "OR source_resume=''").fetchone()[0] == 0)
@@ -287,8 +321,8 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
         # Nuances : chacune sourcée et adossée à une position réellement en base —
         # soit un vote PERSONNEL, soit (au PE surtout) la position de la DÉLÉGATION
         # du parti rattachée au candidat (même garde-fou que seed_nuances.py).
-        verifier("21 nuances, toutes adossées à une position (perso ou délégation)",
-                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == 21
+        verifier(f"{ATTENDU['nuances']} justifications individuelles, toutes adossées à une position (perso ou délégation)",
+                 cur.execute("SELECT COUNT(*) FROM nuances").fetchone()[0] == ATTENDU["nuances"]
                  and cur.execute(
                      "SELECT COUNT(*) FROM nuances n WHERE NOT ("
                      "  EXISTS (SELECT 1 FROM positions_vote pv WHERE pv.personne_id = n.personne_id "
@@ -303,16 +337,18 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  cur.execute("SELECT COUNT(*) FROM nuances n JOIN sources s ON s.id = n.source_id "
                              "WHERE s.url = ''").fetchone()[0] == 0)
         # Positions des groupes parlementaires sur les votes clés.
-        verifier("positions de groupes extraites pour les 115 scrutins des votes clés",
+        verifier("positions de groupes extraites pour chaque scrutin de vote clé",
                  cur.execute("SELECT COUNT(DISTINCT scrutin_id) FROM positions_groupes"
-                             ).fetchone()[0] == 115)
+                             ).fetchone()[0] == n_vc,
+                 "relancer ingestion/assemblee/parse_positions_groupes.py après un ajout de vote clé")
         verifier("aucun décompte de groupe négatif",
                  cur.execute("SELECT COUNT(*) FROM positions_groupes WHERE pour < 0 OR contre < 0 "
                              "OR abstention < 0 OR non_votant < 0").fetchone()[0] == 0)
         # Justifications de groupe (éditorial) : chacune adossée à un décompte de
         # groupe réel pour ce scrutin, et sourcée avec une URL non vide.
-        verifier("124 justifications de groupe, toutes adossées à un décompte et sourcées",
-                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0] == 124
+        verifier(f"{ATTENDU['justifications_groupes']} justifications de groupe, toutes adossées à un décompte et sourcées",
+                 cur.execute("SELECT COUNT(*) FROM justifications_groupes").fetchone()[0]
+                 == ATTENDU["justifications_groupes"]
                  and cur.execute(
                      "SELECT COUNT(*) FROM justifications_groupes j WHERE NOT EXISTS ("
                      "SELECT 1 FROM positions_groupes pg WHERE pg.scrutin_id = j.scrutin_id "
@@ -320,18 +356,32 @@ def controles_scrutins_an(base: Path, dossier_dumps: Path):
                  and cur.execute("SELECT COUNT(*) FROM justifications_groupes j "
                                  "JOIN sources s ON s.id = j.source_id WHERE s.url = ''"
                                  ).fetchone()[0] == 0)
-        verifier("50 rattachements candidat → groupe, justifiés et sourcés",
+        verifier(f"{ATTENDU['groupes_reference']} rattachements candidat vers groupe, justifiés et sourcés",
                  cur.execute("SELECT COUNT(*) FROM groupes_reference WHERE detail != ''"
-                             ).fetchone()[0] == 50)
+                             ).fetchone()[0] == ATTENDU["groupes_reference"])
         # Thème Budget : axes de lecture (chaque vote d'axe a un sens_axe cohérent).
-        verifier("7 amendements budget rattachés à un axe, chacun avec un sens d'axe",
+        # Le champ axe_budget porte DEUX usages : les axes du thème Budget (qui ont
+        # un sens_axe et alimentent la barre de posture) et les sous-sections d'un
+        # autre thème (sans sens_axe, simple regroupement). Le contrôle les sépare :
+        # tester « sens_axe NOT IN (...) » ne suffit pas, car en SQL une comparaison
+        # avec NULL ne vaut pas VRAI et laissait donc passer les valeurs manquantes.
+        AXES_AVEC_POSTURE = ("capital", "pouvoir-achat", "ecologie-fiscale", "ame")
+        marques = ",".join(f"'{a}'" for a in AXES_AVEC_POSTURE)
+        verifier(f"{ATTENDU['axes_et_sous_sections']} votes clés portent un axe budget ou une sous-section",
                  cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget IS NOT NULL"
-                             ).fetchone()[0] == 7
-                 and cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget IS NOT NULL "
-                                 "AND sens_axe NOT IN ('pour','contre')").fetchone()[0] == 0)
-        verifier("axe « capital » : 5 amendements (base de la barre de posture)",
-                 cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget='capital'"
-                             ).fetchone()[0] == 5)
+                             ).fetchone()[0] == ATTENDU["axes_et_sous_sections"])
+        verifier("chaque vote d'un axe budget porte un sens d'axe (pour / contre)",
+                 cur.execute(f"SELECT COUNT(*) FROM votes_cles WHERE axe_budget IN ({marques}) "
+                             "AND (sens_axe IS NULL OR sens_axe NOT IN ('pour','contre'))"
+                             ).fetchone()[0] == 0)
+        verifier("aucune sous-section de thème ne porte un sens d'axe (réservé au Budget)",
+                 cur.execute(f"SELECT COUNT(*) FROM votes_cles WHERE axe_budget IS NOT NULL "
+                             f"AND axe_budget NOT IN ({marques}) AND sens_axe IS NOT NULL"
+                             ).fetchone()[0] == 0)
+        n_capital = cur.execute("SELECT COUNT(*) FROM votes_cles WHERE axe_budget='capital'"
+                                ).fetchone()[0]
+        verifier(f"axe « capital » : au moins {ATTENDU['axe_capital_min']} votes (base de la barre de posture)",
+                 n_capital >= ATTENDU["axe_capital_min"], f"{n_capital} vote(s)")
         # Résultat officiel (sort + décompte) présent pour chaque vote clé.
         verifier("chaque vote clé AN/Congrès/Sénat porte le résultat officiel (adopté/rejeté + décompte)",
                  cur.execute("SELECT COUNT(*) FROM votes_cles vc JOIN scrutins s ON s.id = vc.scrutin_id "
