@@ -187,6 +187,15 @@ def main():
         img.save(SORTIE / nom, "PNG", optimize=True)
         print(f"  {nom:24} {img.size[0]}×{img.size[1]}")
 
+    # favicon.ico à la RACINE du site, pas dans assets/ : c'est le chemin que
+    # les navigateurs interrogent d'eux-mêmes pour les favoris et le domaine nu,
+    # sans lire le HTML. Il répondait 404 jusqu'ici.
+    ico = rasterise_symbole(clair, 48, boost=2.2, marge=0.05,
+                            fond=CREME, rayon_coins=0.16)
+    ico.save(SORTIE.parent / "favicon.ico", "ICO",
+             sizes=[(16, 16), (32, 32), (48, 48)])
+    print(f"  {'favicon.ico':24} 16 + 32 + 48 (racine du site)")
+
     # Logotype horizontal, fond transparent : utilisé par les visuels réseaux
     # sociaux (carousel.py, posts_insta.py), qui éclaircissent le marine.
     for nom, variante in (("logo.png", "fond-clair"),

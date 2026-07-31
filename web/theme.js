@@ -12,7 +12,7 @@
   try {
     var f = document.createElement('link');
     f.rel = 'stylesheet';
-    f.href = 'https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Libre+Franklin:wght@400;500;600;700&display=swap';
+    f.href = 'https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Libre+Franklin:wght@400;500;600;700&family=Archivo:wght@600;900&display=swap';
     document.head.appendChild(f);
   } catch (e) {}
 

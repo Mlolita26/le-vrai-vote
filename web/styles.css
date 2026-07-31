@@ -90,9 +90,21 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   border-bottom:1px solid var(--lisere);
   position:sticky; top:0; z-index:20; background:var(--fond);
 }
-.marque { font-family:'Spectral', Georgia, serif; font-weight:700; font-size:1.3rem;
-  letter-spacing:-0.01em; color:var(--encre); text-decoration:none;
-  display:flex; align-items:center; gap:0.45rem; }
+/* Logotype de l'en-tête, calé sur le fichier de la marque : Archivo, capitales,
+   « le vrai » en 600 très espacé au-dessus de « vote » en 900. Les proportions
+   viennent du SVG (corps 18/40, interlettrage 0,42 em / 0,14 em) ; seul le
+   corps de « le vrai » est relevé, la réduction fidèle tombant sous 9 px.
+   Les capitales sont posées par le CSS : le texte du document reste en
+   casse de phrase, donc l'énoncé vocal et le copier-coller aussi. */
+.marque { font-family:'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color:var(--encre); text-decoration:none;
+  display:flex; align-items:center; gap:0.55rem; }
+.marque-mot { display:flex; flex-direction:column; text-transform:uppercase;
+  line-height:1; }
+.marque-mot-le { font-size:0.62rem; font-weight:600; letter-spacing:0.42em;
+  color:var(--encre-douce); }
+.marque-mot-vote { font-size:1.2rem; font-weight:900; letter-spacing:0.14em;
+  margin-top:0.18em; }
 /* La rosace existe en deux déclinaisons (filaments marine sur fond clair,
    filaments pâles sur fond sombre). On les charge toutes les deux et on
    masque celle qui ne correspond pas au thème : une requête media seule ne

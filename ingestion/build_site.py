@@ -1,6 +1,6 @@
 """Génère le site statique complet dans web/ à partir de la base.
 
-Arborescence (docs/arborescence.md) :
+Arborescence (connaissance/02-architecture-et-fichiers.md) :
   /                    accueil
   /candidats/          liste, recherche
   /candidats/{slug}/   fiche candidat
@@ -28,6 +28,12 @@ RACINE = Path(__file__).resolve().parents[1]
 BASE_DEFAUT = RACINE / "data" / "levraivote.sqlite"
 WEB = RACINE / "web"
 BASE_URL = "https://levraivote.fr"
+# Les navigateurs rangent les favicons dans un cache à part, indexé par URL et
+# insensible au rechargement forcé : après un changement d'identité, l'ancienne
+# icône reste affichée dans l'onglet et les favoris. Les plateformes sociales
+# font de même avec l'image de partage. Incrémenter ce numéro à chaque nouvelle
+# version de la marque force la relecture.
+VERSION_ICONES = 2
 DESCRIPTION_SITE = ("Le Vrai Vote : les votes réels des candidats à la présidentielle 2027 "
                      "au Parlement, à partir de données publiques officielles.")
 
@@ -534,7 +540,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
         f'{" aria-current=\"page\"" if libelle == actif else ""}>{libelle}</a>'
         for c, libelle in nav_items)
     titre_page = f"{e(titre)} · Le Vrai Vote"
-    og_image = f"{BASE_URL}/{r.replace('../', '')}assets/og-image.png" if r else f"{BASE_URL}/assets/og-image.png"
+    og_image = f"{BASE_URL}/assets/og-image.png?v={VERSION_ICONES}"
     canonical = f"{BASE_URL}/{chemin}"
     meta_description = e(description or DESCRIPTION_SITE)
     return f"""<!DOCTYPE html>
@@ -546,11 +552,12 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 <meta name="description" content="{meta_description}">
 <meta name="google-site-verification" content="a0RhaqFTyMdeATANiYhspuJ6eGRp0UOoxpvsGYkBJxE" />
 <link rel="canonical" href="{canonical}">
-<link rel="icon" type="image/png" sizes="16x16" href="{r}assets/favicon-16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="{r}assets/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="{r}assets/favicon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="{r}assets/favicon-512.png">
-<link rel="apple-touch-icon" href="{r}assets/apple-touch-icon.png">
+<link rel="icon" href="{r}favicon.ico?v={VERSION_ICONES}" sizes="32x32">
+<link rel="icon" type="image/png" sizes="16x16" href="{r}assets/favicon-16.png?v={VERSION_ICONES}">
+<link rel="icon" type="image/png" sizes="32x32" href="{r}assets/favicon-32.png?v={VERSION_ICONES}">
+<link rel="icon" type="image/png" sizes="192x192" href="{r}assets/favicon-192.png?v={VERSION_ICONES}">
+<link rel="icon" type="image/png" sizes="512x512" href="{r}assets/favicon-512.png?v={VERSION_ICONES}">
+<link rel="apple-touch-icon" href="{r}assets/apple-touch-icon.png?v={VERSION_ICONES}">
 <meta property="og:title" content="{titre_page}">
 <meta property="og:type" content="website">
 <meta property="og:image" content="{og_image}">
@@ -567,7 +574,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 </head>
 <body>
 <header class="entete-nav">
-  <a class="marque" href="{r}./"><img src="{r}assets/marque-clair.png" alt="" width="32" height="32" class="marque-logo marque-logo-clair"><img src="{r}assets/marque-sombre.png" alt="" width="32" height="32" class="marque-logo marque-logo-sombre">Le Vrai Vote</a>
+  <a class="marque" href="{r}./"><img src="{r}assets/marque-clair.png" alt="" width="32" height="32" class="marque-logo marque-logo-clair"><img src="{r}assets/marque-sombre.png" alt="" width="32" height="32" class="marque-logo marque-logo-sombre"><span class="marque-mot"><span class="marque-mot-le">Le vrai</span> <span class="marque-mot-vote">Vote</span></span></a>
   <nav aria-label="Navigation principale">{nav}</nav>
 </header>
 <main>
