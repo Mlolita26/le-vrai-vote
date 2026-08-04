@@ -272,6 +272,17 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   color:var(--encre-douce); text-align:center; background:var(--faint);
 }
 .pied a { color:var(--accent); }
+/* Renvoi vers le compte Instagram. Pas de target="_blank" : aucun lien sortant
+   du site n'en pose, y compris les centaines de liens de sources. Le glyphe est
+   en currentColor, il suit donc le thème ; le libellé porte le nom du compte,
+   pour qu'on sache lequel on suit. Hauteur calée sur la cible tactile de 44 px. */
+.pied-suivre { margin:0 0 0.9rem; }
+.pied-suivre a { display:inline-flex; align-items:center; gap:0.45rem;
+  min-height:2.75rem; padding:0 1rem; border:1px solid var(--lisere);
+  border-radius:999px; background:var(--carte); font-weight:600;
+  text-decoration:none; }
+.pied-suivre a:hover { border-color:var(--accent); background:var(--fond); }
+.pied-icone { flex:none; }
 
 /* ============================================================
    Page d'accueil (refonte) — classes dédiées
