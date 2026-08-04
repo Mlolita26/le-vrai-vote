@@ -25,6 +25,7 @@
 <script src="../theme.js" defer></script>
 <script src="../config.js"></script>
 <script src="../communaute.js" defer></script>
+<script src="../recherche-votes.js" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "108e55dc9e4243dfbb640340cb4cde03"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
@@ -48,6 +49,7 @@ regroupement par position (comme sur la page d'un vote), plus lisible qu'un tabl
 </div>
 <p class="note-methode" id="note-mode"></p>
 <div class="filtres-themes filtres-cmp" id="filtres-cmp" role="group" aria-label="Filtrer la comparaison par thème" hidden></div>
+<div class="recherche-votes" hidden><label for="q-votes-comparer">Rechercher une loi par son intitulé ou son contenu</label><input id="q-votes-comparer" type="search" autocomplete="off" spellcheck="false" placeholder="Ex. nucléaire, retraites, logement…" data-recherche-votes data-cartes=".cmp-vote" data-groupes=".cmp-axe, .cmp-theme" data-reset-filtres=".filtres-cmp"><p class="recherche-compte" role="status" aria-live="polite"></p></div>
 <div id="resultat"></div>
 <script>
 fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
@@ -188,7 +190,10 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         chiffres.innerHTML = t ? texte(t.comp, t.acc) : texte(totComp, totAcc);
       }
     }
-    if (scroller) {
+    // Pas de saut pendant une recherche par titre : le champ remet les puces
+    // sur « tous » à chaque frappe, et repositionner la page à chaque lettre
+    // serait insupportable.
+    if (scroller && !(window.LVVRechercheVotes && window.LVVRechercheVotes.active())) {
       var ent = document.querySelector(".entete-nav");
       var dec = (ent ? ent.offsetHeight : 56) + 8;
       var y = boxThemes.getBoundingClientRect().top + window.pageYOffset - dec;
@@ -658,6 +663,9 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     }
     if (slugsBruts.length === 2) rendreDeux(slugsBruts[0], slugsBruts[1]);
     else rendreMulti(slugsBruts);
+    // Les cartes viennent d'être recréées : une recherche en cours doit être
+    // réappliquée, sinon changer de candidat rétablit la liste entière.
+    if (window.LVVRechercheVotes) window.LVVRechercheVotes.appliquer();
   }
   // Changer de candidat réinitialise le filtre thème (nouvelle comparaison) ;
   // basculer comparable/tous le conserve.

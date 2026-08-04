@@ -570,6 +570,7 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 <script src="{r}theme.js" defer></script>
 <script src="{r}config.js"></script>
 <script src="{r}communaute.js" defer></script>
+<script src="{r}recherche-votes.js" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "108e55dc9e4243dfbb640340cb4cde03"}}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
@@ -587,6 +588,26 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 </body>
 </html>
 """
+
+
+def recherche_votes_html(id_champ, sel_cartes, sel_groupes, sel_filtres):
+    """Champ de recherche d'une loi dans une liste de votes clés.
+
+    Livré avec `hidden` : c'est `web/recherche-votes.js` qui le révèle. Sans
+    JavaScript, mieux vaut aucun champ qu'un champ inerte où l'on tape sans
+    effet. `sel_cartes` doit désigner UNE carte (un seul sélecteur, pas de
+    virgule) ; le script y accole `:not(.hors-recherche)` pour compter ce qui
+    reste dans chaque groupe.
+    """
+    return (
+        f'<div class="recherche-votes" hidden>'
+        f'<label for="{id_champ}">Rechercher une loi par son intitulé ou son contenu</label>'
+        f'<input id="{id_champ}" type="search" autocomplete="off" spellcheck="false"'
+        f' placeholder="Ex. nucléaire, retraites, logement…"'
+        f' data-recherche-votes data-cartes="{e(sel_cartes)}"'
+        f' data-groupes="{e(sel_groupes)}" data-reset-filtres="{e(sel_filtres)}">'
+        f'<p class="recherche-compte" role="status" aria-live="polite"></p>'
+        f'</div>')
 
 
 def badges_positions(d):
@@ -1092,7 +1113,12 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
       });
       // Remonter tout en haut de la page : sinon, après un clic en bas de page,
       // la liste raccourcie laisse l'utilisateur bloqué en bas (peu commode).
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Sauf pendant une recherche par titre : le champ remet les puces sur
+      // « tous » à chaque frappe, et sauter en haut à chaque lettre serait
+      // insupportable. L'utilisateur est déjà en haut de la liste, de toute façon.
+      if (!(window.LVVRechercheVotes && window.LVVRechercheVotes.active())) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     });
   });
   // Sous-filtre à l'intérieur d'un thème (ex. Écologie et agriculture :
@@ -1128,7 +1154,9 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             f'<details class="votes-replies"><summary>Voir la liste des lois clés '
             f'(toutes « indisponible » pour ce candidat)</summary>{note_votes}{votes_html}</details>')
     else:
-        section_votes = (f'<h2 id="votes-cles">Votes clés par thème</h2>{note_votes}{filtre_html}'
+        section_votes = (f'<h2 id="votes-cles">Votes clés par thème</h2>{note_votes}'
+                         f'{recherche_votes_html("q-votes-" + p["slug"], ".vote-carte", ".axe-bloc, .theme-bloc", ".filtres-themes, .filtres-souscat")}'
+                         f'{filtre_html}'
                          f'<div id="votes-themes">{votes_html}</div>{js_filtre}')
     sommaire_items = [("#votes-cles", "Votes clés")]
     if bloc_an:
@@ -1337,6 +1365,7 @@ regroupement par position (comme sur la page d'un vote), plus lisible qu'un tabl
 </div>
 <p class="note-methode" id="note-mode"></p>
 <div class="filtres-themes filtres-cmp" id="filtres-cmp" role="group" aria-label="Filtrer la comparaison par thème" hidden></div>
+__RECHERCHE__
 <div id="resultat"></div>
 <script>
 fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) {
@@ -1477,7 +1506,10 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
         chiffres.innerHTML = t ? texte(t.comp, t.acc) : texte(totComp, totAcc);
       }
     }
-    if (scroller) {
+    // Pas de saut pendant une recherche par titre : le champ remet les puces
+    // sur « tous » à chaque frappe, et repositionner la page à chaque lettre
+    // serait insupportable.
+    if (scroller && !(window.LVVRechercheVotes && window.LVVRechercheVotes.active())) {
       var ent = document.querySelector(".entete-nav");
       var dec = (ent ? ent.offsetHeight : 56) + 8;
       var y = boxThemes.getBoundingClientRect().top + window.pageYOffset - dec;
@@ -1947,6 +1979,9 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     }
     if (slugsBruts.length === 2) rendreDeux(slugsBruts[0], slugsBruts[1]);
     else rendreMulti(slugsBruts);
+    // Les cartes viennent d'être recréées : une recherche en cours doit être
+    // réappliquée, sinon changer de candidat rétablit la liste entière.
+    if (window.LVVRechercheVotes) window.LVVRechercheVotes.appliquer();
   }
   // Changer de candidat réinitialise le filtre thème (nouvelle comparaison) ;
   // basculer comparable/tous le conserve.
@@ -1954,6 +1989,10 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
   rendre();
 });
 </script>"""
+    # Le corps du comparateur est une chaîne simple (accolades JS littérales),
+    # d'où cette substitution plutôt qu'une f-string.
+    contenu = contenu.replace("__RECHERCHE__", recherche_votes_html(
+        "q-votes-comparer", ".cmp-vote", ".cmp-axe, .cmp-theme", ".filtres-cmp"))
     return page("Comparer", "Comparer", contenu, 1, meta, chemin="comparer/",
                 description="Comparez les votes réels de plusieurs candidats à la présidentielle "
                             "2027, thème par thème, à partir de leurs scrutins officiels.")

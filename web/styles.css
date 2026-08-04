@@ -271,6 +271,28 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
   border-top:1px solid var(--lisere); font-size:0.82rem;
   color:var(--encre-douce); text-align:center; background:var(--faint);
 }
+/* Recherche d'une loi dans une liste de votes clés (fiche candidat,
+   comparateur). Voir web/recherche-votes.js. */
+.recherche-votes { margin:0 0 1rem; }
+.recherche-votes label { display:block; font-size:0.9rem; color:var(--encre-douce);
+  margin-bottom:0.3rem; }
+.recherche-votes input {
+  width:100%; max-width:26rem; min-height:2.75rem; padding:0 0.75rem;
+  font-family:inherit; font-size:1rem; color:var(--encre);
+  background:var(--carte); border:1px solid var(--lisere); border-radius:9px;
+}
+.recherche-votes input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+.recherche-compte { margin:0.45rem 0 0; font-size:0.85rem; color:var(--encre-douce);
+  min-height:1.2em; }
+/* Écarté par la recherche. `!important` est indispensable et non un raccourci :
+   `.vote-carte { display:grid }` et sa variante mobile `display:block` ont la
+   même spécificité mais sont déclarées plus bas, donc l'emportaient — les
+   cartes ne se masquaient pas (constaté au test, seuls les blocs de thème
+   disparaissaient). Rien ne doit jamais rendre visible une carte écartée :
+   forcer est ici le comportement voulu, y compris face aux styles inline que
+   posent les filtres à puces. */
+.hors-recherche { display:none !important; }
+
 .pied a { color:var(--accent); }
 /* Renvoi vers le compte Instagram. Pas de target="_blank" : aucun lien sortant
    du site n'en pose, y compris les centaines de liens de sources. Le glyphe est
