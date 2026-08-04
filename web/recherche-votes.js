@@ -63,9 +63,61 @@
     });
   }
 
+  /* Rang d'une carte : 0 quand tous les mots cherchés figurent dans le titre,
+     puis un cran par mot absent du titre. Une loi dont l'intitulé porte le mot
+     passe donc avant celle qui ne le mentionne que dans son résumé. */
+  function rangDe(carte, mots, selTitre) {
+    if (!mots.length || !selTitre) return 0;
+    var t = carte.querySelector(selTitre);
+    var titre = t ? sansAccent(t.textContent) : "";
+    var dedans = 0;
+    mots.forEach(function (m) { if (titre.indexOf(m) >= 0) dedans++; });
+    return mots.length - dedans;
+  }
+
+  /* Ordre d'origine d'un conteneur, mémorisé au premier passage : le tri part
+     toujours de lui, jamais du résultat du tri précédent. Sans cela l'ordre
+     dériverait de frappe en frappe et ne serait plus restituable. */
+  function ordreOriginal(parent, elements) {
+    if (!parent._lvvOrdre) parent._lvvOrdre = elements.slice();
+    return parent._lvvOrdre.filter(function (n) { return n.parentNode === parent; });
+  }
+
+  /* Repose `elements` dans cet ordre, à l'emplacement qu'occupait le premier.
+     L'ancre évite de les envoyer à la fin du conteneur : un bloc de thème
+     commence par son titre, un groupe par son intitulé de sous-catégorie. */
+  function placer(parent, elements) {
+    if (elements.length < 2) return;
+    var ancre = document.createComment("lvv-ordre");
+    parent.insertBefore(ancre, elements[0]);
+    elements.forEach(function (n) { parent.insertBefore(n, ancre); });
+    parent.removeChild(ancre);
+  }
+
+  function trier(parent, elements, rang) {
+    var base = ordreOriginal(parent, elements);
+    // Array.prototype.sort est stable : à rang égal, l'ordre éditorial d'origine
+    // (par thème puis par date) est conservé.
+    placer(parent, base.slice().sort(function (a, b) { return rang(a) - rang(b); }));
+  }
+
+  /* Regroupe des éléments par conteneur parent, pour ne trier qu'entre frères. */
+  function parParent(elements) {
+    var paires = [];
+    elements.forEach(function (n) {
+      var p = n.parentNode;
+      if (!p) return;
+      var entree = paires.filter(function (x) { return x.parent === p; })[0];
+      if (!entree) { entree = { parent: p, enfants: [] }; paires.push(entree); }
+      entree.enfants.push(n);
+    });
+    return paires;
+  }
+
   function appliquerA(champ) {
     var mots = sansAccent(champ.value).split(/\s+/).filter(Boolean);
     var selCarte = champ.dataset.cartes;
+    var selTitre = champ.dataset.titre;
     if (!selCarte) return;
     if (mots.length) remetFiltresAZero(champ);
 
@@ -77,17 +129,35 @@
       // précis que « loi » ou « nucleaire ».
       var ok = mots.every(function (m) { return t.indexOf(m) >= 0; });
       c.classList.toggle("hors-recherche", !ok);
+      c._lvvRang = ok ? rangDe(c, mots, selTitre) : Infinity;
       if (ok) trouves++;
     });
 
+    // Titres d'abord, à l'intérieur de chaque liste.
+    parParent(cartes).forEach(function (g) {
+      trier(g.parent, g.enfants, function (c) { return c._lvvRang; });
+    });
+
     // Un conteneur vidé de toutes ses cartes se masque aussi : sinon il ne
-    // reste que son titre de section, ce qui se lit comme un résultat.
+    // reste que son titre de section, ce qui se lit comme un résultat. Les
+    // conteneurs restants remontent selon leur meilleure carte : sans cela,
+    // un titre trouvé dans un thème tardif resterait sous les résultats de
+    // résumé d'un thème antérieur, et le classement ne se verrait pas.
     (champ.dataset.groupes || "").split(",").forEach(function (sel) {
       sel = sel.trim();
       if (!sel) return;
-      document.querySelectorAll(sel).forEach(function (g) {
-        var restants = g.querySelectorAll(selCarte + ":not(.hors-recherche)").length;
-        g.classList.toggle("hors-recherche", mots.length > 0 && restants === 0);
+      var groupes = [].slice.call(document.querySelectorAll(sel));
+      groupes.forEach(function (g) {
+        var restants = g.querySelectorAll(selCarte + ":not(.hors-recherche)");
+        g.classList.toggle("hors-recherche", mots.length > 0 && restants.length === 0);
+        var meilleur = Infinity;
+        [].forEach.call(restants, function (c) {
+          if (c._lvvRang < meilleur) meilleur = c._lvvRang;
+        });
+        g._lvvRang = mots.length ? meilleur : 0;
+      });
+      parParent(groupes).forEach(function (x) {
+        trier(x.parent, x.enfants, function (g) { return g._lvvRang; });
       });
     });
 
@@ -103,11 +173,20 @@
       });
     });
 
+    // Recherche infructueuse : on affiche l'explication et l'accès à la
+    // proposition de loi. Le terme cherché est réinjecté par textContent, pas
+    // par innerHTML : c'est une saisie libre, elle ne doit jamais être
+    // interprétée comme du balisage.
+    var vide = champ.parentNode.querySelector(".recherche-vide");
+    if (vide) vide.hidden = !(mots.length && trouves === 0);
+
     var compte = champ.parentNode.querySelector(".recherche-compte");
     if (compte) {
+      // Le conseil (« essayez un mot plus court ») a migré dans le bloc
+      // .recherche-vide : le répéter ici le ferait annoncer deux fois.
       compte.textContent = !mots.length ? ""
         : trouves === 0
-          ? "Aucun vote clé ne correspond. Essayez un mot plus court, ou un thème."
+          ? "Aucun vote clé ne correspond à « " + champ.value.trim() + " »."
           : trouves + (trouves > 1 ? " votes clés trouvés" : " vote clé trouvé")
             + " sur " + cartes.length + ".";
     }

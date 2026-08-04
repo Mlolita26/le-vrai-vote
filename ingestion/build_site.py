@@ -590,23 +590,42 @@ def page(titre, actif, contenu, profondeur, meta, chemin="", description=None):
 """
 
 
-def recherche_votes_html(id_champ, sel_cartes, sel_groupes, sel_filtres):
+def recherche_votes_html(id_champ, sel_cartes, sel_titre, sel_groupes, sel_filtres, r=""):
     """Champ de recherche d'une loi dans une liste de votes clés.
 
     Livré avec `hidden` : c'est `web/recherche-votes.js` qui le révèle. Sans
     JavaScript, mieux vaut aucun champ qu'un champ inerte où l'on tape sans
     effet. `sel_cartes` doit désigner UNE carte (un seul sélecteur, pas de
     virgule) ; le script y accole `:not(.hors-recherche)` pour compter ce qui
-    reste dans chaque groupe.
+    reste dans chaque groupe. `sel_titre` sert au classement : les lois dont
+    l'intitulé porte le mot cherché passent avant celles qui ne le mentionnent
+    que dans leur résumé. Il doit viser le seul intitulé, sans le libellé de
+    chambre, sinon « sénat » classerait toutes les cartes à égalité.
     """
     return (
         f'<div class="recherche-votes" hidden>'
         f'<label for="{id_champ}">Rechercher une loi par son intitulé ou son contenu</label>'
         f'<input id="{id_champ}" type="search" autocomplete="off" spellcheck="false"'
         f' placeholder="Ex. nucléaire, retraites, logement…"'
-        f' data-recherche-votes data-cartes="{e(sel_cartes)}"'
+        f' data-recherche-votes data-cartes="{e(sel_cartes)}" data-titre="{e(sel_titre)}"'
         f' data-groupes="{e(sel_groupes)}" data-reset-filtres="{e(sel_filtres)}">'
         f'<p class="recherche-compte" role="status" aria-live="polite"></p>'
+        # Recherche infructueuse : on explique le silence au lieu de le laisser
+        # nu. La sélection ne couvre pas tous les scrutins, et une loi absente
+        # peut être proposée. Le message d'échec vit dans .recherche-compte, qui
+        # est la zone aria-live ; ce bloc-ci n'en est pas une, pour ne pas
+        # annoncer deux fois la même chose.
+        f'<div class="recherche-vide" hidden>'
+        f'<p>La sélection ne couvre pas tous les scrutins : elle retient des '
+        f'<strong>votes clés</strong>, choisis selon une '
+        f'<a href="{r}methode/">grille de critères publiée</a>. Essayez un mot plus court, '
+        f'ou un autre terme.</p>'
+        f'<p>Si vous avez une loi précise en tête, vous pouvez la proposer. Les propositions '
+        f'sont publiques, relues, et n\'entrent qu\'après vérification contre la source '
+        f'officielle.</p>'
+        f'<p><a class="bouton" href="{DEPOT_GH}/issues/new?template=proposer-une-loi.yml"'
+        f' rel="noopener">Proposer une loi à ajouter</a></p>'
+        f'</div>'
         f'</div>')
 
 
@@ -958,7 +977,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             return f"""<li class="vote-carte" data-vote-id="{e(v['uid'] or '')}">
 {rail_html}
 <div class="ap-corps">
-<p class="ap-titre">{e(v['titre'])} {provenance}</p>
+<p class="ap-titre"><span class="ap-titre-nom">{e(v['titre'])}</span> {provenance}</p>
 {meta_html}
 {sens_html(v)}
 {groupe_html}
@@ -1155,7 +1174,7 @@ référence usuelle de l'assiduité. La médiane de l'assemblée sera affichée 
             f'(toutes « indisponible » pour ce candidat)</summary>{note_votes}{votes_html}</details>')
     else:
         section_votes = (f'<h2 id="votes-cles">Votes clés par thème</h2>{note_votes}'
-                         f'{recherche_votes_html("q-votes-" + p["slug"], ".vote-carte", ".axe-bloc, .theme-bloc", ".filtres-themes, .filtres-souscat")}'
+                         f'{recherche_votes_html("q-votes-" + p["slug"], ".vote-carte", ".ap-titre-nom", ".axe-bloc, .theme-bloc", ".filtres-themes, .filtres-souscat", "../../")}'
                          f'{filtre_html}'
                          f'<div id="votes-themes">{votes_html}</div>{js_filtre}')
     sommaire_items = [("#votes-cles", "Votes clés")]
@@ -1992,7 +2011,7 @@ fetch("../data.json").then(function (r) { return r.json(); }).then(function (d) 
     # Le corps du comparateur est une chaîne simple (accolades JS littérales),
     # d'où cette substitution plutôt qu'une f-string.
     contenu = contenu.replace("__RECHERCHE__", recherche_votes_html(
-        "q-votes-comparer", ".cmp-vote", ".cmp-axe, .cmp-theme", ".filtres-cmp"))
+        "q-votes-comparer", ".cmp-vote", ".cmp-titre", ".cmp-axe, .cmp-theme", ".filtres-cmp", "../"))
     return page("Comparer", "Comparer", contenu, 1, meta, chemin="comparer/",
                 description="Comparez les votes réels de plusieurs candidats à la présidentielle "
                             "2027, thème par thème, à partir de leurs scrutins officiels.")

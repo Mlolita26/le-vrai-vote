@@ -284,6 +284,11 @@ h3 { font-family:'Spectral', Georgia, serif; font-weight:600; font-size:1.15rem;
 .recherche-votes input:focus { outline:2px solid var(--accent); outline-offset:1px; }
 .recherche-compte { margin:0.45rem 0 0; font-size:0.85rem; color:var(--encre-douce);
   min-height:1.2em; }
+/* Recherche sans résultat : on explique, et on ouvre la proposition de loi. */
+.recherche-vide { margin:0.8rem 0 0; padding:1rem 1.1rem; background:var(--faint);
+  border:1px solid var(--lisere); border-radius:12px; }
+.recherche-vide p { margin:0 0 0.7rem; font-size:0.92rem; }
+.recherche-vide p:last-child { margin-bottom:0; }
 /* Écarté par la recherche. `!important` est indispensable et non un raccourci :
    `.vote-carte { display:grid }` et sa variante mobile `display:block` ont la
    même spécificité mais sont déclarées plus bas, donc l'emportaient — les
